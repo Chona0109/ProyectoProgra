@@ -1,3 +1,5 @@
+package View;
+
 import javax.swing.*;
 
 public class loginForm extends JDialog{
@@ -18,6 +20,9 @@ public class loginForm extends JDialog{
         setLocationRelativeTo(parent);
         setDefaultCloseOperation( DISPOSE_ON_CLOSE);
         setVisible(true);
+    }
+    public JPanel getPanel() {
+        return principal;
     }
 
     public static void main(String[] args) {

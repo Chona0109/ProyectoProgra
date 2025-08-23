@@ -1,3 +1,5 @@
+package View;
+
 import javax.swing.*;
 
 public class changeForm extends JDialog {
@@ -18,6 +20,10 @@ public class changeForm extends JDialog {
         setLocationRelativeTo(parent);
         setDefaultCloseOperation( DISPOSE_ON_CLOSE);
         setVisible(true);
+    }
+
+    public JPanel getPanel() {
+        return principal;
     }
 
     public static void main(String[] args) {

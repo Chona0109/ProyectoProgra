@@ -1,3 +1,5 @@
+package View;
+
 import javax.swing.*;
 
 public class MedicosForm extends JDialog {
@@ -22,6 +24,9 @@ public class MedicosForm extends JDialog {
         setLocationRelativeTo(parent);
         setDefaultCloseOperation( DISPOSE_ON_CLOSE);
         setVisible(true);
+    }
+    public JPanel getPanel() {
+        return main;
     }
 
     public static void main(String[] args) {
