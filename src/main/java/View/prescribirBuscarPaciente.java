@@ -3,18 +3,17 @@ package View;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class prescribirMedicamento extends JDialog{
+public class prescribirBuscarPaciente extends JDialog {
     private JComboBox comboBox1;
     private JTextField textField1;
     private JTable miTabla;
-    private JPanel main;
     private JButton okButton;
     private JButton cancelarButton;
+    private JPanel main;
 
-
-    public prescribirMedicamento(JFrame parent) {
+    public prescribirBuscarPaciente(JFrame parent) {
         super(parent);
-        setTitle("Prescribe Medicamento");
+        setTitle("Prescribir Buscar Paciente");
         setContentPane(main);
         setSize(650,450);
         setModal(true);
@@ -28,17 +27,16 @@ public class prescribirMedicamento extends JDialog{
     }
 
     public static void main(String[] args) {
-         prescribirMedicamento prescribirMedicamento= new prescribirMedicamento(null);
+        prescribirBuscarPaciente prescribirBuscarPaciente= new prescribirBuscarPaciente(null);
     }
 
     private void createUIComponents() {
         miTabla = new JTable();
         DefaultTableModel modelo = new DefaultTableModel();
-        modelo.addColumn("Código");
+        modelo.addColumn("ID");
         modelo.addColumn("Nombre");
-        modelo.addColumn("Presentación");
+        modelo.addColumn("Telefono");
+        modelo.addColumn("Fec. Nac.");
         miTabla.setModel(modelo);
     }
 }
-
-
