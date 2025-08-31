@@ -1,16 +1,15 @@
 package personas;
 
 import View.View;
-import logic.Medico;
-import logic.Usuario;
-import logic.ServiceMedico;
+import logic.entidades.Usuario;
+import logic.Service;
 
 public class Controller {
 
     View view;
-    Model model;
+    Persona model;
 
-    public Controller(View view, Model model) {
+    public Controller(View view, Persona model) {
         this.view = view;
         this.model = model;
         view.setController(this);
@@ -19,7 +18,7 @@ public class Controller {
     public void read(String id) throws Exception {
         Usuario e = new Usuario();
         e.setId(id);
-        model.setCurrent(ServiceMedico.instance().read(e));
+        model.setCurrent(Service.instance().read(e));
     }
 
 //Vamos a necesitar hacer Un controller para cada lista(Medicos, Farmaceuticas y Paciante )

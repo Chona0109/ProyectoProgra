@@ -1,22 +1,16 @@
 package View;
 
 import personas.Controller;
-import personas.Model;
-import View.changeForm;
+import personas.Persona;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 public class View implements PropertyChangeListener {
   // Falta un atributo Para implementar todos los FORM
     Controller controller;
-    Model model;
+    Persona model;
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
@@ -29,7 +23,7 @@ public class View implements PropertyChangeListener {
         return c.getPanel();
     }
 
-    public void setModel(Model model) {
+    public void setModel(Persona model) {
         this.model = model;
         model.addPropertyChangeListener(this);
     }

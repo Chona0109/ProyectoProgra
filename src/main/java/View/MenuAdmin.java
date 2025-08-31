@@ -1,10 +1,15 @@
 package View;
 
-import logic.Farmaceutico;
+import logic.controllers.MedicosController;
+import logic.models.MedicosModel;
 
 import javax.swing.*;
 
 public class MenuAdmin extends JFrame {
+
+    private MedicosForm medicosForm;
+    private MedicosController medicosController;
+    private MedicosModel medicosModel;
 
     public MenuAdmin() {
         setTitle("Administrador - Sistema Recetas");
@@ -14,28 +19,37 @@ public class MenuAdmin extends JFrame {
 
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // Panel de Médicos
-        MedicosForm medicosForm = new MedicosForm();
+        // ===================== MÉDICOS ======================
+        medicosForm = new MedicosForm();
+        medicosModel = new MedicosModel();
+        medicosController = new MedicosController(medicosForm, medicosModel);
+
+        medicosForm.setController(medicosController);
+        medicosForm.setModel(medicosModel);
+
         tabbedPane.addTab("Médicos", medicosForm.getPanel());
 
-        // Panel de Farmaceutas
-        FarmaceutasForm farmaceutasForm = new FarmaceutasForm();
-        tabbedPane.addTab("Farmaceutas", farmaceutasForm.getPanel());
+        // ===================== FARMACEUTAS ==================
+        JPanel farmaceutasForm = new JPanel(); // luego integras tu FarmaceutasForm
+        farmaceutasForm.add(new JLabel("Aquí va el formulario de Farmaceutas"));
+        tabbedPane.addTab("Farmaceutas", farmaceutasForm);
 
-        // Panel de Pacientes
-        PacientesForm pacientesForm = new PacientesForm();
-        tabbedPane.addTab("Pacientes", pacientesForm.getPanel());
+        // ===================== PACIENTES ====================
+        JPanel pacientesForm = new JPanel(); // luego integras tu PacientesForm
+        pacientesForm.add(new JLabel("Aquí va el formulario de Pacientes"));
+        tabbedPane.addTab("Pacientes", pacientesForm);
 
-        // Panel de Medicamentos
-        MedicamentosForm medicamentosForm = new MedicamentosForm();
-        tabbedPane.addTab("Medicamentos", medicamentosForm.getPanel());
+        // ===================== MEDICAMENTOS =================
+        JPanel medicamentosForm = new JPanel(); // luego integras tu MedicamentosForm
+        medicamentosForm.add(new JLabel("Aquí va el formulario de Medicamentos"));
+        tabbedPane.addTab("Medicamentos", medicamentosForm);
 
-        // Panel de Dashboard
+        // ===================== DASHBOARD ===================
         JPanel panelDashboard = new JPanel();
         panelDashboard.add(new JLabel("Aquí van los gráficos de indicadores"));
         tabbedPane.addTab("Dashboard", panelDashboard);
 
-        // Panel de Histórico
+        // ===================== HISTÓRICO ===================
         JPanel panelHistorico = new JPanel();
         panelHistorico.add(new JLabel("Aquí va el histórico de recetas"));
         tabbedPane.addTab("Histórico", panelHistorico);

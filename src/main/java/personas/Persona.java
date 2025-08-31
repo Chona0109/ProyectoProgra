@@ -1,13 +1,14 @@
 package personas;
 import java.beans.PropertyChangeListener;
-import logic.Usuario;
 
-public class Model extends AbstractModel {
+import logic.entidades.Usuario;
+
+public class Persona extends AbstractModel {
     Usuario current;
 
     public static final String CURRENT = "current";
 
-    public Model() {
+    public Persona() {
 
         current = new Usuario();
     }
