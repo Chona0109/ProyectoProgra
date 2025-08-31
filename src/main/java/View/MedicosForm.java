@@ -38,7 +38,6 @@ public class MedicosForm implements PropertyChangeListener {
     public MedicosForm() {
         departamentosView = new Departamentos();
 
-        // === Acción de buscar departamento como pediste ===
         buscarDepartamento.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
