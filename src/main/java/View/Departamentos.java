@@ -1,7 +1,8 @@
 package View;
 
-import logic.controllers.DepartamentosController;
-import logic.models.DepartamentosModel;
+import logic.controllers.MedicosController;
+import logic.models.MedicosModel;
+import logic.entidades.Departamento;
 import logic.TableModels.DepartamentoTableModel;
 
 import javax.swing.*;
@@ -11,15 +12,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 public class Departamentos extends JDialog implements PropertyChangeListener {
+
+    private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
     private JTextField nombre;
     private JButton buscar;
     private JTable list;
-    private JPanel contentPane;
 
-    private DepartamentosController controller;
-    private DepartamentosModel model;
+    private MedicosController controller;
+    private MedicosModel model;
 
     public Departamentos() {
         setContentPane(contentPane);
@@ -32,17 +34,21 @@ public class Departamentos extends JDialog implements PropertyChangeListener {
         buscar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.searchDepartamentos(nombre.getText());
+                if (controller != null) {
+                    controller.searchDepartamentos(nombre.getText());
+                }
             }
         });
 
-        buttonOK.addActionListener(e -> {
-            if (list.getSelectedRow() >= 0 && controller != null) {
-                controller.setDepartamento(list.getSelectedRow()); // asigna departamento al usuario
-                Departamentos.this.setVisible(false);
+        buttonOK.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (list.getSelectedRow() >= 0 && controller != null) {
+                    controller.setDepartamento(list.getSelectedRow());
+                    Departamentos.this.setVisible(false);
+                }
             }
         });
-
 
         buttonCancel.addActionListener(new ActionListener() {
             @Override
@@ -52,19 +58,23 @@ public class Departamentos extends JDialog implements PropertyChangeListener {
         });
     }
 
-    public void setController(DepartamentosController controller) { this.controller = controller; }
+    public void setController(MedicosController controller) {
+        this.controller = controller;
+    }
 
-    public void setModel(DepartamentosModel model) {
+    public void setModel(MedicosModel model) {
         this.model = model;
         model.addPropertyChangeListener(this);
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals(DepartamentosModel.DEPARTMENTS)) {
-            int[] cols = {DepartamentoTableModel.CODIGO, DepartamentoTableModel.NOMBRE};
-            list.setModel(new DepartamentoTableModel(cols, model.getDepartamentos()));
+        switch (evt.getPropertyName()) {
+            case MedicosModel.DEPARTMENTS:
+                int[] cols = {DepartamentoTableModel.CODIGO, DepartamentoTableModel.NOMBRE};
+                list.setModel(new DepartamentoTableModel(cols, model.getDepartamentos()));
+                break;
         }
-        this.contentPane.revalidate();
+        contentPane.revalidate();
     }
 }

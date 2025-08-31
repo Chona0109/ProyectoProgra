@@ -1,11 +1,8 @@
 package View;
 
-import logic.controllers.MedicosController;
-import logic.controllers.DepartamentosController;
-import logic.models.MedicosModel;
-import logic.models.DepartamentosModel;
 import logic.entidades.Medico;
-import logic.entidades.Departamento;
+import logic.models.MedicosModel;
+import logic.controllers.MedicosController;
 import logic.TableModels.MedicosTableModel;
 
 import javax.swing.*;
@@ -22,19 +19,17 @@ public class MedicosForm implements PropertyChangeListener {
     private JTextField idFld;
     private JTextField nameFld;
     private JTextField especialidadFld;
-    private JTextField buscarIdFld;
     private JButton guardarButton;
     private JButton limpiarButton;
     private JButton borrarButton;
     private JButton buscarButton;
-    private JButton reporteButton;
     private JTable miTabla;
     private JLabel departamento;
     private JButton buscarDepartamento;
+    private JTextField buscarIdFld;
+    private JButton reporteButton;
 
     private Departamentos departamentosView;
-    private DepartamentosModel departamentosModel;
-    private DepartamentosController depController;
 
     private MedicosController controller;
     private MedicosModel model;
@@ -42,34 +37,23 @@ public class MedicosForm implements PropertyChangeListener {
 
     public MedicosForm() {
         departamentosView = new Departamentos();
-        departamentosModel = new DepartamentosModel();
 
-        depController = new DepartamentosController(departamentosView, departamentosModel);
-
-        // Acción para abrir selector de departamento
-        buscarDepartamento.addActionListener(e -> {
-            if (model.getCurrent() != null) {
-                // Crear controlador de departamentos si no existe
-                DepartamentosController depController = new DepartamentosController(departamentosView, departamentosModel);
-                depController.setCurrentEntity(model.getCurrent()); // <-- asigna el medico actual
+        // === Acción de buscar departamento como pediste ===
+        buscarDepartamento.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 departamentosView.setVisible(true);
-
-                // Actualizar la etiqueta de departamento al cerrar el diálogo
-                if (model.getCurrent().getDepartamento() != null) {
-                    departamento.setText(model.getCurrent().getDepartamento().getNombre());
-                }
             }
         });
-
 
         // Guardar médico
         guardarButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 if (validateForm()) {
-                    Medico medico = take();
+                    Medico m = take();
                     try {
-                        controller.create(medico);
+                        controller.create(m);
                         JOptionPane.showMessageDialog(main, "REGISTRO APLICADO", "", JOptionPane.INFORMATION_MESSAGE);
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(main, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -95,14 +79,16 @@ public class MedicosForm implements PropertyChangeListener {
 
                 int confirm = JOptionPane.showConfirmDialog(main, "¿Eliminar este médico?", "Confirmar", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
-                    try { controller.delete(id); } catch (Exception ex) {
+                    try {
+                        controller.delete(id);
+                    } catch (Exception ex) {
                         JOptionPane.showMessageDialog(main, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
         });
 
-        // Buscar médico por ID
+        // Buscar médico
         buscarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -111,14 +97,6 @@ public class MedicosForm implements PropertyChangeListener {
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(main, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
                 }
-            }
-        });
-
-        // Reporte general
-        reporteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try { controller.search(); } catch (Exception ex) {}
             }
         });
 
@@ -137,11 +115,20 @@ public class MedicosForm implements PropertyChangeListener {
 
     public JPanel getPanel() { return main; }
 
-    public void setController(MedicosController controller) { this.controller = controller; }
+    public void setController(MedicosController controller) {
+        this.controller = controller;
+        if (departamentosView != null) {
+            departamentosView.setController(controller);
+        }
+    }
 
     public void setModel(MedicosModel model) {
         this.model = model;
         model.addPropertyChangeListener(this);
+
+        if (departamentosView != null) {
+            departamentosView.setModel(model);
+        }
 
         tableModel = new MedicosTableModel(
                 new int[]{MedicosTableModel.ID, MedicosTableModel.NOMBRE, MedicosTableModel.ESPECIALIDAD},
@@ -162,8 +149,8 @@ public class MedicosForm implements PropertyChangeListener {
                 llenarFormulario();
                 break;
 
-            case MedicosModel.DEPARTMENTS:
-                // si quieres actualizar algo con la lista de departamentos
+            case MedicosModel.DEPARTMENT:
+                actualizarEtiquetaDepartamento();
                 break;
         }
         main.revalidate();
@@ -175,11 +162,15 @@ public class MedicosForm implements PropertyChangeListener {
             idFld.setText(m.getId());
             nameFld.setText(m.getNombre());
             especialidadFld.setText(m.getEspecialidad());
-            if (m.getDepartamento() != null) {
-                departamento.setText(m.getDepartamento().getNombre());
-            } else {
-                departamento.setText("No seleccionado");
-            }
+            actualizarEtiquetaDepartamento();
+        }
+    }
+
+    private void actualizarEtiquetaDepartamento() {
+        if (model != null && model.getCurrent() != null && model.getCurrent().getDepartamento() != null) {
+            departamento.setText(model.getCurrent().getDepartamento().getNombre());
+        } else {
+            departamento.setText("No seleccionado");
         }
     }
 
@@ -188,24 +179,35 @@ public class MedicosForm implements PropertyChangeListener {
         m.setId(idFld.getText().trim());
         m.setNombre(nameFld.getText().trim());
         m.setEspecialidad(especialidadFld.getText().trim());
-        m.setDepartamento(model.getCurrent().getDepartamento());
+        if (model.getCurrent() != null) {
+            m.setDepartamento(model.getCurrent().getDepartamento());
+        }
         return m;
     }
 
     private boolean validateForm() {
         boolean valid = true;
 
-        if (idFld.getText().trim().isEmpty()) { valid = false; idFld.setBackground(Color.PINK); }
-        else idFld.setBackground(null);
+        if (idFld.getText().trim().isEmpty()) {
+            valid = false; idFld.setBackground(Color.PINK);
+        } else idFld.setBackground(Color.WHITE);
 
-        if (nameFld.getText().trim().isEmpty()) { valid = false; nameFld.setBackground(Color.PINK); }
-        else nameFld.setBackground(null);
+        if (nameFld.getText().trim().isEmpty()) {
+            valid = false; nameFld.setBackground(Color.PINK);
+        } else nameFld.setBackground(Color.WHITE);
 
-        if (especialidadFld.getText().trim().isEmpty()) { valid = false; especialidadFld.setBackground(Color.PINK); }
-        else especialidadFld.setBackground(null);
+        if (especialidadFld.getText().trim().isEmpty()) {
+            valid = false; especialidadFld.setBackground(Color.PINK);
+        } else especialidadFld.setBackground(Color.WHITE);
 
-        if (model.getCurrent().getDepartamento() == null) { valid = false; departamento.setBackground(Color.PINK); }
-        else departamento.setBackground(null);
+        if (model.getCurrent() == null || model.getCurrent().getDepartamento() == null) {
+            valid = false;
+            departamento.setOpaque(true);
+            departamento.setBackground(Color.PINK);
+        } else {
+            departamento.setOpaque(false);
+            departamento.setBackground(null);
+        }
 
         return valid;
     }

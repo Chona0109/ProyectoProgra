@@ -7,20 +7,17 @@ import logic.entidades.Departamento;
 import logic.models.MedicosModel;
 
 public class MedicosController {
-    private MedicosForm view;
+
     private MedicosModel model;
 
-    public MedicosController(MedicosForm view, MedicosModel model) {
-        this.view = view;
+    public MedicosController(MedicosForm medicosForm, MedicosModel model) {
         this.model = model;
-        view.setController(this);
-        view.setModel(model);
-
-        // cargar lista inicial
+        model.setDepartamentos(Service.instance().search(new Departamento()));
         model.setList(Service.instance().findAllMedicos());
     }
 
     public void create(Medico e) throws Exception {
+        e.setDepartamento(model.getCurrent().getDepartamento());
         Service.instance().create(e);
         model.setCurrent(new Medico());
         model.setList(Service.instance().findAllMedicos());
@@ -48,10 +45,6 @@ public class MedicosController {
         m.setId(id);
         Service.instance().delete(m);
         model.setCurrent(new Medico());
-        model.setList(Service.instance().findAllMedicos());
-    }
-
-    public void search() throws Exception {
         model.setList(Service.instance().findAllMedicos());
     }
 

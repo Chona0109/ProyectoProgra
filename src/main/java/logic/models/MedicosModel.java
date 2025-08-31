@@ -3,11 +3,13 @@ package logic.models;
 import logic.entidades.Medico;
 import logic.entidades.Departamento;
 import personas.AbstractModel;
+
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MedicosModel extends AbstractModel {
+
     private Medico current;
     private List<Medico> list;
     private List<Departamento> departamentos;
