@@ -20,7 +20,7 @@ public class Application {
         view.setModel(model);
 
         JFrame window = new JFrame();
-        window.setSize(600, 400);
+        window.setSize(800, 600);
         window.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         window.setTitle("Gestión de Médicos");
         window.setContentPane(view.getPanel());

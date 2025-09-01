@@ -17,7 +17,7 @@ public class View implements PropertyChangeListener {
 
 
     }
-// Por ahora Implemente este FORM para probrar, hay que implpementarlo con todos.
+
     public JPanel getPanel() {
         changeForm c = new changeForm(null);
         return c.getPanel();
@@ -33,4 +33,3 @@ public class View implements PropertyChangeListener {
 
 }
 
-// TODAS LAS CLASES DE FORM DEBEN DERIVAR DE ESTA CLASE

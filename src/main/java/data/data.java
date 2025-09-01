@@ -11,6 +11,8 @@ public class data {
     private List<Administrador> administradores;
     private List<Paciente> pacientes;
     private List<Departamento> departamentos;
+    private List<Receta> recetas;
+    private List<Medicamento> medicamentos;
 
     public data() {
         medicos = new ArrayList<>();
@@ -18,6 +20,8 @@ public class data {
         administradores = new ArrayList<>();
         pacientes = new ArrayList<>();
         departamentos = new ArrayList<>();
+        recetas = new ArrayList<>();
+        medicamentos = new ArrayList<>();
 
         // Crear departamentos
         Departamento depAdmin = new Departamento("001", "Administrador");
@@ -64,6 +68,15 @@ public class data {
 
         pacientes.add(p1);
         pacientes.add(p2);
+        //Medicamentos
+        Medicamento med1 = new Medicamento("001","Acetaminofen 100mg");
+        Medicamento med2 = new Medicamento("002","Acetaminofen 500mg");
+        medicamentos.add(med1);
+        medicamentos.add(med2);
+
+        //RECETAS
+        Receta r1 = new Receta(m1,p1,med1,"100mg", "Una cada 8 Horas");
+        recetas.add(r1);
     }
 
     public List<Medico> getMedicos() {
