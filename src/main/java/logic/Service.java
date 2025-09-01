@@ -98,7 +98,27 @@ public class Service {
     }
 
     public List<Usuario> findAllUsuarios() {
-        // Para simplificar, devolvemos todos los médicos (puedes extenderlo a otros tipos)
+
         return (List<Usuario>) (List<?>) data.getMedicos();
+    }
+    // ===========================================================
+    // Medicamentos
+    // ===========================================================
+
+    public List<Medicamento> findAllMedicamentos() {
+        return (List<Medicamento>) (List<?>) data.getMedicos();
+    }
+    public void create(Medicamento u) throws Exception {
+        if (u instanceof Medicamento) create((Medicamento) u);
+        else throw new Exception("Tipo de usuario no soportado");
+    }
+
+    public Medicamento read(Medicamento u) throws Exception {
+        if (u instanceof Medicamento) return read((Medicamento) u);
+        else throw new Exception("Tipo de usuario no soportado");
+    }
+    public void delete(Medicamento u) throws Exception {
+        if (u instanceof Medicamento) delete((Medicamento) u);
+        else throw new Exception("Tipo de usuario no soportado");
     }
 }

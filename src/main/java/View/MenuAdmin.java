@@ -58,6 +58,7 @@ public class MenuAdmin extends JFrame {
         add(tabbedPane);
     }
 
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MenuAdmin().setVisible(true));
     }

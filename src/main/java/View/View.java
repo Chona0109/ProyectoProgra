@@ -2,6 +2,7 @@ package View;
 
 import personas.Controller;
 import personas.Persona;
+import View.MenuAdmin;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;

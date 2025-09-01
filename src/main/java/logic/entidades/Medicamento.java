@@ -8,6 +8,10 @@ public class Medicamento {
         this.codigo = codigo;
         this.descripcion = descripcion;
     }
+    public Medicamento() {
+        this.codigo = "";
+        this.descripcion = "";
+    }
     public String getCodigo() {
         return codigo;
     }

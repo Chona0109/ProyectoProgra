@@ -98,4 +98,8 @@ public class data {
     public List<Departamento> getDepartamentos() {
         return departamentos;
     }
+
+    public List<Receta> getRecetas() {return recetas;}
+
+    public List<Medicamento> getMedicamentos() {return medicamentos;}
 }
