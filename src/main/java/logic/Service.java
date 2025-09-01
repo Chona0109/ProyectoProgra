@@ -75,7 +75,7 @@ public class Service {
                 .collect(Collectors.toList());
     }
 
-    // USUARIOS
+    // USUARIOS 
     public void create(Usuario u) throws Exception {
         if (u instanceof Medico) create((Medico) u);
         else throw new Exception("Tipo de usuario no soportado");
