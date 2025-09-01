@@ -22,9 +22,7 @@ public class Service {
         return theInstance;
     }
 
-    // ===========================================================
     // MÉDICOS
-    // ===========================================================
     public void create(Medico e) throws Exception {
         Medico result = data.getMedicos().stream()
                 .filter(m -> m.getId().equals(e.getId()))
@@ -63,9 +61,7 @@ public class Service {
                 .collect(Collectors.toList());
     }
 
-    // ===========================================================
     // DEPARTAMENTOS
-    // ===========================================================
     public List<Departamento> findAllDepartamentos() {
         return data.getDepartamentos();
     }
@@ -79,9 +75,7 @@ public class Service {
                 .collect(Collectors.toList());
     }
 
-    // ===========================================================
-    // USUARIOS (para compatibilidad con DepartamentosController)
-    // ===========================================================
+    // USUARIOS
     public void create(Usuario u) throws Exception {
         if (u instanceof Medico) create((Medico) u);
         else throw new Exception("Tipo de usuario no soportado");
@@ -101,10 +95,8 @@ public class Service {
 
         return (List<Usuario>) (List<?>) data.getMedicos();
     }
-    // ===========================================================
+    
     // Medicamentos
-    // ===========================================================
-
     public List<Medicamento> findAllMedicamentos() {
         return (List<Medicamento>) (List<?>) data.getMedicos();
     }
