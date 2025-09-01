@@ -1,22 +1,22 @@
-package sistema.presentation.medicamentos;
+package sistema.presentation.Farmaceutas;
 
-import sistema.logic.entities.Medicamento;
+import sistema.logic.entities.Farmaceutico;
 import sistema.presentation.AbstractModel;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MedicamentosModel extends AbstractModel {
+public class FarmaceutasModel extends AbstractModel {
 
-    private Medicamento current;
-    private List<Medicamento> list;
+    private Farmaceutico current;
+    private List<Farmaceutico> list;
 
     public static final String CURRENT = "current";
     public static final String LIST = "list";
 
-    public MedicamentosModel() {
-        current = new Medicamento();
+    public FarmaceutasModel() {
+        current = new Farmaceutico();
         list = new ArrayList<>();
     }
 
@@ -27,21 +27,21 @@ public class MedicamentosModel extends AbstractModel {
         firePropertyChange(LIST);
     }
 
-    public Medicamento getCurrent() {
+    public Farmaceutico getCurrent() {
         return current;
     }
 
-    public void setCurrent(Medicamento current) {
-        if (current == null) current = new Medicamento();
+    public void setCurrent(Farmaceutico current) {
+        if (current == null) current = new Farmaceutico();
         this.current = current;
         firePropertyChange(CURRENT);
     }
 
-    public List<Medicamento> getList() {
+    public List<Farmaceutico> getList() {
         return list;
     }
 
-    public void setList(List<Medicamento> list) {
+    public void setList(List<Farmaceutico> list) {
         this.list = list != null ? list : new ArrayList<>();
         firePropertyChange(LIST);
     }

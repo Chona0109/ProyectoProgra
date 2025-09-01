@@ -1,12 +1,14 @@
 package sistema.logic.entities;
 
+import java.time.LocalDate;
+
 public class Paciente {
     private String id;
     private String nombre;
-    private String fechaNacimiento;
+    private LocalDate fechaNacimiento;
     private String telefono;
 
-    public Paciente(String id, String nombre, String fechaNacimiento, String telefono) {
+    public Paciente(String id, String nombre, LocalDate fechaNacimiento, String telefono) {
         this.id = id;
         this.nombre = nombre;
         this.fechaNacimiento = fechaNacimiento;
@@ -16,7 +18,7 @@ public class Paciente {
     public Paciente() {
         this.id = "";
         this.nombre = "";
-        this.fechaNacimiento = "";
+        this.fechaNacimiento = null; // o LocalDate.now() si prefieres
         this.telefono = "";
     }
 
@@ -36,11 +38,11 @@ public class Paciente {
         this.nombre = nombre;
     }
 
-    public String getFechaNacimiento() {
+    public LocalDate getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    public void setFechaNacimiento(String fechaNacimiento) {
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
 

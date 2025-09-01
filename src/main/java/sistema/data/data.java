@@ -2,6 +2,8 @@ package sistema.data;
 
 import sistema.logic.entities.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,8 +65,10 @@ public class data {
         administradores.add(a2);
 
 
-        Paciente p1 = new Paciente("777", "Pedro Martinez", "1980-01-01", "555-6789");
-        Paciente p2 = new Paciente("888", "Laura Gonzalez", "1990-05-15", "555-9876");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+
+        Paciente p1 = new Paciente("777", "Pedro Martinez", LocalDate.parse("1980-01-01", formatter), "555-6789");
+        Paciente p2 = new Paciente("888", "Laura Gonzalez", LocalDate.parse("1990-05-15", formatter), "555-9876");
 
         pacientes.add(p1);
         pacientes.add(p2);

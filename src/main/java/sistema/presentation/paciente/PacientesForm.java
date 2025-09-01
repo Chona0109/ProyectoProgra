@@ -5,9 +5,9 @@ import javax.swing.table.DefaultTableModel;
 
 public class PacientesForm {
     private JPanel main;
-    private JTextField textField1;
-    private JTextField textField2;
-    private JTextField textField4;
+    private JTextField idFld;
+    private JTextField nombreFld;
+    private JTextField busquedaFld;
     private JButton guardarButton;
     private JButton limpiarButton;
     private JButton buscarButton;

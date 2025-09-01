@@ -75,23 +75,87 @@ public class Service {
                 .collect(Collectors.toList());
     }
 
+    // MEDICAMENTOS
 
+    public void create(Medicamento m) throws Exception {
+        Medicamento result = data.getMedicamentos().stream()
+                .filter(med -> med.getCodigo().equals(m.getCodigo()))
+                .findFirst()
+                .orElse(null);
+        if (result == null) data.getMedicamentos().add(m);
+        else throw new Exception("Medicamento ya existe");
+    }
 
-    // Medicamentos
+    public Medicamento read(Medicamento m) throws Exception {
+        Medicamento result = data.getMedicamentos().stream()
+                .filter(med -> med.getCodigo().equals(m.getCodigo()))
+                .findFirst()
+                .orElse(null);
+        if (result != null) return result;
+        else throw new Exception("Medicamento no existe");
+    }
+
+    public void delete(Medicamento m) throws Exception {
+        Medicamento result = data.getMedicamentos().stream()
+                .filter(med -> med.getCodigo().equals(m.getCodigo()))
+                .findFirst()
+                .orElse(null);
+        if (result != null) data.getMedicamentos().remove(result);
+        else throw new Exception("Medicamento no existe");
+    }
+
     public List<Medicamento> findAllMedicamentos() {
-        return (List<Medicamento>) (List<?>) data.getMedicos();
-    }
-    public void create(Medicamento u) throws Exception {
-        if (u instanceof Medicamento) create((Medicamento) u);
-        else throw new Exception("Tipo de usuario no soportado");
+        return data.getMedicamentos();
     }
 
-    public Medicamento read(Medicamento u) throws Exception {
-        if (u instanceof Medicamento) return read((Medicamento) u);
-        else throw new Exception("Tipo de usuario no soportado");
+    public List<Medicamento> searchMedicamentoByCodigo(String codigo) {
+        return data.getMedicamentos().stream()
+                .filter(med -> med.getCodigo().toLowerCase().contains(codigo.toLowerCase()))
+                .sorted(Comparator.comparing(Medicamento::getCodigo))
+                .collect(Collectors.toList());
     }
-    public void delete(Medicamento u) throws Exception {
-        if (u instanceof Medicamento) delete((Medicamento) u);
-        else throw new Exception("Tipo de usuario no soportado");
+
+    // FARMACÉUTICOS
+
+    public void create(Farmaceutico f) throws Exception {
+        Farmaceutico result = data.getFarmaceuticos().stream()
+                .filter(far -> far.getId().equals(f.getId()))
+                .findFirst()
+                .orElse(null);
+        if (result == null) data.getFarmaceuticos().add(f);
+        else throw new Exception("Farmacéutico ya existe");
     }
+
+    public Farmaceutico read(Farmaceutico f) throws Exception {
+        Farmaceutico result = data.getFarmaceuticos().stream()
+                .filter(far -> far.getId().equals(f.getId()))
+                .findFirst()
+                .orElse(null);
+        if (result != null) return result;
+        else throw new Exception("Farmacéutico no existe");
+    }
+
+    public void delete(Farmaceutico f) throws Exception {
+        Farmaceutico result = data.getFarmaceuticos().stream()
+                .filter(far -> far.getId().equals(f.getId()))
+                .findFirst()
+                .orElse(null);
+        if (result != null) data.getFarmaceuticos().remove(result);
+        else throw new Exception("Farmacéutico no existe");
+    }
+
+    public List<Farmaceutico> findAllFarmaceuticos() {
+        return data.getFarmaceuticos();
+    }
+
+    public List<Farmaceutico> searchFarmaceuticoByName(String name) {
+        return data.getFarmaceuticos().stream()
+                .filter(f -> f.getNombre().toLowerCase().contains(name.toLowerCase()))
+                .sorted(java.util.Comparator.comparing(Farmaceutico::getNombre))
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+
+
+
 }

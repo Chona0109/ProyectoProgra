@@ -4,6 +4,14 @@ import sistema.presentation.medicos.MedicosController;
 import sistema.presentation.medicos.MedicosForm.MedicosForm;
 import sistema.presentation.medicos.MedicosModel;
 
+import sistema.presentation.medicamentos.MedicamentosController;
+import sistema.presentation.medicamentos.MedicamentosForm.MedicamentosForm;
+import sistema.presentation.medicamentos.MedicamentosModel;
+
+import sistema.presentation.Farmaceutas.FarmaceutasForm.FarmaceutasForm;
+import sistema.presentation.Farmaceutas.FarmaceutasController;
+import sistema.presentation.Farmaceutas.FarmaceutasModel;
+
 import javax.swing.*;
 
 public class MenuAdmin extends JFrame {
@@ -11,6 +19,14 @@ public class MenuAdmin extends JFrame {
     private MedicosForm medicosForm;
     private MedicosController medicosController;
     private MedicosModel medicosModel;
+
+    private MedicamentosForm medicamentosForm;
+    private MedicamentosController medicamentosController;
+    private MedicamentosModel medicamentosModel;
+
+    private FarmaceutasForm farmaceutasForm;
+    private FarmaceutasController farmaceutasController;
+    private FarmaceutasModel farmaceutasModel;
 
     public MenuAdmin() {
         setTitle("Administrador - Sistema Recetas");
@@ -20,45 +36,47 @@ public class MenuAdmin extends JFrame {
 
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // ===================== MÉDICOS ======================
+        // MÉDICOS
         medicosForm = new MedicosForm();
         medicosModel = new MedicosModel();
         medicosController = new MedicosController(medicosForm, medicosModel);
-
         medicosForm.setController(medicosController);
         medicosForm.setModel(medicosModel);
-
         tabbedPane.addTab("Médicos", medicosForm.getPanel());
 
-        // ===================== FARMACEUTAS ==================
-        JPanel farmaceutasForm = new JPanel(); // luego integras tu FarmaceutasForm
-        farmaceutasForm.add(new JLabel("Aquí va el formulario de Farmaceutas"));
-        tabbedPane.addTab("Farmaceutas", farmaceutasForm);
+        // MEDICAMENTOS
+        medicamentosForm = new MedicamentosForm();
+        medicamentosModel = new MedicamentosModel();
+        medicamentosController = new MedicamentosController(medicamentosForm, medicamentosModel);
+        medicamentosForm.setController(medicamentosController);
+        medicamentosForm.setModel(medicamentosModel);
+        tabbedPane.addTab("Medicamentos", medicamentosForm.getPanel());
 
-        // ===================== PACIENTES ====================
-        JPanel pacientesForm = new JPanel(); // luego integras tu PacientesForm
+        // FARMACEUTAS
+        farmaceutasForm = new FarmaceutasForm();
+        farmaceutasModel = new FarmaceutasModel();
+        farmaceutasController = new FarmaceutasController(farmaceutasForm, farmaceutasModel);
+        farmaceutasForm.setController(farmaceutasController);
+        farmaceutasForm.setModel(farmaceutasModel);
+        tabbedPane.addTab("Farmaceutas", farmaceutasForm.getPanel());
+
+        // PACIENTES (placeholder)
+        JPanel pacientesForm = new JPanel();
         pacientesForm.add(new JLabel("Aquí va el formulario de Pacientes"));
         tabbedPane.addTab("Pacientes", pacientesForm);
 
-        // ===================== MEDICAMENTOS =================
-        JPanel medicamentosForm = new JPanel(); // luego integras tu MedicamentosForm
-        medicamentosForm.add(new JLabel("Aquí va el formulario de Medicamentos"));
-        tabbedPane.addTab("Medicamentos", medicamentosForm);
-
-        // ===================== DASHBOARD ===================
+        // DASHBOARD (placeholder)
         JPanel panelDashboard = new JPanel();
         panelDashboard.add(new JLabel("Aquí van los gráficos de indicadores"));
         tabbedPane.addTab("Dashboard", panelDashboard);
 
-        // ===================== HISTÓRICO ===================
+        // HISTÓRICO (placeholder)
         JPanel panelHistorico = new JPanel();
         panelHistorico.add(new JLabel("Aquí va el histórico de recetas"));
         tabbedPane.addTab("Histórico", panelHistorico);
 
-        // Agregar el tabbedPane al frame
         add(tabbedPane);
     }
-
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MenuAdmin().setVisible(true));
