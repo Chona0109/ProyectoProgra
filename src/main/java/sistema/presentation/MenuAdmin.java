@@ -12,6 +12,10 @@ import sistema.presentation.Farmaceutas.FarmaceutasForm.FarmaceutasForm;
 import sistema.presentation.Farmaceutas.FarmaceutasController;
 import sistema.presentation.Farmaceutas.FarmaceutasModel;
 
+import sistema.presentation.paciente.PacientesForm;
+import sistema.presentation.paciente.PacienteController;
+import sistema.presentation.paciente.PacienteModel;
+
 import javax.swing.*;
 
 public class MenuAdmin extends JFrame {
@@ -27,6 +31,10 @@ public class MenuAdmin extends JFrame {
     private FarmaceutasForm farmaceutasForm;
     private FarmaceutasController farmaceutasController;
     private FarmaceutasModel farmaceutasModel;
+
+    private PacientesForm pacientesForm;
+    private PacienteController pacientesController;
+    private PacienteModel pacientesModel;
 
     public MenuAdmin() {
         setTitle("Administrador - Sistema Recetas");
@@ -60,10 +68,13 @@ public class MenuAdmin extends JFrame {
         farmaceutasForm.setModel(farmaceutasModel);
         tabbedPane.addTab("Farmaceutas", farmaceutasForm.getPanel());
 
-        // PACIENTES (placeholder)
-        JPanel pacientesForm = new JPanel();
-        pacientesForm.add(new JLabel("Aquí va el formulario de Pacientes"));
-        tabbedPane.addTab("Pacientes", pacientesForm);
+        // PACIENTES ✅
+        pacientesForm = new PacientesForm();
+        pacientesModel = new PacienteModel();
+        pacientesController = new PacienteController(pacientesForm, pacientesModel);
+        pacientesForm.setController(pacientesController);
+        pacientesForm.setModel(pacientesModel);
+        tabbedPane.addTab("Pacientes", pacientesForm.getPanel());
 
         // DASHBOARD (placeholder)
         JPanel panelDashboard = new JPanel();

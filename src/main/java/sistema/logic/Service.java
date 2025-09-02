@@ -155,6 +155,76 @@ public class Service {
                 .collect(java.util.stream.Collectors.toList());
     }
 
+    //Pacientes
+
+    public void create(Paciente p) throws Exception {
+        Paciente result = data.getPacientes().stream()
+                .filter(pac -> pac.getId().equals(p.getId()))
+                .findFirst()
+                .orElse(null);
+        if (result == null) data.getPacientes().add(p);
+        else throw new Exception("Paciente ya existe");
+    }
+
+    public Paciente read(Paciente p) throws Exception {
+        Paciente result = data.getPacientes().stream()
+                .filter(pac -> pac.getId().equals(p.getId()))
+                .findFirst()
+                .orElse(null);
+        if (result != null) return result;
+        else throw new Exception("Paciente no existe");
+    }
+
+    public void delete(Paciente p) throws Exception {
+        Paciente result = data.getPacientes().stream()
+                .filter(pac -> pac.getId().equals(p.getId()))
+                .findFirst()
+                .orElse(null);
+        if (result != null) data.getPacientes().remove(result);
+        else throw new Exception("Paciente no existe");
+    }
+
+    public List<Paciente> findAllPaciente() {
+        return data.getPacientes();
+    }
+
+    public List<Paciente> searchPacienteByName(String name) {
+        return data.getPacientes().stream()
+                .filter(p -> p.getNombre().toLowerCase().contains(name.toLowerCase()))
+                .sorted(java.util.Comparator.comparing(Paciente::getNombre))
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    //Usuario
+
+    // En Service.java
+    public void create(Usuario u) throws Exception {
+        Usuario result = data.getUsuarios().stream()
+                .filter(us -> us.getId().equals(u.getId()))
+                .findFirst().orElse(null);
+        if (result == null) data.getUsuarios().add(u);
+        else throw new Exception("Usuario ya existe");
+    }
+
+    public Usuario read(Usuario u) throws Exception {
+        Usuario result = data.getUsuarios().stream()
+                .filter(us -> us.getId().equals(u.getId()))
+                .findFirst().orElse(null);
+        if (result != null) return result;
+        else throw new Exception("Usuario no existe");
+    }
+
+    public void login(Usuario usuario) throws Exception {
+        Usuario logged = read(usuario);
+        if (!logged.getClave().equals(usuario.getClave())) {
+            throw new Exception("Clave o ID no coinciden");
+        }
+        Sesion.setUsuario(logged);
+    }
+
+
+
+
 
 
 

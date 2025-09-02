@@ -81,6 +81,10 @@ public class data {
 
         Receta r1 = new Receta(m1,p1,med1,"100mg", "Una cada 8 Horas");
         recetas.add(r1);
+
+        usuarios.add(new Usuario("111", "Juan Perez", "123")); // médico
+        usuarios.add(new Usuario("333", "Carlos Ramos", "abc")); // farmacéutico
+        usuarios.add(new Usuario("555", "Admin One", "adminpwd")); // administrador
     }
 
     public List<Medico> getMedicos() {
@@ -106,4 +110,9 @@ public class data {
     public List<Receta> getRecetas() {return recetas;}
 
     public List<Medicamento> getMedicamentos() {return medicamentos;}
+
+    private List<Usuario> usuarios = new ArrayList<>();
+
+    public List<Usuario> getUsuarios() { return usuarios; }
+
 }

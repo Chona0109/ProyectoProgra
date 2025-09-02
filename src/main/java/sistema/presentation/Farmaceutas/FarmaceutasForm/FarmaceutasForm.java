@@ -8,6 +8,7 @@ import sistema.presentation.tableModels.FarmaceuticosTableModel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
@@ -31,42 +32,56 @@ public class FarmaceutasForm implements PropertyChangeListener {
 
     public FarmaceutasForm() {
         // Guardar
-        guardarButton.addActionListener((ActionEvent e) -> {
-            if (validateForm()) {
-                Farmaceutico f = take();
-                try {
-                    controller.create(f);
-                    JOptionPane.showMessageDialog(main, "REGISTRO APLICADO", "", JOptionPane.INFORMATION_MESSAGE);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(main, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        guardarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (validateForm()) {
+                    Farmaceutico f = take();
+                    try {
+                        controller.create(f);
+                        JOptionPane.showMessageDialog(main, "REGISTRO APLICADO", "", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(main, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
         });
 
         // Limpiar
-        limpiarButton.addActionListener(e -> controller.clear());
+        limpiarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.clear();
+            }
+        });
 
         // Borrar
-        borrarButton.addActionListener(e -> {
-            String id = idFld.getText().trim();
-            if (id.isEmpty()) return;
+        borrarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String id = idFld.getText().trim();
+                if (id.isEmpty()) return;
 
-            int confirm = JOptionPane.showConfirmDialog(main, "¿Eliminar este farmaceuta?", "Confirmar", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                try {
-                    controller.delete(id);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(main, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                int confirm = JOptionPane.showConfirmDialog(main, "¿Eliminar este farmaceuta?", "Confirmar", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    try {
+                        controller.delete(id);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(main, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
         });
 
         // Buscar
-        buscarButton.addActionListener(e -> {
-            try {
-                controller.read(busquedaFld.getText().trim());
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(main, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
+        buscarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    controller.read(busquedaFld.getText().trim());
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(main, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         });
 
@@ -133,7 +148,6 @@ public class FarmaceutasForm implements PropertyChangeListener {
         Farmaceutico f = new Farmaceutico();
         f.setId(idFld.getText().trim());
         f.setNombre(nombreFld.getText().trim());
-        // Clave no está en el formulario, puedes añadirla si es necesario
         return f;
     }
 
