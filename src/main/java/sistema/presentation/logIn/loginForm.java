@@ -1,6 +1,9 @@
 package sistema.presentation.logIn;
 
 import sistema.logic.entities.Usuario;
+import sistema.presentation.MenuAdmin;
+import sistema.presentation.MenuFarmaceutico;
+import sistema.presentation.MenuMedico;
 
 import javax.swing.*;
 
@@ -49,11 +52,37 @@ public class loginForm extends JDialog {
                     String id = textField1.getText();
                     String clave = new String(passwordField1.getPassword());
                     Usuario u = new Usuario(id, "", clave);
+
                     controller.login(u);
-                    JOptionPane.showMessageDialog(loginForm.this, "¡Bienvenido!");
+                    Usuario current = model.getCurrent();
+
+                    JOptionPane.showMessageDialog(loginForm.this,
+                            "¡Bienvenido " + current.getNombre() + "!");
+
+
+                    if (current.getDepartamento() != null) {
+                        switch (current.getDepartamento().getCodigo()) {
+                            case "001": // Administrador
+                                SwingUtilities.invokeLater(() -> new MenuAdmin().setVisible(true));
+                                break;
+                            case "002": // Médico
+                                SwingUtilities.invokeLater(() -> new MenuMedico().setVisible(true));
+                                break;
+                            case "003": // Farmacéutico
+                                SwingUtilities.invokeLater(() -> new MenuFarmaceutico().setVisible(true));
+                                break;
+                            default:
+                                JOptionPane.showMessageDialog(loginForm.this,
+                                        "Departamento no reconocido: " + current.getDepartamento().getNombre());
+                        }
+                    }
+
                     dispose();
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(loginForm.this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(loginForm.this,
+                            ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                     passwordField1.setText("");
                 }
             }

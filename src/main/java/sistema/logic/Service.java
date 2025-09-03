@@ -214,14 +214,19 @@ public class Service {
         else throw new Exception("Usuario no existe");
     }
 
-    public void login(Usuario usuario) throws Exception {
+    public Usuario login(Usuario usuario) throws Exception {
         Usuario logged = read(usuario);
         if (!logged.getClave().equals(usuario.getClave())) {
             throw new Exception("Clave o ID no coinciden");
         }
         Sesion.setUsuario(logged);
+        return logged;
     }
 
+    public String getRol(Usuario usuario) {
+        if (usuario.getDepartamento() == null) return "Desconocido";
+        return usuario.getDepartamento().getNombre();
+    }
 
 
 

@@ -15,8 +15,8 @@ public class LogInController {
     }
 
     public void login(Usuario usuario) throws Exception {
-        Service.instance().login(usuario);
-        model.setCurrent(usuario);
+        Usuario logged = Service.instance().login(usuario);
+        model.setCurrent(logged);
     }
 
     public void clear() {

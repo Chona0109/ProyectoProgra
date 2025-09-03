@@ -82,9 +82,12 @@ public class data {
         Receta r1 = new Receta(m1,p1,med1,"100mg", "Una cada 8 Horas");
         recetas.add(r1);
 
-        usuarios.add(new Usuario("111", "Juan Perez", "123")); // médico
-        usuarios.add(new Usuario("333", "Carlos Ramos", "abc")); // farmacéutico
-        usuarios.add(new Usuario("555", "Admin One", "adminpwd")); // administrador
+        usuarios.add(m1); // ya tiene depMedico
+        usuarios.add(m2);
+        usuarios.add(f1); // ya tiene depFarmaceuta
+        usuarios.add(f2);
+        usuarios.add(a1); // ya tiene depAdmin
+        usuarios.add(a2);
     }
 
     public List<Medico> getMedicos() {

@@ -1,0 +1,58 @@
+package sistema.presentation;
+
+import sistema.presentation.medicamentos.MedicamentosForm.MedicamentosForm;
+import sistema.presentation.medicamentos.MedicamentosController;
+import sistema.presentation.medicamentos.MedicamentosModel;
+
+import sistema.presentation.paciente.PacientesForm;
+import sistema.presentation.paciente.PacienteController;
+import sistema.presentation.paciente.PacienteModel;
+
+import javax.swing.*;
+
+public class MenuFarmaceutico extends JFrame {
+
+    private MedicamentosForm medicamentosForm;
+    private MedicamentosController medicamentosController;
+    private MedicamentosModel medicamentosModel;
+
+    private PacientesForm pacientesForm;
+    private PacienteController pacientesController;
+    private PacienteModel pacientesModel;
+
+    public MenuFarmaceutico() {
+        setTitle("Farmacéutico - Sistema Recetas");
+        setSize(900, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        JTabbedPane tabbedPane = new JTabbedPane();
+
+        // MEDICAMENTOS
+        medicamentosForm = new MedicamentosForm();
+        medicamentosModel = new MedicamentosModel();
+        medicamentosController = new MedicamentosController(medicamentosForm, medicamentosModel);
+        medicamentosForm.setController(medicamentosController);
+        medicamentosForm.setModel(medicamentosModel);
+        tabbedPane.addTab("Medicamentos", medicamentosForm.getPanel());
+
+        // PACIENTES
+        pacientesForm = new PacientesForm();
+        pacientesModel = new PacienteModel();
+        pacientesController = new PacienteController(pacientesForm, pacientesModel);
+        pacientesForm.setController(pacientesController);
+        pacientesForm.setModel(pacientesModel);
+        tabbedPane.addTab("Pacientes", pacientesForm.getPanel());
+
+        // DASHBOARD (placeholder)
+        JPanel panelDashboard = new JPanel();
+        panelDashboard.add(new JLabel("Indicadores y gráficos para farmacéuticos"));
+        tabbedPane.addTab("Dashboard", panelDashboard);
+
+        add(tabbedPane);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new MenuFarmaceutico().setVisible(true));
+    }
+}
