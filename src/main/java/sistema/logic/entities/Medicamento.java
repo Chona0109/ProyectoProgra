@@ -4,16 +4,19 @@ import java.util.Objects;
 
 public class Medicamento {
     private String codigo;
-    private String descripcion;
+    private String nombre;
+    private String presentacion;
 
-    public Medicamento(String codigo, String descripcion) {
+    public Medicamento(String codigo, String nombre, String presentacion) {
         this.codigo = codigo;
-        this.descripcion = descripcion;
+        this.nombre = nombre;
+        this.presentacion = presentacion;
     }
 
     public Medicamento() {
         this.codigo = "";
-        this.descripcion = "";
+        this.presentacion = "";
+        this.nombre = "";
     }
 
     public String getCodigo() {
@@ -24,13 +27,17 @@ public class Medicamento {
         this.codigo = codigo;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
+
+    public String getPresentacion() {return presentacion;}
+
+    public void setPresentacion(String presentacion) {this.presentacion = presentacion;}
 
     public boolean equals(Object o) {
         if (this == o) return true;

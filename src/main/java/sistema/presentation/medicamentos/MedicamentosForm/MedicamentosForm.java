@@ -17,7 +17,7 @@ import java.util.Collections;
 public class MedicamentosForm implements PropertyChangeListener {
     private JPanel main;
     private JTextField CodigoButton;
-    private JTextField DescripcionButton;
+    private JTextField NombreButton;
     private JTextField CodigoBuscar;
     private JButton guardarButton;
     private JButton limpiarButton;
@@ -25,8 +25,7 @@ public class MedicamentosForm implements PropertyChangeListener {
     private JButton reporteButton;
     private JTable miTabla;
     private JButton borrarButton;
-
-
+    private JTextField presentacionButton;
 
 
     private MedicamentosController controller;
@@ -41,7 +40,8 @@ public class MedicamentosForm implements PropertyChangeListener {
         miTabla = new JTable();
         DefaultTableModel modelo = new DefaultTableModel();
         modelo.addColumn("Codigo");
-        modelo.addColumn("Descripcion");
+        modelo.addColumn("Nombre");
+        modelo.addColumn("Presentacion");
         miTabla.setModel(modelo);
 
     }
@@ -125,7 +125,7 @@ public class MedicamentosForm implements PropertyChangeListener {
 
 
         tableModel = new MedicamentosTableModel(
-                new int[]{MedicamentosTableModel.CODIGO, MedicamentosTableModel.DESCRIPCION},
+                new int[]{MedicamentosTableModel.CODIGO, MedicamentosTableModel.NOMBRE, MedicamentosTableModel.PRESENTACION},
                 model.getList() != null ? model.getList() : Collections.emptyList()
         );
         miTabla.setModel(tableModel);
@@ -135,7 +135,7 @@ public class MedicamentosForm implements PropertyChangeListener {
         switch (evt.getPropertyName()) {
             case MedicamentosModel.LIST:
 
-                int[] cols = {MedicamentosTableModel.CODIGO, MedicamentosTableModel.DESCRIPCION};
+                int[] cols = {MedicamentosTableModel.CODIGO, MedicamentosTableModel.NOMBRE, MedicamentosTableModel.PRESENTACION };
                 miTabla.setModel(new MedicamentosTableModel(cols, model.getList()));
                 break;
 
@@ -152,7 +152,8 @@ public class MedicamentosForm implements PropertyChangeListener {
         if (model.getCurrent() != null) {
             Medicamento m = model.getCurrent();
             CodigoButton.setText(m.getCodigo());
-            DescripcionButton.setText(m.getDescripcion());
+            NombreButton.setText(m.getNombre());
+            presentacionButton.setText(m.getPresentacion());
 
         }
     }
@@ -161,8 +162,8 @@ public class MedicamentosForm implements PropertyChangeListener {
     private Medicamento take() {
         Medicamento m = new Medicamento();
         m.setCodigo(CodigoButton.getText().trim());
-        m.setDescripcion(DescripcionButton.getText().trim());
-
+        m.setNombre(NombreButton.getText().trim());
+        m.setPresentacion(presentacionButton.getText().trim());
 
         return m;
     }
@@ -174,9 +175,9 @@ public class MedicamentosForm implements PropertyChangeListener {
             valid = false; CodigoButton.setBackground(Color.PINK);
         } else CodigoButton.setBackground(Color.WHITE);
 
-        if (DescripcionButton.getText().trim().isEmpty()) {
-            valid = false; DescripcionButton.setBackground(Color.PINK);
-        } else DescripcionButton.setBackground(Color.WHITE);
+        if (NombreButton.getText().trim().isEmpty()) {
+            valid = false; NombreButton.setBackground(Color.PINK);
+        } else NombreButton.setBackground(Color.WHITE);
 
         return valid;
     }

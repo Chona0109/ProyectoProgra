@@ -1,5 +1,6 @@
 package sistema.presentation.tableModels;
-import sistema.logic.entities.*;
+
+import sistema.logic.entities.Medicamento;
 import sistema.presentation.AbstractTableModel;
 import java.util.List;
 
@@ -10,25 +11,28 @@ public class MedicamentosTableModel extends AbstractTableModel<Medicamento> {
     }
 
     public static final int CODIGO = 0;
-    public static final int DESCRIPCION = 1;
+    public static final int NOMBRE = 1;
+    public static final int PRESENTACION = 2;  // Nuevo campo
 
     @Override
     protected void initColNames() {
-        colNames = new String[2];
-        colNames[CODIGO] = "Codigo";
-        colNames[DESCRIPCION] = "Descripcion";
-
+        colNames = new String[3];  // Cambiar a 3 columnas
+        colNames[CODIGO] = "Código";
+        colNames[NOMBRE] = "Nombre";
+        colNames[PRESENTACION] = "Presentación";
     }
+
     @Override
     protected Object getPropetyAt(Medicamento e, int col) {
         switch (cols[col]) {
             case CODIGO:
                 return e.getCodigo();
-            case DESCRIPCION:
-                return e.getDescripcion();
+            case NOMBRE:
+                return e.getNombre();
+            case PRESENTACION:
+                return e.getPresentacion();
             default:
                 return "";
         }
     }
-
 }
