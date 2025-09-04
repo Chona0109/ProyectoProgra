@@ -26,8 +26,8 @@ public class Application {
     }
 
     private boolean doLogin() {
-        view.setVisible(true); // bloquea hasta que cierre
-        return model.getCurrent() != null; // usuario válido
+        view.setVisible(true);
+        return model.getCurrent() != null;
     }
 
     private void doRun() {

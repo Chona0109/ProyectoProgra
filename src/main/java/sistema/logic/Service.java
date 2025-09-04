@@ -228,7 +228,20 @@ public class Service {
         return usuario.getDepartamento().getNombre();
     }
 
+    public void updateUsuario(Usuario usuario) throws Exception {
+        Usuario existente = data.getUsuarios().stream()
+                .filter(us -> us.getId().equals(usuario.getId()))
+                .findFirst()
+                .orElse(null);
 
+        if (existente == null) {
+            throw new Exception("Usuario no existe");
+        }
+
+        // Aquí actualizas solo la contraseña, pero puedes extender a más atributos
+        existente.setClave(usuario.getClave());
+        // si quisieras actualizar nombre o departamento, también podrías
+    }
 
 
 
