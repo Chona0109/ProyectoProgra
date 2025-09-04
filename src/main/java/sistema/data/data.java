@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class data {
+public class    data {
     private List<Medico> medicos;
     private List<Farmaceutico> farmaceuticos;
     private List<Administrador> administradores;
@@ -35,30 +35,30 @@ public class data {
         departamentos.add(depFarmaceuta);
 
 
-        Medico m1 = new Medico("111", "Juan Perez", "123", "Cardiología");
+        Medico m1 = new Medico("111", "Juan Perez",  "Cardiología");
         m1.setDepartamento(depMedico);
 
-        Medico m2 = new Medico("222", "Maria Lopez", "123", "Neurología");
+        Medico m2 = new Medico("222", "Maria Lopez", "Neurología");
         m2.setDepartamento(depMedico);
 
         medicos.add(m1);
         medicos.add(m2);
 
 
-        Farmaceutico f1 = new Farmaceutico("333", "Carlos Ramos", "abc");
+        Farmaceutico f1 = new Farmaceutico("333", "Carlos Ramos");
         f1.setDepartamento(depFarmaceuta);
 
-        Farmaceutico f2 = new Farmaceutico("444", "Lucia Hernandez", "abc");
+        Farmaceutico f2 = new Farmaceutico("444", "Lucia Hernandez");
         f2.setDepartamento(depFarmaceuta);
 
         farmaceuticos.add(f1);
         farmaceuticos.add(f2);
 
 
-        Administrador a1 = new Administrador("555", "Admin One", "adminpwd");
+        Administrador a1 = new Administrador("555", "Admin One");
         a1.setDepartamento(depAdmin);
 
-        Administrador a2 = new Administrador("666", "Admin Two", "adminpwd");
+        Administrador a2 = new Administrador("666", "Admin Two");
         a2.setDepartamento(depAdmin);
 
         administradores.add(a1);

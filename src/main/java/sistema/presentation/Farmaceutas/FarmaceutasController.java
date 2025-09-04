@@ -14,8 +14,6 @@ public class FarmaceutasController {
     }
 
     public void create(Farmaceutico f) throws Exception {
-        f.setNombre(model.getCurrent().getNombre());
-        f.setClave(model.getCurrent().getClave());
         Service.instance().create(f);
         model.setCurrent(new Farmaceutico());
         model.setList(Service.instance().findAllFarmaceuticos());

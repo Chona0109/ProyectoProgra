@@ -14,9 +14,6 @@ public class PacienteController {
     }
 
     public void create(Paciente p) throws Exception {
-        p.setNombre(model.getCurrent().getNombre());
-        p.setFechaNacimiento(model.getCurrent().getFechaNacimiento());
-        p.setTelefono(model.getCurrent().getTelefono());
         Service.instance().create(p);
         model.setCurrent(new Paciente());
         model.setList(Service.instance().findAllPaciente());

@@ -3,8 +3,8 @@ package sistema.logic.entities;
 public class Medico extends Usuario {
     private String especialidad;
 
-    public Medico(String id, String nombre, String clave, String especialidad) {
-        super(id, nombre, clave);
+    public Medico(String id, String nombre, String especialidad) {
+        super(id, nombre);
         this.especialidad = especialidad;
     }
 

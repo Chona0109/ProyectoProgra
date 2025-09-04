@@ -14,10 +14,6 @@ public class MedicamentosController {
     }
 
     public void create(Medicamento e) throws Exception {
-        // Puedes agregar más validaciones si es necesario
-        e.setCodigo(model.getCurrent().getCodigo());
-        e.setDescripcion(model.getCurrent().getDescripcion());
-
         Service.instance().create(e);
         model.setCurrent(new Medicamento());
         model.setList(Service.instance().findAllMedicamentos());

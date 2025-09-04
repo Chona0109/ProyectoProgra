@@ -134,9 +134,11 @@ public class MedicamentosForm implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
             case MedicamentosModel.LIST:
+
                 int[] cols = {MedicamentosTableModel.CODIGO, MedicamentosTableModel.DESCRIPCION};
                 miTabla.setModel(new MedicamentosTableModel(cols, model.getList()));
                 break;
+
 
             case MedicamentosModel.CURRENT:
                 llenarFormulario();

@@ -7,10 +7,10 @@ public class Usuario {
     Departamento departamento;
 
 
-    public Usuario(String id, String nombre, String clave) {
+    public Usuario(String id, String nombre) {
         this.id = id;
         this.nombre = nombre;
-        this.clave = clave;
+        this.clave = id;
     }
 
     public Usuario() {

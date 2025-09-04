@@ -51,7 +51,7 @@ public class loginForm extends JDialog {
                 try {
                     String id = textField1.getText();
                     String clave = new String(passwordField1.getPassword());
-                    Usuario u = new Usuario(id, "", clave);
+                    Usuario u = new Usuario(id, "");
 
                     controller.login(u);
                     Usuario current = model.getCurrent();
