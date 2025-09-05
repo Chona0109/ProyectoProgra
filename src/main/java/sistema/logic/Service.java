@@ -122,6 +122,83 @@ public class Service {
                 .collect(Collectors.toList());
     }
 
+    // Recetas
+    public void createReceta(Receta r) throws Exception {
+        Receta result = data.getRecetas().stream()
+                .filter(rec -> rec.getId().equals(r.getId()))
+                .findFirst()
+                .orElse(null);
+        if (result == null) data.getRecetas().add(r);
+        else throw new Exception("Receta ya existe");
+    }
+
+    public Receta readReceta(Receta r) throws Exception {
+        Receta result = data.getRecetas().stream()
+                .filter(rec -> rec.getId().equals(r.getId()))
+                .findFirst()
+                .orElse(null);
+        if (result != null) return result;
+        else throw new Exception("Receta no existe");
+    }
+
+    public void updateReceta(Receta r) throws Exception {
+        Receta existente = data.getRecetas().stream()
+                .filter(rec -> rec.getId().equals(r.getId()))
+                .findFirst()
+                .orElse(null);
+
+        if (existente == null) throw new Exception("Receta no existe");
+
+        // Actualizamos campos básicos
+        existente.setPaciente(r.getPaciente());
+        existente.setMedico(r.getMedico());
+        existente.setFechaConfeccion(r.getFechaConfeccion());
+        existente.setFechaRetiro(r.getFechaRetiro());
+        existente.setEstado(r.getEstado());
+        existente.setMedicamentos(r.getMedicamentos());
+    }
+
+    public void deleteReceta(Receta r) throws Exception {
+        Receta existente = data.getRecetas().stream()
+                .filter(rec -> rec.getId().equals(r.getId()))
+                .findFirst()
+                .orElse(null);
+        if (existente != null) data.getRecetas().remove(existente);
+        else throw new Exception("Receta no existe");
+    }
+
+    public List<Receta> findAllRecetas() {
+        return data.getRecetas();
+    }
+
+    public List<Receta> searchRecetaByPaciente(String nombrePaciente) {
+        return data.getRecetas().stream()
+                .filter(r -> r.getPaciente() != null &&
+                        r.getPaciente().getNombre().toLowerCase().contains(nombrePaciente.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+// -------------------- Operaciones de medicamentos --------------------
+
+    public void addMedicamentoToReceta(String recetaId, MedicamentoDetalle detalle) throws Exception {
+        Receta r = readReceta(new Receta(){{
+            setId(recetaId);
+        }});
+        r.getMedicamentos().add(detalle);
+    }
+
+    public void removeMedicamentoFromReceta(String recetaId, int index) throws Exception {
+        Receta r = readReceta(new Receta(){{
+            setId(recetaId);
+        }});
+        if (index >= 0 && index < r.getMedicamentos().size()) {
+            r.getMedicamentos().remove(index);
+        } else throw new Exception("Índice de medicamento inválido");
+    }
+
+
+
+
     // FARMACÉUTICOS
 
     public void create(Farmaceutico f) throws Exception {

@@ -1,55 +1,75 @@
 package sistema.presentation.prescribirReceta;
 
-import sistema.presentation.prescribirBuscarPaciente.prescribirBuscarPaciente;
-import sistema.presentation.prescribirBuscarPaciente.prescribirBuscarPacienteController;
-import sistema.presentation.prescribirBuscarPaciente.prescribirBuscarPacienteModel;
-import sistema.presentation.prescribirMedicamento.prescribirMedicamento;
-import sistema.presentation.prescribirMedicamento.prescribirBuscarMedicamentoController;
-import sistema.presentation.prescribirMedicamento.prescribirBuscarMedicamentoModel;
-
-import javax.swing.*;
+import sistema.logic.Service;
+import sistema.logic.entities.MedicamentoDetalle;
+import sistema.logic.entities.Paciente;
+import sistema.logic.entities.Receta;
 
 public class prescribirRecetaController {
 
     private prescribirRecetaModel model;
-    private JFrame parent;
 
-    public prescribirRecetaController(prescribirRecetaModel model, JFrame parent) {
+    public prescribirRecetaController(prescribirRecetaModel model) {
         this.model = model;
-        this.parent = parent;
+        model.setCurrent(new Receta());
+        model.setList(Service.instance().findAllRecetas());
     }
 
-    // Abrir panel para buscar paciente
-    public void buscarPaciente() {
-        prescribirBuscarPacienteModel pacienteModel = new prescribirBuscarPacienteModel();
-        prescribirBuscarPacienteController pacienteController = new prescribirBuscarPacienteController(pacienteModel);
-        prescribirBuscarPaciente dialog = new prescribirBuscarPaciente(parent);
-        dialog.setModel(pacienteModel);
-        dialog.setController(pacienteController);
-        dialog.setVisible(true);
+    // -------------------- CRUD --------------------
 
-        // Al seleccionar paciente, actualizar el modelo principal
-        pacienteModel.addPropertyChangeListener(evt -> {
-            if (evt.getPropertyName().equals(prescribirBuscarPacienteModel.CURRENT)) {
-                model.setPacienteSeleccionado(pacienteModel.getCurrent());
-            }
-        });
+    public void create(Receta receta) throws Exception {
+        Service.instance().createReceta(receta);
+        model.setCurrent(new Receta());
+        model.setList(Service.instance().findAllRecetas());
     }
 
-    // Abrir panel para buscar medicamento
-    public void agregarMedicamento() {
-        prescribirBuscarMedicamentoModel medModel = new prescribirBuscarMedicamentoModel();
-        prescribirBuscarMedicamentoController medController = new prescribirBuscarMedicamentoController(medModel);
-        prescribirMedicamento dialog = new prescribirMedicamento(parent);
-        dialog.setModel(medModel);
-        dialog.setController(medController);
-        dialog.setVisible(true);
+    public void read(String id) throws Exception {
+        Receta receta = new Receta();
+        receta.setId(id);
+        try {
+            model.setCurrent(Service.instance().readReceta(receta));
+        } catch (Exception ex) {
+            Receta nueva = new Receta();
+            nueva.setId(id);
+            model.setCurrent(nueva);
+            throw ex;
+        }
+    }
 
-        // Al seleccionar medicamento, agregar al modelo principal
-        medModel.addPropertyChangeListener(evt -> {
-            if (evt.getPropertyName().equals(prescribirBuscarMedicamentoModel.CURRENT)) {
-                model.agregarMedicamento(medModel.getCurrent());
-            }
-        });
+    public void update(Receta receta) throws Exception {
+        Service.instance().updateReceta(receta);
+        model.setCurrent(new Receta());
+        model.setList(Service.instance().findAllRecetas());
+    }
+
+    public void delete(String id) throws Exception {
+        Receta receta = new Receta();
+        receta.setId(id);
+        Service.instance().deleteReceta(receta);
+        model.setCurrent(new Receta());
+        model.setList(Service.instance().findAllRecetas());
+    }
+
+    public void clear() {
+        model.setCurrent(new Receta());
+    }
+
+    // -------------------- Operaciones específicas de receta --------------------
+
+    public void setPaciente(Paciente paciente) throws Exception {
+        Receta current = model.getCurrent();
+        current.setPaciente(paciente);
+        Service.instance().updateReceta(current);
+        model.setCurrent(current);
+    }
+
+    public void addMedicamento(String recetaId, MedicamentoDetalle detalle) throws Exception {
+        Service.instance().addMedicamentoToReceta(recetaId, detalle);
+        model.setCurrent(Service.instance().readReceta(new Receta(){{ setId(recetaId); }}));
+    }
+
+    public void removeMedicamento(String recetaId, int index) throws Exception {
+        Service.instance().removeMedicamentoFromReceta(recetaId, index);
+        model.setCurrent(Service.instance().readReceta(new Receta(){{ setId(recetaId); }}));
     }
 }

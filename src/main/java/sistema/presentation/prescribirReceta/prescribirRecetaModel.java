@@ -1,52 +1,48 @@
 package sistema.presentation.prescribirReceta;
 
-import sistema.logic.entities.Paciente;
-import sistema.logic.entities.Medicamento;
+import sistema.logic.entities.Receta;
+import sistema.presentation.AbstractModel;
 
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
-public class prescribirRecetaModel {
+public class prescribirRecetaModel extends AbstractModel {
 
-    public static final String PACIENTE = "PACIENTE";
-    public static final String MEDICAMENTOS = "MEDICAMENTOS";
+    private Receta current;
+    private List<Receta> list;
 
-    private PropertyChangeSupport support;
-    private Paciente pacienteSeleccionado;
-    private List<Medicamento> medicamentosSeleccionados;
+    public static final String CURRENT = "current";
+    public static final String LIST = "list";
 
     public prescribirRecetaModel() {
-        support = new PropertyChangeSupport(this);
-        medicamentosSeleccionados = new ArrayList<>();
+        current = new Receta();
+        list = new ArrayList<>();
     }
 
+    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-        support.addPropertyChangeListener(listener);
+        super.addPropertyChangeListener(listener);
+        firePropertyChange(CURRENT);
+        firePropertyChange(LIST);
     }
 
-    public Paciente getPacienteSeleccionado() {
-        return pacienteSeleccionado;
+    public Receta getCurrent() {
+        return current;
     }
 
-    public void setPacienteSeleccionado(Paciente pacienteSeleccionado) {
-        Paciente old = this.pacienteSeleccionado;
-        this.pacienteSeleccionado = pacienteSeleccionado;
-        support.firePropertyChange(PACIENTE, old, pacienteSeleccionado);
+    public void setCurrent(Receta current) {
+        if (current == null) current = new Receta();
+        this.current = current;
+        firePropertyChange(CURRENT);
     }
 
-    public List<Medicamento> getMedicamentosSeleccionados() {
-        return medicamentosSeleccionados;
+    public List<Receta> getList() {
+        return list;
     }
 
-    public void agregarMedicamento(Medicamento m) {
-        medicamentosSeleccionados.add(m);
-        support.firePropertyChange(MEDICAMENTOS, null, medicamentosSeleccionados);
-    }
-
-    public void limpiarMedicamentos() {
-        medicamentosSeleccionados.clear();
-        support.firePropertyChange(MEDICAMENTOS, null, medicamentosSeleccionados);
+    public void setList(List<Receta> list) {
+        this.list = list != null ? list : new ArrayList<>();
+        firePropertyChange(LIST);
     }
 }

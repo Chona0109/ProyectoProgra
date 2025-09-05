@@ -79,8 +79,7 @@ public class    data {
         medicamentos.add(med2);
 
 
-        Receta r1 = new Receta(m1,p1,med1,"100mg", "Una cada 8 Horas");
-        recetas.add(r1);
+
 
         usuarios.add(m1); // ya tiene depMedico
         usuarios.add(m2);
