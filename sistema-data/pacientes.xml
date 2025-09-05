@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pacientes>
+    <lista>
+        <paciente>
+            <id>777</id>
+            <nombre>Pedro Martinez</nombre>
+            <fechaNacimiento>1980-01-01</fechaNacimiento>
+            <telefono>555-6789</telefono>
+        </paciente>
+        <paciente>
+            <id>888</id>
+            <nombre>Laura Gonzalez</nombre>
+            <fechaNacimiento>1990-05-15</fechaNacimiento>
+            <telefono>555-9876</telefono>
+        </paciente>
+    </lista>
+</pacientes>

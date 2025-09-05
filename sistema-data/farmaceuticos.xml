@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<farmaceuticos>
+    <lista>
+        <farmaceutico>
+            <id>333</id>
+            <nombre>Carlos Ramos</nombre>
+            <clave>333</clave>
+            <departamento>
+                <codigo>003</codigo>
+                <nombre>Farmaceutico</nombre>
+            </departamento>
+        </farmaceutico>
+        <farmaceutico>
+            <id>444</id>
+            <nombre>Lucia Hernandez</nombre>
+            <clave>444</clave>
+            <departamento>
+                <codigo>003</codigo>
+                <nombre>Farmaceutico</nombre>
+            </departamento>
+        </farmaceutico>
+        <farmaceutico>
+            <id>555</id>
+            <nombre>Papu</nombre>
+            <clave></clave>
+        </farmaceutico>
+    </lista>
+</farmaceuticos>

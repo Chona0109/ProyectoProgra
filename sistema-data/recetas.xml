@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<recetas>
+    <lista>
+        <receta>
+            <id>R001</id>
+            <medico>
+                <id>111</id>
+                <nombre>Juan Perez</nombre>
+                <clave>111</clave>
+                <departamento>
+                    <codigo>002</codigo>
+                    <nombre>Medico</nombre>
+                </departamento>
+                <especialidad>Cardiología</especialidad>
+            </medico>
+            <paciente>
+                <id>777</id>
+                <nombre>Pedro Martinez</nombre>
+                <fechaNacimiento>1980-01-01</fechaNacimiento>
+                <telefono>555-6789</telefono>
+            </paciente>
+            <medicamentos>
+                <medicamentoDetalle>
+                    <medicamento>
+                        <codigo>111</codigo>
+                        <nombre>Acetaminofen</nombre>
+                        <presentacion>500</presentacion>
+                    </medicamento>
+                    <cantidad>2</cantidad>
+                    <indicaciones>Tomar 2 veces al día</indicaciones>
+                    <dias>5</dias>
+                </medicamentoDetalle>
+                <medicamentoDetalle>
+                    <medicamento>
+                        <codigo>222</codigo>
+                        <nombre>Panadol</nombre>
+                        <presentacion>100mg</presentacion>
+                    </medicamento>
+                    <cantidad>1</cantidad>
+                    <indicaciones>Tomar después de comida</indicaciones>
+                    <dias>7</dias>
+                </medicamentoDetalle>
+            </medicamentos>
+            <fechaConfeccion>2025-09-05</fechaConfeccion>
+            <fechaRetiro>2025-09-08</fechaRetiro>
+            <estado>CONFECCIONADA</estado>
+        </receta>
+        <receta>
+            <id>R002</id>
+            <medico>
+                <id>222</id>
+                <nombre>Maria Lopez</nombre>
+                <clave>222</clave>
+                <departamento>
+                    <codigo>002</codigo>
+                    <nombre>Medico</nombre>
+                </departamento>
+                <especialidad>Neurología</especialidad>
+            </medico>
+            <paciente>
+                <id>888</id>
+                <nombre>Laura Gonzalez</nombre>
+                <fechaNacimiento>1990-05-15</fechaNacimiento>
+                <telefono>555-9876</telefono>
+            </paciente>
+            <medicamentos>
+                <medicamentoDetalle>
+                    <medicamento>
+                        <codigo>222</codigo>
+                        <nombre>Panadol</nombre>
+                        <presentacion>100mg</presentacion>
+                    </medicamento>
+                    <cantidad>1</cantidad>
+                    <indicaciones>Tomar después de comida</indicaciones>
+                    <dias>7</dias>
+                </medicamentoDetalle>
+            </medicamentos>
+            <fechaConfeccion>2025-09-05</fechaConfeccion>
+            <fechaRetiro>2025-09-08</fechaRetiro>
+            <estado>DESPACHADA</estado>
+        </receta>
+        <receta>
+            <id>R1</id>
+            <paciente>
+                <id>888</id>
+                <nombre>Laura Gonzalez</nombre>
+                <fechaNacimiento>1990-05-15</fechaNacimiento>
+                <telefono>555-9876</telefono>
+            </paciente>
+            <medicamentos>
+                <medicamentoDetalle>
+                    <medicamento>
+                        <codigo>111</codigo>
+                        <nombre>Acetaminofen</nombre>
+                        <presentacion>500</presentacion>
+                    </medicamento>
+                    <cantidad>30</cantidad>
+                    <indicaciones>mañana y tarde</indicaciones>
+                    <dias>20</dias>
+                </medicamentoDetalle>
+            </medicamentos>
+            <fechaConfeccion>2025-09-05</fechaConfeccion>
+            <fechaRetiro>2025-09-08</fechaRetiro>
+            <estado>EN_PROCESO</estado>
+        </receta>
+        <receta>
+            <id>R2</id>
+            <paciente>
+                <id>888</id>
+                <nombre>Laura Gonzalez</nombre>
+                <fechaNacimiento>1990-05-15</fechaNacimiento>
+                <telefono>555-9876</telefono>
+            </paciente>
+            <medicamentos>
+                <medicamentoDetalle>
+                    <medicamento>
+                        <codigo>222</codigo>
+                        <nombre>Panadol</nombre>
+                        <presentacion>100mg</presentacion>
+                    </medicamento>
+                    <cantidad>10</cantidad>
+                    <indicaciones>8 horas</indicaciones>
+                    <dias>20</dias>
+                </medicamentoDetalle>
+            </medicamentos>
+            <fechaConfeccion>2025-09-05</fechaConfeccion>
+            <fechaRetiro>2025-09-08</fechaRetiro>
+            <estado>EN_PROCESO</estado>
+        </receta>
+    </lista>
+</recetas>
