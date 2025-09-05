@@ -16,6 +16,8 @@ import sistema.presentation.paciente.PacientesForm;
 import sistema.presentation.paciente.PacienteController;
 import sistema.presentation.paciente.PacienteModel;
 
+import sistema.presentation.historicoRecetas.*;
+
 import javax.swing.*;
 
 public class MenuAdmin extends JFrame {
@@ -35,6 +37,10 @@ public class MenuAdmin extends JFrame {
     private PacientesForm pacientesForm;
     private PacienteController pacientesController;
     private PacienteModel pacientesModel;
+
+    private historicoRecetas historicoRecetas;
+    private historicoRecetasModel historicoRecetasModel;
+    private historicoRecetasController historicoRecetasController;
 
     public MenuAdmin() {
         setTitle("Administrador - Sistema Recetas");
@@ -81,10 +87,13 @@ public class MenuAdmin extends JFrame {
         panelDashboard.add(new JLabel("Aquí van los gráficos de indicadores"));
         tabbedPane.addTab("Dashboard", panelDashboard);
 
-        // HISTÓRICO (placeholder)
-        JPanel panelHistorico = new JPanel();
-        panelHistorico.add(new JLabel("Aquí va el histórico de recetas"));
-        tabbedPane.addTab("Histórico", panelHistorico);
+
+        // HISTÓRICO DE RECETAS
+        historicoRecetasModel = new historicoRecetasModel();
+        historicoRecetasController = new historicoRecetasController(historicoRecetasModel); // si tu controller necesita parámetros, ajusta aquí
+        historicoRecetas = new historicoRecetas(this, historicoRecetasModel, historicoRecetasController);
+        tabbedPane.addTab("Histórico", historicoRecetas.getPanel());
+
 
         add(tabbedPane);
     }

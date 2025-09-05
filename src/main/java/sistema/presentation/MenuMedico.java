@@ -1,24 +1,24 @@
 package sistema.presentation;
 
-import sistema.presentation.paciente.PacientesForm;
-import sistema.presentation.paciente.PacienteController;
-import sistema.presentation.paciente.PacienteModel;
+import sistema.presentation.prescribirReceta.prescribirReceta;
+import sistema.presentation.prescribirReceta.prescribirRecetaModel;
+import sistema.presentation.prescribirReceta.prescribirRecetaController;
 
-import sistema.presentation.medicamentos.MedicamentosForm.MedicamentosForm;
-import sistema.presentation.medicamentos.MedicamentosController;
-import sistema.presentation.medicamentos.MedicamentosModel;
+import sistema.presentation.historicoRecetas.historicoRecetas;
+import sistema.presentation.historicoRecetas.historicoRecetasModel;
+import sistema.presentation.historicoRecetas.historicoRecetasController;
 
 import javax.swing.*;
 
 public class MenuMedico extends JFrame {
 
-    private PacientesForm pacientesForm;
-    private PacienteController pacientesController;
-    private PacienteModel pacientesModel;
+    private prescribirReceta prescribirRecetaForm;
+    private prescribirRecetaModel prescribirRecetaModel;
+    private prescribirRecetaController prescribirRecetaController;
 
-    private MedicamentosForm medicamentosForm;
-    private MedicamentosController medicamentosController;
-    private MedicamentosModel medicamentosModel;
+    private historicoRecetas historicoRecetasForm;
+    private historicoRecetasModel historicoRecetasModel;
+    private historicoRecetasController historicoRecetasController;
 
     public MenuMedico() {
         setTitle("Médico - Sistema Recetas");
@@ -28,26 +28,22 @@ public class MenuMedico extends JFrame {
 
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // PACIENTES
-        pacientesForm = new PacientesForm();
-        pacientesModel = new PacienteModel();
-        pacientesController = new PacienteController(pacientesForm, pacientesModel);
-        pacientesForm.setController(pacientesController);
-        pacientesForm.setModel(pacientesModel);
-        tabbedPane.addTab("Pacientes", pacientesForm.getPanel());
+        // PRESCRIBIR RECETA
+        prescribirRecetaModel = new prescribirRecetaModel();
+        prescribirRecetaController = new prescribirRecetaController(prescribirRecetaModel);
+        prescribirRecetaForm = new prescribirReceta(this, prescribirRecetaModel, prescribirRecetaController);
+        tabbedPane.addTab("Prescribir Receta", prescribirRecetaForm.getPanel());
 
-        // MEDICAMENTOS
-        medicamentosForm = new MedicamentosForm();
-        medicamentosModel = new MedicamentosModel();
-        medicamentosController = new MedicamentosController(medicamentosForm, medicamentosModel);
-        medicamentosForm.setController(medicamentosController);
-        medicamentosForm.setModel(medicamentosModel);
-        tabbedPane.addTab("Medicamentos", medicamentosForm.getPanel());
 
-        // DASHBOARD (placeholder)
         JPanel panelDashboard = new JPanel();
-        panelDashboard.add(new JLabel("Gráficos de indicadores del médico"));
+        panelDashboard.add(new JLabel("Aquí van los gráficos de indicadores"));
         tabbedPane.addTab("Dashboard", panelDashboard);
+
+        // HISTÓRICO DE RECETAS
+        historicoRecetasModel = new historicoRecetasModel();
+        historicoRecetasController = new historicoRecetasController(historicoRecetasModel);
+        historicoRecetasForm = new historicoRecetas(this, historicoRecetasModel, historicoRecetasController);
+        tabbedPane.addTab("Histórico", historicoRecetasForm.getPanel());
 
         add(tabbedPane);
     }

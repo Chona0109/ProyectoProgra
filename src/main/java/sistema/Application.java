@@ -2,6 +2,7 @@ package sistema;
 
 import sistema.logic.entities.Usuario;
 import sistema.logic.entities.Departamento;
+import sistema.logic.Service;
 import sistema.presentation.MenuAdmin;
 import sistema.presentation.MenuMedico;
 import sistema.presentation.MenuFarmaceutico;
@@ -10,6 +11,8 @@ import sistema.presentation.logIn.LogInModel;
 import sistema.presentation.logIn.loginForm;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class Application {
 
@@ -23,6 +26,8 @@ public class Application {
         controller = new LogInController(model, view);
         view.setController(controller);
         view.setModel(model);
+
+        Service service = Service.instance();
     }
 
     private boolean doLogin() {
@@ -44,23 +49,47 @@ public class Application {
             return;
         }
 
+        JFrame mainMenu = null;
+
         switch (dep.getCodigo()) {
             case "001": // Administrador
-                SwingUtilities.invokeLater(() -> new MenuAdmin().setVisible(true));
+                mainMenu = new MenuAdmin();
                 break;
             case "002": // Médico
-                SwingUtilities.invokeLater(() -> new MenuMedico().setVisible(true));
+                mainMenu = new MenuMedico();
                 break;
             case "003": // Farmacéutico
-                SwingUtilities.invokeLater(() -> new MenuFarmaceutico().setVisible(true));
+                mainMenu = new MenuFarmaceutico();
                 break;
             default:
                 JOptionPane.showMessageDialog(null,
                         "Departamento no reconocido: " + dep.getNombre());
+                return;
+        }
+
+        // Configurar el cierre de la aplicación para guardar datos automáticamente
+        if (mainMenu != null) {
+            final JFrame menu = mainMenu;
+            menu.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    Service.instance().guardarManualmente();
+                    System.exit(0);
+                }
+            });
+
+            SwingUtilities.invokeLater(() -> menu.setVisible(true));
         }
     }
 
     public static void main(String[] args) {
+        // Configurar Look and Feel
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            System.err.println("No se pudo establecer el Look and Feel: " + e.getMessage());
+        }
+
         SwingUtilities.invokeLater(() -> {
             Application app = new Application();
             if (app.doLogin()) {

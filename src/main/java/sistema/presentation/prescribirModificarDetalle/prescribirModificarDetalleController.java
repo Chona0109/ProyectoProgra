@@ -20,8 +20,5 @@ public class prescribirModificarDetalleController {
         model.setDias(dias);
     }
 
-    public void guardar() {
-        System.out.println("Detalle guardado: indicaciones=" + model.getIndicaciones() +
-                ", cantidad=" + model.getCantidad() + ", dias=" + model.getDias());
-    }
+
 }

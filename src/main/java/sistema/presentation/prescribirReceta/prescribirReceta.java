@@ -14,6 +14,7 @@ import sistema.presentation.prescribirModificarDetalle.prescribirModificarDetall
 import sistema.presentation.tableModels.MedicamentosRecetaTableModel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -219,5 +220,9 @@ public class prescribirReceta extends JDialog {
             prescribirReceta dialog = new prescribirReceta(null, model, controller);
             dialog.setVisible(true);
         });
+    }
+
+    public Component getPanel() {
+        return main;
     }
 }

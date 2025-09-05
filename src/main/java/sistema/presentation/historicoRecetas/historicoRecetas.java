@@ -139,4 +139,8 @@ public class historicoRecetas extends JDialog {
             dialog.setVisible(true);
         });
     }
+
+    public Component getPanel() {
+        return main;
+    }
 }
