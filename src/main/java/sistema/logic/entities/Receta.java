@@ -5,11 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Receta {
-    public enum EstadoReceta {
-        EN_PROCESO,
-        CONFECCIONADA,
-        DESPACHADA
-    }
 
     private String id;
     private Medico medico;
@@ -17,12 +12,12 @@ public class Receta {
     private List<MedicamentoDetalle> medicamentos;
     private LocalDate fechaConfeccion;
     private LocalDate fechaRetiro;
-    private EstadoReceta estado;
+    private String estado; // ahora es String
 
     public Receta() {
         this.medicamentos = new ArrayList<>();
         this.fechaConfeccion = LocalDate.now();
-        this.estado = EstadoReceta.EN_PROCESO;
+        this.estado = "EN_PROCESO"; // valor inicial
         this.fechaRetiro = LocalDate.now().plusDays(3);
     }
 
@@ -53,10 +48,19 @@ public class Receta {
     public LocalDate getFechaRetiro() { return fechaRetiro; }
     public void setFechaRetiro(LocalDate fechaRetiro) { this.fechaRetiro = fechaRetiro; }
 
-    public EstadoReceta getEstado() { return estado; }
-    public void setEstado(EstadoReceta estado) { this.estado = estado; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
     public int getCantidadMedicamentos() { return medicamentos.size(); }
 
+    // Métodos para agregar y remover medicamentos
+    public void agregarMedicamento(MedicamentoDetalle detalle) {
+        if (detalle != null) medicamentos.add(detalle);
+    }
 
+    public void removerMedicamento(int index) {
+        if (index >= 0 && index < medicamentos.size()) {
+            medicamentos.remove(index);
+        }
+    }
 }

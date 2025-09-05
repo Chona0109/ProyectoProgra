@@ -3,6 +3,7 @@ package sistema.presentation.prescribirReceta;
 import sistema.logic.entities.MedicamentoDetalle;
 import sistema.logic.entities.Medicamento;
 import sistema.logic.entities.Paciente;
+import sistema.logic.entities.Receta;
 import sistema.presentation.prescribirBuscarPaciente.prescribirBuscarPaciente;
 import sistema.presentation.prescribirBuscarPaciente.prescribirBuscarPacienteController;
 import sistema.presentation.prescribirBuscarPaciente.prescribirBuscarPacienteModel;
@@ -35,8 +36,15 @@ public class prescribirReceta extends JDialog {
     private List<MedicamentoDetalle> listaDetalles = new ArrayList<>();
     private MedicamentosRecetaTableModel tableModel;
 
-    public prescribirReceta() {
+    private prescribirRecetaModel model;
+    private prescribirRecetaController controller;
+
+
+    public prescribirReceta(JFrame parent, prescribirRecetaModel model, prescribirRecetaController controller) {
         super((JFrame) null, "Prescribir Receta", true);
+        this.model = model;
+        this.controller = controller;
+
         setContentPane(main);
         setSize(800, 500);
         setResizable(false);
@@ -118,26 +126,41 @@ public class prescribirReceta extends JDialog {
             }
         });
 
-        guardarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (pacienteSeleccionado != null && !listaDetalles.isEmpty()) {
+        guardarButton.addActionListener(e -> {
+            if (pacienteSeleccionado != null && !listaDetalles.isEmpty()) {
+                try {
+                    // Crear la receta
+                    Receta receta = new Receta();
+                    receta.setPaciente(pacienteSeleccionado);
+                    receta.setMedicamentos(new ArrayList<>(listaDetalles));
+
+                    // Llamar al controller para guardarla
+                    controller.create(receta);
+
                     JOptionPane.showMessageDialog(main,
                             "Receta guardada para: " + pacienteSeleccionado.getNombre() +
                                     "\nCantidad de medicamentos: " + listaDetalles.size(),
                             "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    String mensaje = "Complete los siguientes campos:\n";
-                    if (pacienteSeleccionado == null) {
-                        mensaje += "- Seleccione un paciente\n";
-                    }
-                    if (listaDetalles.isEmpty()) {
-                        mensaje += "- Agregue al menos un medicamento\n";
-                    }
-                    JOptionPane.showMessageDialog(main, mensaje, "Advertencia", JOptionPane.WARNING_MESSAGE);
+
+                    // Limpiar UI
+                    pacienteSeleccionado = null;
+                    paciente.setText("Paciente");
+                    listaDetalles.clear();
+                    actualizarTabla();
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(main,
+                            "Error al guardar la receta: " + ex.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
                 }
+            } else {
+                String mensaje = "Complete los siguientes campos:\n";
+                if (pacienteSeleccionado == null) mensaje += "- Seleccione un paciente\n";
+                if (listaDetalles.isEmpty()) mensaje += "- Agregue al menos un medicamento\n";
+                JOptionPane.showMessageDialog(main, mensaje, "Advertencia", JOptionPane.WARNING_MESSAGE);
             }
         });
+
 
         limpiarButton.addActionListener(new ActionListener() {
             @Override
@@ -190,7 +213,10 @@ public class prescribirReceta extends JDialog {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            prescribirReceta dialog = new prescribirReceta();
+            prescribirRecetaModel model = new prescribirRecetaModel();
+            prescribirRecetaController controller = new prescribirRecetaController(model);
+
+            prescribirReceta dialog = new prescribirReceta(null, model, controller);
             dialog.setVisible(true);
         });
     }

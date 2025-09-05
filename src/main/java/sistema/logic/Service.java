@@ -11,6 +11,9 @@ public class Service {
     private static Service theInstance;
     private data data;
 
+    private int recetaCounter = 1;
+
+
     private Service() {
         data = new data();
     }
@@ -124,6 +127,10 @@ public class Service {
 
     // Recetas
     public void createReceta(Receta r) throws Exception {
+        if (r.getId() == null || r.getId().isEmpty()) {
+            r.setId("R" + recetaCounter++); // Ej: R1, R2, R3...
+        }
+
         Receta result = data.getRecetas().stream()
                 .filter(rec -> rec.getId().equals(r.getId()))
                 .findFirst()
@@ -131,6 +138,7 @@ public class Service {
         if (result == null) data.getRecetas().add(r);
         else throw new Exception("Receta ya existe");
     }
+
 
     public Receta readReceta(Receta r) throws Exception {
         Receta result = data.getRecetas().stream()
@@ -140,6 +148,24 @@ public class Service {
         if (result != null) return result;
         else throw new Exception("Receta no existe");
     }
+
+    public Receta readRecetaById(String id) throws Exception {
+        Receta temp = new Receta();
+        temp.setId(id);
+        return this.readReceta(temp);
+    }
+
+    // Buscar receta por ID directamente
+    public Receta findRecetaById(String id) throws Exception {
+        Receta result = data.getRecetas().stream()
+                .filter(r -> r.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+        if (result != null) return result;
+        else throw new Exception("Receta no existe");
+    }
+
+
 
     public void updateReceta(Receta r) throws Exception {
         Receta existente = data.getRecetas().stream()

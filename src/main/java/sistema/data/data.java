@@ -78,7 +78,24 @@ public class    data {
         medicamentos.add(med1);
         medicamentos.add(med2);
 
+        MedicamentoDetalle det1 = new MedicamentoDetalle(med1, 2, "Tomar 2 veces al día", 5);
+        MedicamentoDetalle det2 = new MedicamentoDetalle(med2, 1, "Tomar después de comida", 7);
 
+// Crear recetas de prueba
+        Receta r1 = new Receta(medicos.get(0), pacientes.get(0));
+        r1.setId("R001");
+        r1.agregarMedicamento(det1);
+        r1.agregarMedicamento(det2);
+        r1.setEstado("CONFECCIONADA");
+
+        Receta r2 = new Receta(medicos.get(1), pacientes.get(1));
+        r2.setId("R002");
+        r2.agregarMedicamento(det2);
+        r2.setEstado("DESPACHADA");
+
+// Agregar recetas al listado
+        recetas.add(r1);
+        recetas.add(r2);
 
 
         usuarios.add(m1); // ya tiene depMedico
