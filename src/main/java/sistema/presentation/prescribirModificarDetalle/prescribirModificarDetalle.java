@@ -1,31 +1,85 @@
 package sistema.presentation.prescribirModificarDetalle;
 
+import sistema.logic.entities.Medicamento;
+import sistema.logic.entities.MedicamentoDetalle;
+
 import javax.swing.*;
+import java.awt.*;
 
 public class prescribirModificarDetalle extends JDialog {
+
     private JButton guardarButton;
     private JButton cancelarButton;
-    private JTextField textField1;
-    private JSpinner spinner1;
-    private JSpinner spinner2;
+    private JTextField indicaciones;
+    private JSpinner cantidad;
+    private JSpinner dias;
     private JPanel main;
+    private JLabel medicamento;
 
-    public prescribirModificarDetalle(JFrame parent) {
-        super(parent);
-        setTitle("Prescribir Modificar Detalle");
+    private Medicamento medicamentoSeleccionado;
+    private boolean guardado = false;
+
+    public prescribirModificarDetalle(Window parent, Medicamento medicamento) {
+        super(parent, "Modificar Detalle", ModalityType.APPLICATION_MODAL);
+        this.medicamentoSeleccionado = medicamento;
+
         setContentPane(main);
-        setSize(550,310);
-        setModal(true);
+        setSize(550, 310);
         setResizable(false);
         setLocationRelativeTo(parent);
-        setDefaultCloseOperation( DISPOSE_ON_CLOSE);
-        setVisible(true);
-    }
-    public JPanel getPanel() {
-        return main;
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        // Mostrar nombre del medicamento
+        if (medicamento != null) {
+            this.medicamento.setText(medicamento.getNombre());
+        }
+
+        // Guardar
+        guardarButton.addActionListener(e -> {
+            guardado = true;
+            dispose();
+        });
+
+        // Cancelar
+        cancelarButton.addActionListener(e -> dispose());
     }
 
-    public static void main(String[] args) {
-        prescribirModificarDetalle prescribirModificarDetalle= new prescribirModificarDetalle(null);
+    public boolean isGuardado() {
+        return guardado;
+    }
+
+    public MedicamentoDetalle take() {
+        return new MedicamentoDetalle(
+                medicamentoSeleccionado,
+                (Integer) cantidad.getValue(),
+                indicaciones.getText(),
+                (Integer) dias.getValue()
+        );
+    }
+
+    // GETTERS
+    public int getCantidad() {
+        return (Integer) cantidad.getValue();
+    }
+
+    public int getDias() {
+        return (Integer) dias.getValue();
+    }
+
+    public String getIndicaciones() {
+        return indicaciones.getText();
+    }
+
+    // SETTERS
+    public void setCantidad(int cant) {
+        cantidad.setValue(cant);
+    }
+
+    public void setDias(int d) {
+        dias.setValue(d);
+    }
+
+    public void setIndicaciones(String ind) {
+        indicaciones.setText(ind);
     }
 }

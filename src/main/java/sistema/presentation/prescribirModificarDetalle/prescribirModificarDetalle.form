@@ -68,7 +68,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="e4d25" class="javax.swing.JLabel">
+          <component id="e4d25" class="javax.swing.JLabel" binding="medicamento">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -135,7 +135,7 @@
               <text value="Indicaciones"/>
             </properties>
           </component>
-          <component id="6945d" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+          <component id="6945d" class="javax.swing.JTextField" binding="indicaciones">
             <constraints>
               <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -143,13 +143,13 @@
             </constraints>
             <properties/>
           </component>
-          <component id="9b5ec" class="javax.swing.JSpinner" binding="spinner1" default-binding="true">
+          <component id="9b5ec" class="javax.swing.JSpinner" binding="cantidad">
             <constraints>
               <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
           </component>
-          <component id="b4dcb" class="javax.swing.JSpinner" binding="spinner2" default-binding="true">
+          <component id="b4dcb" class="javax.swing.JSpinner" binding="dias">
             <constraints>
               <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>

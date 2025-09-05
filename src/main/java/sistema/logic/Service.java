@@ -104,6 +104,13 @@ public class Service {
         else throw new Exception("Medicamento no existe");
     }
 
+    public List<Medicamento> searchMedicamentoByName(String name) {
+        return data.getMedicamentos().stream()
+                .filter(m -> m.getNombre().toLowerCase().contains(name.toLowerCase()))
+                .sorted(Comparator.comparing(Medicamento::getNombre))
+                .collect(Collectors.toList());
+    }
+
     public List<Medicamento> findAllMedicamentos() {
         return data.getMedicamentos();
     }
@@ -194,6 +201,14 @@ public class Service {
                 .sorted(java.util.Comparator.comparing(Paciente::getNombre))
                 .collect(java.util.stream.Collectors.toList());
     }
+
+    public List<Paciente> searchPacienteById(String id) {
+        return data.getPacientes().stream()
+                .filter(p -> p.getId().toLowerCase().contains(id.toLowerCase()))
+                .sorted(Comparator.comparing(Paciente::getId))
+                .collect(Collectors.toList());
+    }
+
 
     //Usuario
 

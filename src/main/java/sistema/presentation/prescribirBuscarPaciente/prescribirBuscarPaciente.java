@@ -1,42 +1,109 @@
 package sistema.presentation.prescribirBuscarPaciente;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
+import sistema.logic.Service;
+import sistema.logic.entities.Paciente;
+import sistema.presentation.tableModels.PacientesTableModel;
 
-public class prescribirBuscarPaciente extends JDialog {
-    private JComboBox comboBox1;
-    private JTextField textField1;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Collections;
+import java.util.List;
+
+public class prescribirBuscarPaciente extends JDialog implements PropertyChangeListener {
+
+    private JPanel main;
+    private JComboBox<String> buscarComboBox;
+    private JTextField buscarFld;
     private JTable miTabla;
     private JButton okButton;
     private JButton cancelarButton;
-    private JPanel main;
 
-    public prescribirBuscarPaciente(JFrame parent) {
-        super(parent);
-        setTitle("Prescribir Buscar Paciente");
+    private prescribirBuscarPacienteController controller;
+    private prescribirBuscarPacienteModel model;
+    private PacientesTableModel tableModel;
+
+    public prescribirBuscarPaciente(Window parent) {
+        super(parent, "Buscar Paciente", ModalityType.APPLICATION_MODAL);
         setContentPane(main);
-        setSize(650,450);
-        setModal(true);
+        setSize(650, 450);
         setResizable(false);
         setLocationRelativeTo(parent);
-        setDefaultCloseOperation( DISPOSE_ON_CLOSE);
-        setVisible(true);
-    }
-    public JPanel getPanel() {
-        return main;
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = miTabla.getSelectedRow();
+                if (row >= 0 && controller != null) {
+                    String id = (String) miTabla.getValueAt(row, 0);
+                    controller.seleccionarPaciente(id);
+                    dispose();
+                }
+            }
+        });
+
+        cancelarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+
+        // Búsqueda en tiempo real
+        buscarFld.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) { filtrar(); }
+            @Override
+            public void removeUpdate(DocumentEvent e) { filtrar(); }
+            @Override
+            public void changedUpdate(DocumentEvent e) { filtrar(); }
+
+            private void filtrar() {
+                if (controller != null) {
+                    String criterio = (String) buscarComboBox.getSelectedItem();
+                    String valor = buscarFld.getText().trim();
+                    controller.search(criterio, valor);
+                }
+            }
+        });
+
+        miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
-    public static void main(String[] args) {
-        prescribirBuscarPaciente prescribirBuscarPaciente= new prescribirBuscarPaciente(null);
+    public void setController(prescribirBuscarPacienteController controller) {
+        this.controller = controller;
+    }
+
+    public void setModel(prescribirBuscarPacienteModel model) {
+        this.model = model;
+        model.addPropertyChangeListener(this);
+
+        tableModel = new PacientesTableModel(
+                new int[]{PacientesTableModel.ID, PacientesTableModel.NOMBRE,
+                        PacientesTableModel.FECHA, PacientesTableModel.TELEFONO},
+                model.getList() != null ? model.getList() : Collections.emptyList()
+        );
+        miTabla.setModel(tableModel);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(prescribirBuscarPacienteModel.LIST)) {
+            int[] cols = {PacientesTableModel.ID, PacientesTableModel.NOMBRE,
+                    PacientesTableModel.FECHA, PacientesTableModel.TELEFONO};
+            miTabla.setModel(new PacientesTableModel(cols, model.getList()));
+        }
+        main.revalidate();
     }
 
     private void createUIComponents() {
         miTabla = new JTable();
-        DefaultTableModel modelo = new DefaultTableModel();
-        modelo.addColumn("ID");
-        modelo.addColumn("Nombre");
-        modelo.addColumn("Telefono");
-        modelo.addColumn("Fec. Nac.");
-        miTabla.setModel(modelo);
+        miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 }

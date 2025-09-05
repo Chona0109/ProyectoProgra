@@ -73,8 +73,8 @@ public class    data {
         pacientes.add(p1);
         pacientes.add(p2);
 
-        Medicamento med1 = new Medicamento("001","Acetaminofen", "500");
-        Medicamento med2 = new Medicamento("002","Acetaminofen","100mg");
+        Medicamento med1 = new Medicamento("111","Acetaminofen", "500");
+        Medicamento med2 = new Medicamento("222","Panadol","100mg");
         medicamentos.add(med1);
         medicamentos.add(med2);
 
