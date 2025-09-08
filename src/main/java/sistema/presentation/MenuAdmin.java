@@ -74,7 +74,7 @@ public class MenuAdmin extends JFrame {
         farmaceutasForm.setModel(farmaceutasModel);
         tabbedPane.addTab("Farmaceutas", farmaceutasForm.getPanel());
 
-        // PACIENTES ✅
+        // PACIENTES
         pacientesForm = new PacientesForm();
         pacientesModel = new PacienteModel();
         pacientesController = new PacienteController(pacientesForm, pacientesModel);
@@ -88,9 +88,9 @@ public class MenuAdmin extends JFrame {
         tabbedPane.addTab("Dashboard", panelDashboard);
 
 
-        // HISTÓRICO DE RECETAS
+
         historicoRecetasModel = new historicoRecetasModel();
-        historicoRecetasController = new historicoRecetasController(historicoRecetasModel); // si tu controller necesita parámetros, ajusta aquí
+        historicoRecetasController = new historicoRecetasController(historicoRecetasModel);
         historicoRecetas = new historicoRecetas(this, historicoRecetasModel, historicoRecetasController);
         tabbedPane.addTab("Histórico", historicoRecetas.getPanel());
 

@@ -1,38 +1,24 @@
 package sistema.logic.entities;
 
-import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlID;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@XmlRootElement(name = "receta")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Receta {
-
     @XmlID
-    @XmlElement
     private String id;
-
-    @XmlElement
     private Medico medico;
-
-    @XmlElement
     private Paciente paciente;
-
-    @XmlElementWrapper(name = "medicamentos")
-    @XmlElement(name = "medicamentoDetalle")
     private List<MedicamentoDetalle> medicamentos;
-
-    @XmlElement
     @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate fechaConfeccion;
-
-    @XmlElement
     @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate fechaRetiro;
-
-    @XmlElement
     private String estado;
 
     public Receta() {
@@ -48,7 +34,6 @@ public class Receta {
         this.paciente = paciente;
     }
 
-    // Getters y Setters (mantener los existentes)
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
     public Medico getMedico() { return medico; }

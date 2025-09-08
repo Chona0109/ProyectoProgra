@@ -1,8 +1,8 @@
 package sistema.logic.entities;
 
-import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
-@XmlRootElement(name = "administrador")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Administrador extends Usuario {
 

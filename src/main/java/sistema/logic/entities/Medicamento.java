@@ -1,19 +1,15 @@
 package sistema.logic.entities;
 
-import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlID;
 import java.util.Objects;
 
-@XmlRootElement(name = "medicamento")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Medicamento {
     @XmlID
-    @XmlElement
     private String codigo;
-
-    @XmlElement
     private String nombre;
-
-    @XmlElement
     private String presentacion;
 
     public Medicamento(String codigo, String nombre, String presentacion) {
@@ -28,7 +24,6 @@ public class Medicamento {
         this.nombre = "";
     }
 
-    // Getters y Setters (mantener los existentes)
     public String getCodigo() { return codigo; }
     public void setCodigo(String codigo) { this.codigo = codigo; }
     public String getNombre() { return nombre; }

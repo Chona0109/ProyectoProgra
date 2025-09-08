@@ -1,24 +1,18 @@
 package sistema.logic.entities;
 
-import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlID;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 
-@XmlRootElement(name = "paciente")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Paciente {
     @XmlID
-    @XmlElement
     private String id;
-
-    @XmlElement
     private String nombre;
-
-    @XmlElement
     @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate fechaNacimiento;
-
-    @XmlElement
     private String telefono;
 
     public Paciente(String id, String nombre, LocalDate fechaNacimiento, String telefono) {
@@ -35,7 +29,6 @@ public class Paciente {
         this.telefono = "";
     }
 
-    // Getters y Setters (mantener los existentes)
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
     public String getNombre() { return nombre; }

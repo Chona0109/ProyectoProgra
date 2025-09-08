@@ -130,12 +130,10 @@ public class prescribirReceta extends JDialog {
         guardarButton.addActionListener(e -> {
             if (pacienteSeleccionado != null && !listaDetalles.isEmpty()) {
                 try {
-                    // Crear la receta
                     Receta receta = new Receta();
                     receta.setPaciente(pacienteSeleccionado);
                     receta.setMedicamentos(new ArrayList<>(listaDetalles));
 
-                    // Llamar al controller para guardarla
                     controller.create(receta);
 
                     JOptionPane.showMessageDialog(main,
@@ -143,7 +141,6 @@ public class prescribirReceta extends JDialog {
                                     "\nCantidad de medicamentos: " + listaDetalles.size(),
                             "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
-                    // Limpiar UI
                     pacienteSeleccionado = null;
                     paciente.setText("Paciente");
                     listaDetalles.clear();

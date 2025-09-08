@@ -67,13 +67,12 @@ public class Application {
                 return;
         }
 
-        // Configurar el cierre de la aplicación para guardar datos automáticamente
         if (mainMenu != null) {
             final JFrame menu = mainMenu;
             menu.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    Service.instance().guardarManualmente();
+                    Service.instance().stop();
                     System.exit(0);
                 }
             });
@@ -83,7 +82,6 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        // Configurar Look and Feel
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {

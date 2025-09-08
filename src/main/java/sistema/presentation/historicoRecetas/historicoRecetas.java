@@ -107,20 +107,40 @@ public class historicoRecetas extends JDialog {
         if (receta == null) return;
 
         JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
-        panel.add(new JLabel("ID: " + receta.getId()));
-        panel.add(new JLabel("Estado: " + receta.getEstado()));
-        panel.add(new JLabel("Fecha Confección: " + receta.getFechaConfeccion()));
-        panel.add(new JLabel("Fecha Retiro: " + receta.getFechaRetiro()));
+        panel.add(new JLabel("ID: " + (receta.getId() != null ? receta.getId() : "Sin ID")));
+        panel.add(new JLabel("Estado: " + (receta.getEstado() != null ? receta.getEstado() : "Sin estado")));
+        panel.add(new JLabel("Fecha Confección: " + (receta.getFechaConfeccion() != null ? receta.getFechaConfeccion() : "Sin fecha")));
+        panel.add(new JLabel("Fecha Retiro: " + (receta.getFechaRetiro() != null ? receta.getFechaRetiro() : "Sin fecha")));
         panel.add(new JLabel("Paciente: " + (receta.getPaciente() != null ? receta.getPaciente().getNombre() : "Sin paciente")));
         panel.add(new JLabel("Médico: " + (receta.getMedico() != null ? receta.getMedico().getNombre() : "Sin médico")));
-        panel.add(new JLabel("Cantidad de Medicamentos: " + receta.getMedicamentos().size()));
 
-        // Mostrar medicamentos de manera sencilla
-        for (MedicamentoDetalle detalle : receta.getMedicamentos()) {
-            panel.add(new JLabel(" - " + detalle.getMedicamento().getNombre() +
-                    ", Cantidad: " + detalle.getCantidad() +
-                    ", Indicaciones: " + detalle.getIndicaciones() +
-                    ", Días: " + detalle.getDias()));
+        if (receta.getMedicamentos() != null && !receta.getMedicamentos().isEmpty()) {
+            panel.add(new JLabel("Cantidad de Medicamentos: " + receta.getMedicamentos().size()));
+
+            // Mostrar medicamentos con validación de null
+            for (int i = 0; i < receta.getMedicamentos().size(); i++) {
+                MedicamentoDetalle detalle = receta.getMedicamentos().get(i);
+                if (detalle != null) {
+                    String medicamentoInfo = " - ";
+
+                    if (detalle.getMedicamento() != null) {
+                        medicamentoInfo += detalle.getMedicamento().getNombre();
+                    } else {
+                        medicamentoInfo += "Medicamento no disponible";
+                    }
+
+                    medicamentoInfo += ", Cantidad: " + detalle.getCantidad();
+                    medicamentoInfo += ", Indicaciones: " + (detalle.getIndicaciones() != null ? detalle.getIndicaciones() : "Sin indicaciones");
+                    medicamentoInfo += ", Días: " + detalle.getDias();
+
+                    panel.add(new JLabel(medicamentoInfo));
+                } else {
+                    panel.add(new JLabel(" - Detalle de medicamento no disponible"));
+                }
+            }
+        } else {
+            panel.add(new JLabel("Cantidad de Medicamentos: 0"));
+            panel.add(new JLabel("No hay medicamentos registrados"));
         }
 
         JOptionPane.showMessageDialog(this, panel, "Detalles de Receta", JOptionPane.INFORMATION_MESSAGE);
