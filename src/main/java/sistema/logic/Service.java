@@ -156,6 +156,17 @@ public class Service {
         }
     }
 
+    public List<Receta> searchRecetaById(String id) {
+        if (id == null || id.isEmpty()) {
+            return findAllRecetas();
+        }
+        return data.getRecetas().stream()
+                .filter(r -> r.getId() != null &&
+                        r.getId().toLowerCase().contains(id.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+
     public void updateReceta(Receta r) throws Exception {
         Receta existente = data.getRecetas().stream()
                 .filter(rec -> rec.getId().equals(r.getId()))
