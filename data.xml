@@ -75,6 +75,12 @@
             <fechaNacimiento>1990-05-15</fechaNacimiento>
             <telefono>555-9876</telefono>
         </paciente>
+        <paciente>
+            <id>999</id>
+            <nombre>Gabo</nombre>
+            <fechaNacimiento>2006-09-01</fechaNacimiento>
+            <telefono>555-6843</telefono>
+        </paciente>
     </pacientes>
     <departamentos>
         <departamento>
@@ -115,7 +121,7 @@
             </medicamentos>
             <fechaConfeccion>2025-09-08</fechaConfeccion>
             <fechaRetiro>2025-09-11</fechaRetiro>
-            <estado>CONFECCIONADA</estado>
+            <estado>PROCESO</estado>
         </receta>
         <receta>
             <id>R002</id>
@@ -205,7 +211,7 @@
             </medicamentos>
             <fechaConfeccion>2025-09-10</fechaConfeccion>
             <fechaRetiro>2025-09-13</fechaRetiro>
-            <estado>EN_PROCESO</estado>
+            <estado>ENTREGADA</estado>
         </receta>
         <receta>
             <id>R3</id>
@@ -237,7 +243,7 @@
             </medicamentos>
             <fechaConfeccion>2025-09-10</fechaConfeccion>
             <fechaRetiro>2025-09-13</fechaRetiro>
-            <estado>EN_PROCESO</estado>
+            <estado>LISTA</estado>
         </receta>
         <receta>
             <id>R4</id>
@@ -270,6 +276,102 @@
             <fechaConfeccion>2025-09-10</fechaConfeccion>
             <fechaRetiro>2025-09-13</fechaRetiro>
             <estado>LISTA</estado>
+        </receta>
+        <receta>
+            <id>R5</id>
+            <medico>
+                <id>111</id>
+                <nombre>Juan Perez</nombre>
+                <clave>111</clave>
+                <departamento>
+                    <codigo>002</codigo>
+                    <nombre>Medico</nombre>
+                </departamento>
+                <especialidad>Cardiología</especialidad>
+            </medico>
+            <paciente>
+                <id>999</id>
+                <nombre>Gabo</nombre>
+                <fechaNacimiento>2006-09-01</fechaNacimiento>
+                <telefono>555-6843</telefono>
+            </paciente>
+            <medicamentos>
+                <medicamento>
+                    <codigo>333</codigo>
+                    <nombre>Viagra</nombre>
+                    <presentacion>50mg</presentacion>
+                </medicamento>
+                <cantidad>20</cantidad>
+                <indicaciones>vada q la ocupe</indicaciones>
+                <dias>30</dias>
+            </medicamentos>
+            <fechaConfeccion>2025-09-11</fechaConfeccion>
+            <fechaRetiro>2025-09-14</fechaRetiro>
+            <estado>EN_PROCESO</estado>
+        </receta>
+        <receta>
+            <id>R6</id>
+            <medico>
+                <id>111</id>
+                <nombre>Juan Perez</nombre>
+                <clave>111</clave>
+                <departamento>
+                    <codigo>002</codigo>
+                    <nombre>Medico</nombre>
+                </departamento>
+                <especialidad>Cardiología</especialidad>
+            </medico>
+            <paciente>
+                <id>999</id>
+                <nombre>Gabo</nombre>
+                <fechaNacimiento>2006-09-01</fechaNacimiento>
+                <telefono>555-6843</telefono>
+            </paciente>
+            <medicamentos>
+                <medicamento>
+                    <codigo>222</codigo>
+                    <nombre>Panadol</nombre>
+                    <presentacion>100mg</presentacion>
+                </medicamento>
+                <cantidad>20</cantidad>
+                <indicaciones>papis papis</indicaciones>
+                <dias>20</dias>
+            </medicamentos>
+            <fechaConfeccion>2025-09-11</fechaConfeccion>
+            <fechaRetiro>2025-09-14</fechaRetiro>
+            <estado>PROCESO</estado>
+        </receta>
+        <receta>
+            <id>R7</id>
+            <medico>
+                <id>111</id>
+                <nombre>Juan Perez</nombre>
+                <clave>111</clave>
+                <departamento>
+                    <codigo>002</codigo>
+                    <nombre>Medico</nombre>
+                </departamento>
+                <especialidad>Cardiología</especialidad>
+            </medico>
+            <paciente>
+                <id>777</id>
+                <nombre>Pedro Martinez</nombre>
+                <fechaNacimiento>1980-01-01</fechaNacimiento>
+                <telefono>555-6789</telefono>
+            </paciente>
+            <medicamentos>
+                <medicamento>
+                    <codigo>111</codigo>
+                    <nombre>Acetaminofen</nombre>
+                    <presentacion>500</presentacion>
+                </medicamento>
+                <cantidad>40</cantidad>
+                <indicaciones>b</indicaciones>
+                <dias>20</dias>
+            </medicamentos>
+            <fechaConfeccion>2025-09-11</fechaConfeccion>
+            <fechaRetiro>2025-09-14</fechaRetiro>
+            <estado>CONFECCIONADA</estado>
         </receta>
     </recetas>
     <medicamentos>

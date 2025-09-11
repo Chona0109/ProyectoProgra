@@ -3,6 +3,8 @@ package sistema.logic;
 import sistema.data.data;
 import sistema.data.XmlPersister;
 import sistema.logic.entities.*;
+import sistema.presentation.prescribirModificarDetalle.prescribirModificarDetalle;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -133,27 +135,51 @@ public class Service {
     }
 
     // =============== RECETAS ===============
+    private String generarIdUnico() {
+        int max = data.getRecetas().stream()
+                .mapToInt(r -> {
+                    try {
+                        return Integer.parseInt(r.getId().replace("R", ""));
+                    } catch (Exception e) {
+                        return 0;
+                    }
+                })
+                .max()
+                .orElse(0);
+        return "R" + (max + 1);
+    }
+
+    private boolean recetaYaExiste(Receta r) {
+        return data.getRecetas().stream().anyMatch(existing ->
+                existing.getPaciente().getId().equals(r.getPaciente().getId()) &&
+                        existing.getMedico().getId().equals(r.getMedico().getId()) &&
+                        existing.getFechaConfeccion().equals(r.getFechaConfeccion()) &&
+                        existing.getMedicamentos().equals(r.getMedicamentos())
+        );
+    }
+
+
+
     public void createReceta(Receta r) throws Exception {
         if (r.getMedico() == null) {
             Usuario usuarioLogueado = Sesion.getUsuario();
             if (usuarioLogueado instanceof Medico) {
                 r.setMedico((Medico) usuarioLogueado);
+            } else {
+                throw new Exception("Usuario no autorizado o médico no asignado");
             }
         }
 
-        if (r.getId() == null || r.getId().isEmpty()) {
-            r.setId("R" + recetaCounter++);
+        if (recetaYaExiste(r)) {
+            throw new Exception("Ya existe una receta idéntica para este paciente, médico y fecha");
         }
 
-        Receta result = data.getRecetas().stream()
-                .filter(rec -> rec.getId().equals(r.getId()))
-                .findFirst()
-                .orElse(null);
-        if (result == null) {
-            data.getRecetas().add(r);
-        } else {
-            throw new Exception("Receta ya existe");
+        if (r.getId() == null || r.getId().isEmpty()) {
+            r.setId(generarIdUnico());
         }
+
+        data.getRecetas().add(r);
+        XmlPersister.instance().store(data);
     }
 
     public List<Receta> searchRecetaById(String id) {
@@ -204,11 +230,66 @@ public class Service {
         else throw new Exception("Receta no existe");
     }
 
-    public Receta readRecetaById(String id) throws Exception {
-        Receta temp = new Receta();
-        temp.setId(id);
-        return this.readReceta(temp);
+    public String generarDetallesReceta(Receta receta) {
+        if (receta == null) return "Receta no disponible";
+
+        StringBuilder detalles = new StringBuilder();
+        detalles.append("ID: ").append(getValue(receta.getId(), "Sin ID")).append("\n");
+        detalles.append("Estado: ").append(getValue(receta.getEstado(), "Sin estado")).append("\n");
+        detalles.append("Fecha Confección: ").append(getValue(receta.getFechaConfeccion(), "Sin fecha")).append("\n");
+        detalles.append("Fecha Retiro: ").append(getValue(receta.getFechaRetiro(), "Sin fecha")).append("\n");
+        detalles.append("Paciente: ").append(getValue(receta.getPaciente() != null ? receta.getPaciente().getNombre() : null, "Sin paciente")).append("\n");
+        detalles.append("ID Paciente: ").append(getValue(receta.getPaciente() != null ? receta.getPaciente().getId() : null, "Sin ID")).append("\n");
+        detalles.append("Médico: ").append(getValue(receta.getMedico() != null ? receta.getMedico().getNombre() : null, "Sin médico")).append("\n");
+
+        if (receta.getMedicamentos() != null && !receta.getMedicamentos().isEmpty()) {
+            detalles.append("Cantidad de Medicamentos: ").append(receta.getMedicamentos().size()).append("\n");
+
+            for (MedicamentoDetalle detalle : receta.getMedicamentos()) {
+                if (detalle != null) {
+                    detalles.append(" - ");
+                    detalles.append(detalle.getMedicamento() != null ? detalle.getMedicamento().getNombre() : "Medicamento no disponible");
+                    detalles.append(", Cantidad: ").append(detalle.getCantidad());
+                    detalles.append(", Indicaciones: ").append(getValue(detalle.getIndicaciones(), "Sin indicaciones"));
+                    detalles.append(", Días: ").append(detalle.getDias());
+                    detalles.append("\n");
+                } else {
+                    detalles.append(" - Detalle de medicamento no disponible\n");
+                }
+            }
+        } else {
+            detalles.append("Cantidad de Medicamentos: 0\n");
+            detalles.append("No hay medicamentos registrados\n");
+        }
+
+        return detalles.toString();
     }
+
+    private String getValue(Object value, String defaultValue) {
+        return value != null ? value.toString() : defaultValue;
+    }
+
+    public void avanzarEstado(Receta receta) throws Exception {
+        if (receta == null) throw new Exception("Receta inválida");
+
+        switch (receta.getEstado()) {
+            case "CONFECCIONADA":
+                receta.setEstado("PROCESO");
+                break;
+            case "PROCESO":
+                receta.setEstado("LISTA");
+                break;
+            case "LISTA":
+                receta.setEstado("ENTREGADA");
+                break;
+            default:
+                throw new Exception("No se puede avanzar más el estado desde: " + receta.getEstado());
+        }
+
+        XmlPersister.instance().store(data);
+    }
+
+
 
     public Receta findRecetaById(String id) throws Exception {
         Receta result = data.getRecetas().stream()
@@ -248,6 +329,31 @@ public class Service {
             throw new Exception("Índice de medicamento inválido");
         }
     }
+
+    public Receta modificarDetalleMedicamento(Receta receta, int row) throws Exception {
+        if (receta == null || receta.getMedicamentos() == null || row < 0 || row >= receta.getMedicamentos().size()) {
+            throw new Exception("Índice inválido para modificar detalle");
+        }
+
+        MedicamentoDetalle detalle = receta.getMedicamentos().get(row);
+
+        prescribirModificarDetalle detalleDialog = new prescribirModificarDetalle(null, detalle.getMedicamento());
+
+        detalleDialog.setCantidad(detalle.getCantidad());
+        detalleDialog.setDias(detalle.getDias());
+        detalleDialog.setIndicaciones(detalle.getIndicaciones());
+
+        detalleDialog.setVisible(true);
+
+        if (detalleDialog.isGuardado()) {
+            detalle.setCantidad(detalleDialog.getCantidad());
+            detalle.setDias(detalleDialog.getDias());
+            detalle.setIndicaciones(detalleDialog.getIndicaciones());
+        }
+
+        return receta;
+    }
+
 
     // =============== FARMACÉUTICOS ===============
     public void create(Farmaceutico f) throws Exception {

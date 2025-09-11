@@ -48,13 +48,8 @@ public class historicoRecetasModel {
         propertyChangeSupport.firePropertyChange(CURRENT, null, this.current);
     }
 
-    // Devuelve la lista actual para la tabla
     public List<Receta> getCurrentList() {
-        if (current != null) {
-            List<Receta> tmp = new ArrayList<>();
-            tmp.add(current);
-            return tmp;
-        }
-        return list;
+        return list != null ? list : new ArrayList<>();
     }
+
 }

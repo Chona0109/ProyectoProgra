@@ -47,13 +47,6 @@ public class prescribirReceta extends JDialog implements PropertyChangeListener 
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        setupEventListeners();
-
-        // Configurar el modelo para recibir notificaciones
-        model.addPropertyChangeListener(this);
-    }
-
-    private void setupEventListeners() {
         buscarPacienteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -105,30 +98,11 @@ public class prescribirReceta extends JDialog implements PropertyChangeListener 
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = miTabla.getSelectedRow();
-                Receta currentReceta = model.getCurrent();
-
-                if (row >= 0 && currentReceta.getMedicamentos() != null && row < currentReceta.getMedicamentos().size()) {
-                    MedicamentoDetalle detalle = currentReceta.getMedicamentos().get(row);
-
-                    prescribirModificarDetalle detalleDialog = new prescribirModificarDetalle(prescribirReceta.this, detalle.getMedicamento());
-
-                    detalleDialog.setCantidad(detalle.getCantidad());
-                    detalleDialog.setDias(detalle.getDias());
-                    detalleDialog.setIndicaciones(detalle.getIndicaciones());
-
-                    detalleDialog.setVisible(true);
-
-                    if (detalleDialog.isGuardado()) {
-                        detalle.setCantidad(detalleDialog.getCantidad());
-                        detalle.setDias(detalleDialog.getDias());
-                        detalle.setIndicaciones(detalleDialog.getIndicaciones());
-                        model.setCurrent(currentReceta); // Notifica el cambio
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(main, "Seleccione un medicamento para ver/modificar detalles", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                }
+                controller.modificarDetalleMedicamento(row);
             }
         });
+
+
 
         guardarButton.addActionListener(new ActionListener() {
             @Override
@@ -157,6 +131,8 @@ public class prescribirReceta extends JDialog implements PropertyChangeListener 
                 controller.clear();
             }
         });
+
+        model.addPropertyChangeListener(this);
     }
 
     @Override

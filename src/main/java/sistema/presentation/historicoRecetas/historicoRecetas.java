@@ -1,13 +1,11 @@
 package sistema.presentation.historicoRecetas;
 
-import sistema.logic.entities.MedicamentoDetalle;
 import sistema.logic.entities.Receta;
 import sistema.presentation.tableModels.HistoricoRecetasTableModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -31,26 +29,29 @@ public class historicoRecetas extends JDialog implements PropertyChangeListener 
         this.controller = controller;
 
         setContentPane(main);
-        setSize(1000, 600); // Aumentado para mostrar más columnas
+        setSize(1000, 600);
         setResizable(false);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        setupEventListeners();
 
-        model.addPropertyChangeListener(this);
+        verTodasButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                idFld.setText("");
+                try {
+                    controller.refresh();
+                    miTabla.clearSelection();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(historicoRecetas.this,
+                            "Error al cargar todas las recetas: " + ex.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
 
-        try {
-            controller.refresh();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(main, "Error al cargar recetas: " + e.getMessage());
-        }
-    }
-
-    private void setupEventListeners() {
-        // Búsqueda en tiempo real mientras escribes
-        idFld.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
+        idFld.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent evt) {
                 String id = idFld.getText().trim();
                 controller.buscarPorId(id);
             }
@@ -64,31 +65,23 @@ public class historicoRecetas extends JDialog implements PropertyChangeListener 
             }
         });
 
-        verTodasButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                idFld.setText(""); // Limpiar campo de búsqueda
-                controller.refresh();
-            }
-        });
-
         verDetallesButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = miTabla.getSelectedRow();
                 List<Receta> recetas = model.getCurrentList();
+
                 if (row >= 0 && row < recetas.size()) {
                     Receta receta = recetas.get(row);
                     showRecetaDetails(receta);
                 } else {
-                    JOptionPane.showMessageDialog(main,
+                    JOptionPane.showMessageDialog(historicoRecetas.this,
                             "Seleccione una receta para ver detalles",
                             "Advertencia", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
 
-        // Listener para selección de fila en la tabla
         miTabla.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 int row = miTabla.getSelectedRow();
@@ -98,6 +91,16 @@ public class historicoRecetas extends JDialog implements PropertyChangeListener 
                 }
             }
         });
+
+
+        model.addPropertyChangeListener(this);
+
+        try {
+            controller.refresh();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar recetas: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     @Override
@@ -107,7 +110,6 @@ public class historicoRecetas extends JDialog implements PropertyChangeListener 
                 actualizarTabla();
                 break;
             case historicoRecetasModel.CURRENT:
-                // Puedes agregar lógica adicional aquí si necesitas
                 break;
         }
         this.main.revalidate();
@@ -123,61 +125,30 @@ public class historicoRecetas extends JDialog implements PropertyChangeListener 
                 HistoricoRecetasTableModel.MEDICO
         };
 
-        List<Receta> recetas = new ArrayList<>();
-        if (model.getCurrentList() != null) {
-            recetas = model.getCurrentList();
-        }
-
+        List<Receta> recetas = model.getCurrentList() != null ? model.getCurrentList() : new ArrayList<>();
         HistoricoRecetasTableModel tableModel = new HistoricoRecetasTableModel(cols, recetas);
         miTabla.setModel(tableModel);
         miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
     private void showRecetaDetails(Receta receta) {
-        if (receta == null) return;
-
-        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
-        panel.add(new JLabel("ID: " + getValue(receta.getId(), "Sin ID")));
-        panel.add(new JLabel("Estado: " + getValue(receta.getEstado(), "Sin estado")));
-        panel.add(new JLabel("Fecha Confección: " + getValue(receta.getFechaConfeccion(), "Sin fecha")));
-        panel.add(new JLabel("Fecha Retiro: " + getValue(receta.getFechaRetiro(), "Sin fecha")));
-        panel.add(new JLabel("Paciente: " + getValue(receta.getPaciente() != null ? receta.getPaciente().getNombre() : null, "Sin paciente")));
-        panel.add(new JLabel("ID Paciente: " + getValue(receta.getPaciente() != null ? receta.getPaciente().getId() : null, "Sin ID")));
-        panel.add(new JLabel("Médico: " + getValue(receta.getMedico() != null ? receta.getMedico().getNombre() : null, "Sin médico")));
-
-        if (receta.getMedicamentos() != null && !receta.getMedicamentos().isEmpty()) {
-            panel.add(new JLabel("Cantidad de Medicamentos: " + receta.getMedicamentos().size()));
-
-            for (int i = 0; i < receta.getMedicamentos().size(); i++) {
-                MedicamentoDetalle detalle = receta.getMedicamentos().get(i);
-                if (detalle != null) {
-                    String medicamentoInfo = " - ";
-
-                    if (detalle.getMedicamento() != null) {
-                        medicamentoInfo += detalle.getMedicamento().getNombre();
-                    } else {
-                        medicamentoInfo += "Medicamento no disponible";
-                    }
-
-                    medicamentoInfo += ", Cantidad: " + detalle.getCantidad();
-                    medicamentoInfo += ", Indicaciones: " + getValue(detalle.getIndicaciones(), "Sin indicaciones");
-                    medicamentoInfo += ", Días: " + detalle.getDias();
-
-                    panel.add(new JLabel(medicamentoInfo));
-                } else {
-                    panel.add(new JLabel(" - Detalle de medicamento no disponible"));
-                }
-            }
-        } else {
-            panel.add(new JLabel("Cantidad de Medicamentos: 0"));
-            panel.add(new JLabel("No hay medicamentos registrados"));
+        if (receta == null) {
+            JOptionPane.showMessageDialog(this, "Receta no disponible", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
-        JOptionPane.showMessageDialog(this, panel, "Detalles de Receta", JOptionPane.INFORMATION_MESSAGE);
-    }
+        String detalles = controller.generarDetallesDe(receta);
 
-    private String getValue(Object value, String defaultValue) {
-        return value != null ? value.toString() : defaultValue;
+        JTextArea textArea = new JTextArea(detalles);
+        textArea.setEditable(false);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setCaretPosition(0);
+
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(500, 300));
+
+        JOptionPane.showMessageDialog(this, scrollPane, "Detalles de Receta", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void createUIComponents() {

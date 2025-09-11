@@ -5,6 +5,8 @@ import sistema.logic.entities.MedicamentoDetalle;
 import sistema.logic.entities.Paciente;
 import sistema.logic.entities.Receta;
 
+import javax.swing.*;
+
 public class prescribirRecetaController {
 
     private prescribirRecetaModel model;
@@ -72,4 +74,17 @@ public class prescribirRecetaController {
         Service.instance().removeMedicamentoFromReceta(recetaId, index);
         model.setCurrent(Service.instance().readReceta(new Receta(){{ setId(recetaId); }}));
     }
+    public void modificarDetalleMedicamento(int row) {
+        try {
+            Receta recetaActualizada = Service.instance().modificarDetalleMedicamento(model.getCurrent(), row);
+            if (recetaActualizada != null) {
+                model.setCurrent(recetaActualizada);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Error al modificar detalle: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
 }

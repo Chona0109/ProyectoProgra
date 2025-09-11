@@ -36,7 +36,6 @@ public class DespachoForm extends JDialog implements PropertyChangeListener {
 
         setupEventListeners();
 
-        // Configurar el modelo para recibir notificaciones
         model.addPropertyChangeListener(this);
     }
 
@@ -80,18 +79,24 @@ public class DespachoForm extends JDialog implements PropertyChangeListener {
                 if (row >= 0 && model.getList() != null && row < model.getList().size()) {
                     Receta receta = model.getList().get(row);
 
-                    String detalles = "Receta ID: " + receta.getId() + "\n" +
-                            "Paciente: " + (receta.getPaciente() != null ? receta.getPaciente().getNombre() : "N/A") + "\n" +
-                            "Médico: " + (receta.getMedico() != null ? receta.getMedico().getNombre() : "N/A") + "\n" +
-                            "Estado: " + receta.getEstado() + "\n" +
-                            "Medicamentos: " + (receta.getMedicamentos() != null ? receta.getMedicamentos().size() : 0);
+                    String detalles = controller.generarDetallesDe(receta);
 
-                    JOptionPane.showMessageDialog(DespachoForm.this, detalles, "Detalles de Receta", JOptionPane.INFORMATION_MESSAGE);
+                    JTextArea textArea = new JTextArea(detalles);
+                    textArea.setEditable(false);
+                    textArea.setLineWrap(true);
+                    textArea.setWrapStyleWord(true);
+                    textArea.setCaretPosition(0);
+
+                    JScrollPane scrollPane = new JScrollPane(textArea);
+                    scrollPane.setPreferredSize(new Dimension(500, 300));
+
+                    JOptionPane.showMessageDialog(DespachoForm.this, scrollPane, "Detalles de Receta", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(DespachoForm.this, "Seleccione una receta del historial", "Aviso", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
+
 
     }
 
@@ -127,18 +132,18 @@ public class DespachoForm extends JDialog implements PropertyChangeListener {
                 HistoricoRecetasTableModel.ID,
                 HistoricoRecetasTableModel.ESTADO,
                 HistoricoRecetasTableModel.FECHA,
-                HistoricoRecetasTableModel.PACIENTE
+                HistoricoRecetasTableModel.PACIENTE,
+                HistoricoRecetasTableModel.ID_PACIENTE,
+                HistoricoRecetasTableModel.MEDICO
         };
 
-        List<Receta> recetas = new ArrayList<>();
-        if (model.getList() != null) {
-            recetas = model.getList();
-        }
+        List<Receta> recetas = model.getList() != null ? model.getList() : new ArrayList<>();
 
         HistoricoRecetasTableModel tableModel = new HistoricoRecetasTableModel(cols, recetas);
         miTabla.setModel(tableModel);
         miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
+
 
     private Receta take() {
         return model.getCurrent();
