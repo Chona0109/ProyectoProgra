@@ -1,5 +1,8 @@
 package sistema.presentation;
 
+import sistema.presentation.historicoRecetas.historicoRecetas;
+import sistema.presentation.historicoRecetas.historicoRecetasController;
+import sistema.presentation.historicoRecetas.historicoRecetasModel;
 import sistema.presentation.medicamentos.MedicamentosForm.MedicamentosForm;
 import sistema.presentation.medicamentos.MedicamentosController;
 import sistema.presentation.medicamentos.MedicamentosModel;
@@ -7,6 +10,11 @@ import sistema.presentation.medicamentos.MedicamentosModel;
 import sistema.presentation.paciente.PacientesForm;
 import sistema.presentation.paciente.PacienteController;
 import sistema.presentation.paciente.PacienteModel;
+
+import sistema.presentation.Despacho.DespachoForm;
+import sistema.presentation.Despacho.DespachoController;
+import sistema.presentation.Despacho.DespachoModel;
+
 
 import javax.swing.*;
 
@@ -20,6 +28,14 @@ public class MenuFarmaceutico extends JFrame {
     private PacienteController pacientesController;
     private PacienteModel pacientesModel;
 
+    private DespachoForm despachoForm;
+    private DespachoController despachoController;
+    private DespachoModel despachoModel;
+
+    private historicoRecetasModel historicoRecetasModel;
+    private historicoRecetasController historicoRecetasController;
+    private historicoRecetas historicoRecetasForm;
+
     public MenuFarmaceutico() {
         setTitle("Farmacéutico - Sistema Recetas");
         setSize(900, 600);
@@ -28,7 +44,7 @@ public class MenuFarmaceutico extends JFrame {
 
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // MEDICAMENTOS
+
         medicamentosForm = new MedicamentosForm();
         medicamentosModel = new MedicamentosModel();
         medicamentosController = new MedicamentosController(medicamentosForm, medicamentosModel);
@@ -36,7 +52,7 @@ public class MenuFarmaceutico extends JFrame {
         medicamentosForm.setModel(medicamentosModel);
         tabbedPane.addTab("Medicamentos", medicamentosForm.getPanel());
 
-        // PACIENTES
+
         pacientesForm = new PacientesForm();
         pacientesModel = new PacienteModel();
         pacientesController = new PacienteController(pacientesForm, pacientesModel);
@@ -44,10 +60,22 @@ public class MenuFarmaceutico extends JFrame {
         pacientesForm.setModel(pacientesModel);
         tabbedPane.addTab("Pacientes", pacientesForm.getPanel());
 
-        // DASHBOARD (placeholder)
+
+        despachoModel = new DespachoModel();
+        despachoController = new DespachoController(despachoModel);
+        despachoForm = new DespachoForm(this, despachoModel, despachoController);
+        tabbedPane.addTab("Despacho", despachoForm.getPanel());
+
+
+        historicoRecetasModel = new historicoRecetasModel();
+        historicoRecetasController = new historicoRecetasController(historicoRecetasModel);
+        historicoRecetasForm = new historicoRecetas(this, historicoRecetasModel, historicoRecetasController);
+        tabbedPane.addTab("Histórico", historicoRecetasForm.getPanel());
+
         JPanel panelDashboard = new JPanel();
         panelDashboard.add(new JLabel("Indicadores y gráficos para farmacéuticos"));
         tabbedPane.addTab("Dashboard", panelDashboard);
+
 
         add(tabbedPane);
     }

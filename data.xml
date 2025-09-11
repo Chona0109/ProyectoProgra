@@ -175,6 +175,38 @@
             <fechaRetiro>2025-09-11</fechaRetiro>
             <estado>EN_PROCESO</estado>
         </receta>
+        <receta>
+            <id>R2</id>
+            <medico>
+                <id>111</id>
+                <nombre>Juan Perez</nombre>
+                <clave>111</clave>
+                <departamento>
+                    <codigo>002</codigo>
+                    <nombre>Medico</nombre>
+                </departamento>
+                <especialidad>Cardiología</especialidad>
+            </medico>
+            <paciente>
+                <id>777</id>
+                <nombre>Pedro Martinez</nombre>
+                <fechaNacimiento>1980-01-01</fechaNacimiento>
+                <telefono>555-6789</telefono>
+            </paciente>
+            <medicamentos>
+                <medicamento>
+                    <codigo>111</codigo>
+                    <nombre>Acetaminofen</nombre>
+                    <presentacion>500</presentacion>
+                </medicamento>
+                <cantidad>30</cantidad>
+                <indicaciones>Tomar Todos los Dias</indicaciones>
+                <dias>2</dias>
+            </medicamentos>
+            <fechaConfeccion>2025-09-10</fechaConfeccion>
+            <fechaRetiro>2025-09-13</fechaRetiro>
+            <estado>EN_PROCESO</estado>
+        </receta>
     </recetas>
     <medicamentos>
         <medicamento>
