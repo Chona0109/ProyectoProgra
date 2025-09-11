@@ -1,7 +1,6 @@
 package sistema.presentation.prescribirReceta;
 
 import sistema.logic.entities.MedicamentoDetalle;
-import sistema.logic.entities.Medicamento;
 import sistema.logic.entities.Paciente;
 import sistema.logic.entities.Receta;
 import sistema.presentation.prescribirBuscarPaciente.prescribirBuscarPaciente;
@@ -17,11 +16,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class prescribirReceta extends JDialog {
+public class prescribirReceta extends JDialog implements PropertyChangeListener {
 
     private JPanel main;
     private JButton buscarPacienteButton;
@@ -33,13 +33,8 @@ public class prescribirReceta extends JDialog {
     private JTable miTabla;
     private JLabel paciente;
 
-    private Paciente pacienteSeleccionado;
-    private List<MedicamentoDetalle> listaDetalles = new ArrayList<>();
-    private MedicamentosRecetaTableModel tableModel;
-
     private prescribirRecetaModel model;
     private prescribirRecetaController controller;
-
 
     public prescribirReceta(JFrame parent, prescribirRecetaModel model, prescribirRecetaController controller) {
         super((JFrame) null, "Prescribir Receta", true);
@@ -53,6 +48,9 @@ public class prescribirReceta extends JDialog {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         setupEventListeners();
+
+        // Configurar el modelo para recibir notificaciones
+        model.addPropertyChangeListener(this);
     }
 
     private void setupEventListeners() {
@@ -68,8 +66,9 @@ public class prescribirReceta extends JDialog {
                 dialog.setVisible(true);
 
                 if (pacienteModel.getCurrent() != null) {
-                    pacienteSeleccionado = pacienteModel.getCurrent();
-                    paciente.setText(pacienteSeleccionado.getNombre());
+                    Receta currentReceta = model.getCurrent();
+                    currentReceta.setPaciente(pacienteModel.getCurrent());
+                    model.setCurrent(currentReceta);
                 }
             }
         });
@@ -91,9 +90,11 @@ public class prescribirReceta extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = miTabla.getSelectedRow();
-                if (row >= 0 && row < listaDetalles.size()) {
-                    listaDetalles.remove(row);
-                    actualizarTabla();
+                Receta currentReceta = model.getCurrent();
+
+                if (row >= 0 && currentReceta.getMedicamentos() != null && row < currentReceta.getMedicamentos().size()) {
+                    currentReceta.getMedicamentos().remove(row);
+                    model.setCurrent(currentReceta);
                 } else {
                     JOptionPane.showMessageDialog(main, "Seleccione un medicamento para descartar", "Advertencia", JOptionPane.WARNING_MESSAGE);
                 }
@@ -104,8 +105,10 @@ public class prescribirReceta extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = miTabla.getSelectedRow();
-                if (row >= 0 && row < listaDetalles.size()) {
-                    MedicamentoDetalle detalle = listaDetalles.get(row);
+                Receta currentReceta = model.getCurrent();
+
+                if (row >= 0 && currentReceta.getMedicamentos() != null && row < currentReceta.getMedicamentos().size()) {
+                    MedicamentoDetalle detalle = currentReceta.getMedicamentos().get(row);
 
                     prescribirModificarDetalle detalleDialog = new prescribirModificarDetalle(prescribirReceta.this, detalle.getMedicamento());
 
@@ -119,7 +122,7 @@ public class prescribirReceta extends JDialog {
                         detalle.setCantidad(detalleDialog.getCantidad());
                         detalle.setDias(detalleDialog.getDias());
                         detalle.setIndicaciones(detalleDialog.getIndicaciones());
-                        actualizarTabla();
+                        model.setCurrent(currentReceta); // Notifica el cambio
                     }
                 } else {
                     JOptionPane.showMessageDialog(main, "Seleccione un medicamento para ver/modificar detalles", "Advertencia", JOptionPane.WARNING_MESSAGE);
@@ -127,54 +130,58 @@ public class prescribirReceta extends JDialog {
             }
         });
 
-        guardarButton.addActionListener(e -> {
-            if (pacienteSeleccionado != null && !listaDetalles.isEmpty()) {
-                try {
-                    Receta receta = new Receta();
-                    receta.setPaciente(pacienteSeleccionado);
-                    receta.setMedicamentos(new ArrayList<>(listaDetalles));
+        guardarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (validateForm()) {
+                    Receta receta = take();
+                    try {
+                        controller.create(receta);
 
-                    controller.create(receta);
-
-                    JOptionPane.showMessageDialog(main,
-                            "Receta guardada para: " + pacienteSeleccionado.getNombre() +
-                                    "\nCantidad de medicamentos: " + listaDetalles.size(),
-                            "Éxito", JOptionPane.INFORMATION_MESSAGE);
-
-                    pacienteSeleccionado = null;
-                    paciente.setText("Paciente");
-                    listaDetalles.clear();
-                    actualizarTabla();
-
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(main,
-                            "Error al guardar la receta: " + ex.getMessage(),
-                            "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(main,
+                                "Receta guardada para: " + receta.getPaciente().getNombre() +
+                                        "\nCantidad de medicamentos: " + receta.getMedicamentos().size(),
+                                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(main,
+                                "Error al guardar la receta: " + ex.getMessage(),
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
-            } else {
-                String mensaje = "Complete los siguientes campos:\n";
-                if (pacienteSeleccionado == null) mensaje += "- Seleccione un paciente\n";
-                if (listaDetalles.isEmpty()) mensaje += "- Agregue al menos un medicamento\n";
-                JOptionPane.showMessageDialog(main, mensaje, "Advertencia", JOptionPane.WARNING_MESSAGE);
             }
         });
-
 
         limpiarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                pacienteSeleccionado = null;
-                paciente.setText("Paciente");
-                listaDetalles.clear();
-                actualizarTabla();
+                controller.clear();
             }
         });
     }
 
-    public void agregarDetalle(MedicamentoDetalle detalle) {
-        if (detalle != null && detalle.getMedicamento() != null) {
-            listaDetalles.add(detalle);
-            actualizarTabla();
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        switch (evt.getPropertyName()) {
+            case prescribirRecetaModel.LIST:
+                break;
+
+            case prescribirRecetaModel.CURRENT:
+                llenarFormulario();
+                actualizarTabla();
+                break;
+        }
+        main.revalidate();
+    }
+
+    private void llenarFormulario() {
+        if (model.getCurrent() != null) {
+            Receta receta = model.getCurrent();
+
+            if (receta.getPaciente() != null) {
+                paciente.setText(receta.getPaciente().getNombre());
+            } else {
+                paciente.setText("");
+            }
         }
     }
 
@@ -187,26 +194,55 @@ public class prescribirReceta extends JDialog {
                 MedicamentosRecetaTableModel.DIAS
         };
 
-        tableModel = new MedicamentosRecetaTableModel(cols, listaDetalles);
+        List<MedicamentoDetalle> medicamentos = new ArrayList<>();
+        if (model.getCurrent() != null && model.getCurrent().getMedicamentos() != null) {
+            medicamentos = model.getCurrent().getMedicamentos();
+        }
+
+        MedicamentosRecetaTableModel tableModel = new MedicamentosRecetaTableModel(cols, medicamentos);
         miTabla.setModel(tableModel);
-        main.revalidate();
+        miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }
+
+    private Receta take() {
+        return model.getCurrent();
+    }
+
+    private boolean validateForm() {
+        boolean valid = true;
+        Receta current = model.getCurrent();
+
+        if (current == null || current.getPaciente() == null) {
+            valid = false;
+            paciente.setBackground(Color.PINK);
+        } else {
+            paciente.setBackground(Color.WHITE);
+        }
+
+        if (current == null || current.getMedicamentos() == null || current.getMedicamentos().isEmpty()) {
+            valid = false;
+            miTabla.setBackground(Color.PINK);
+        } else {
+            miTabla.setBackground(Color.WHITE);
+        }
+
+        return valid;
+    }
+
+    public void agregarDetalle(MedicamentoDetalle detalle) {
+        if (detalle != null && detalle.getMedicamento() != null) {
+            Receta currentReceta = model.getCurrent();
+            if (currentReceta.getMedicamentos() == null) {
+                currentReceta.setMedicamentos(new ArrayList<>());
+            }
+            currentReceta.getMedicamentos().add(detalle);
+            model.setCurrent(currentReceta);
+        }
     }
 
     private void createUIComponents() {
         miTabla = new JTable();
         miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        tableModel = new MedicamentosRecetaTableModel(
-                new int[]{
-                        MedicamentosRecetaTableModel.MEDICAMENTO,
-                        MedicamentosRecetaTableModel.PRESENTACION,
-                        MedicamentosRecetaTableModel.CANTIDAD,
-                        MedicamentosRecetaTableModel.INDICACIONES,
-                        MedicamentosRecetaTableModel.DIAS
-                },
-                Collections.emptyList()
-        );
-        miTabla.setModel(tableModel);
     }
 
     public static void main(String[] args) {

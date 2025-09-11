@@ -10,10 +10,10 @@ import sistema.logic.entities.Receta;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.Month;
 import java.time.format.TextStyle;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DashboardForm extends JPanel {
@@ -46,33 +46,45 @@ public class DashboardForm extends JPanel {
 
             // ------------------ Gráfico de pastel: Recetas por estado ------------------
             DefaultPieDataset pieDataset = new DefaultPieDataset();
+
             Map<String, Long> estadoCount = recetas.stream()
                     .collect(Collectors.groupingBy(Receta::getEstado, Collectors.counting()));
+
             estadoCount.forEach(pieDataset::setValue);
 
             JFreeChart pieChart = ChartFactory.createPieChart(
                     "Recetas por Estado",
                     pieDataset,
-                    true,
-                    true,
-                    false
+                    true,   // legend
+                    true,   // tooltips
+                    false   // URLs
             );
 
+            // Actualizar el panel de pastel
             panelPastel.removeAll();
+            panelPastel.setLayout(new BorderLayout());
             panelPastel.add(new ChartPanel(pieChart), BorderLayout.CENTER);
             panelPastel.revalidate();
             panelPastel.repaint();
 
-            // ------------------ Gráfico de línea: Medicamentos por mes ------------------
+            // ------------------ Gráfico de líneas: Medicamentos por mes ------------------
             DefaultCategoryDataset lineDataset = new DefaultCategoryDataset();
 
-            recetas.forEach(r -> {
+            Map<Month, Integer> medicamentosPorMes = new HashMap<>();
+
+            for (Receta r : recetas) {
                 if (r.getFechaConfeccion() != null) {
-                    String mes = r.getFechaConfeccion().getMonth()
-                            .getDisplayName(TextStyle.SHORT, Locale.getDefault());
-                    int cantidad = r.getMedicamentos() != null ? r.getMedicamentos().size() : 0;
-                    lineDataset.addValue(cantidad, "Medicamentos", mes);
+                    Month mes = r.getFechaConfeccion().getMonth();
+                    int cantidad = (r.getMedicamentos() != null) ? r.getMedicamentos().size() : 0;
+                    medicamentosPorMes.merge(mes, cantidad, Integer::sum);
                 }
+            }
+
+            // Ordenar los meses correctamente (Ene, Feb, ..., Dic)
+            Arrays.stream(Month.values()).forEach(mes -> {
+                Integer cantidad = medicamentosPorMes.getOrDefault(mes, 0);
+                String nombreMes = mes.getDisplayName(TextStyle.SHORT, Locale.getDefault());
+                lineDataset.addValue(cantidad, "Medicamentos", nombreMes);
             });
 
             JFreeChart lineChart = ChartFactory.createLineChart(
@@ -82,14 +94,18 @@ public class DashboardForm extends JPanel {
                     lineDataset
             );
 
+            // Actualizar el panel de líneas
             panelLinea.removeAll();
+            panelLinea.setLayout(new BorderLayout());
             panelLinea.add(new ChartPanel(lineChart), BorderLayout.CENTER);
             panelLinea.revalidate();
             panelLinea.repaint();
 
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error al cargar los gráficos: " + ex.getMessage(),
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar los gráficos: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 }

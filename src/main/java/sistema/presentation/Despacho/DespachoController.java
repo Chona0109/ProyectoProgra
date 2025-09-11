@@ -2,6 +2,8 @@ package sistema.presentation.Despacho;
 
 import sistema.logic.Service;
 import sistema.logic.entities.Receta;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DespachoController {
     private DespachoModel model;
@@ -9,24 +11,27 @@ public class DespachoController {
     public DespachoController(DespachoModel model) {
         this.model = model;
         model.setCurrent(new Receta());
-        model.setList(Service.instance().findAllRecetas()); // asumimos que existe
+        model.setList(Service.instance().findAllRecetas());
     }
 
-    // -------------------- Buscar Receta --------------------
-    public Receta buscarReceta(String id) throws Exception {
-        if (id == null || id.isEmpty())
-            throw new Exception("Debe ingresar el ID de la receta");
+    // -------------------- CRUD --------------------
 
-        Receta receta = new Receta();
-        receta.setId(id);
-
-        Receta encontrada = Service.instance().readReceta(receta); // Llama al Service para buscar por ID
-
-        model.setCurrent(encontrada);
-        return encontrada;
+    public void buscarReceta(String id) throws Exception {
+        Receta receta = Service.instance().findRecetaById(id);
+        model.setCurrent(receta);
     }
 
-    // -------------------- Avanzar Estado --------------------
+    public void buscarPorIdPaciente(String idPaciente) {
+        if (idPaciente == null || idPaciente.isEmpty()) {
+            model.setList(Service.instance().findAllRecetas());
+        } else {
+            model.setList(Service.instance().searchRecetaByIdPaciente(idPaciente));
+        }
+
+        // Limpiar current cuando se hace una búsqueda nueva
+        model.setCurrent(new Receta());
+    }
+
     public void avanzarEstado(Receta receta) throws Exception {
         if (receta == null) throw new Exception("No hay receta seleccionada");
 
@@ -52,11 +57,17 @@ public class DespachoController {
 
         Service.instance().updateReceta(receta);
         model.setCurrent(receta);
+
+        // Actualizar la lista completa después del cambio
         model.setList(Service.instance().findAllRecetas());
     }
 
-    // -------------------- Clear --------------------
     public void clear() {
         model.setCurrent(new Receta());
+        model.setList(Service.instance().findAllRecetas());
+    }
+
+    public void actualizarHistorico() {
+        model.setList(Service.instance().findAllRecetas());
     }
 }

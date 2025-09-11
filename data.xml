@@ -269,7 +269,7 @@
             </medicamentos>
             <fechaConfeccion>2025-09-10</fechaConfeccion>
             <fechaRetiro>2025-09-13</fechaRetiro>
-            <estado>EN_PROCESO</estado>
+            <estado>LISTA</estado>
         </receta>
     </recetas>
     <medicamentos>

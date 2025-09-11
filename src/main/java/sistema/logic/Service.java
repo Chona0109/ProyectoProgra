@@ -212,10 +212,11 @@ public class Service {
         return data.getRecetas();
     }
 
-    public List<Receta> searchRecetaByPaciente(String nombrePaciente) {
+    public List<Receta> searchRecetaByIdPaciente(String idPaciente) {
         return data.getRecetas().stream()
                 .filter(r -> r.getPaciente() != null &&
-                        r.getPaciente().getNombre().toLowerCase().contains(nombrePaciente.toLowerCase()))
+                        r.getPaciente().getId() != null &&
+                        r.getPaciente().getId().toLowerCase().contains(idPaciente.toLowerCase()))
                 .collect(Collectors.toList());
     }
 

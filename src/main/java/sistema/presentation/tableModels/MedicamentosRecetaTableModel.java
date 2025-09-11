@@ -45,22 +45,4 @@ public class MedicamentosRecetaTableModel extends AbstractTableModel<Medicamento
                 return "";
         }
     }
-    public void setRows(List<MedicamentoDetalle> rows) {
-        this.rows = rows != null ? rows : List.of();
-        fireTableDataChanged();
-    }
-
-    @Override
-    public Class<?> getColumnClass(int col) {
-        switch (cols[col]) {
-            case CANTIDAD:
-            case DIAS:
-                return Integer.class;
-            case MEDICAMENTO:
-            case PRESENTACION:
-            case INDICACIONES:
-            default:
-                return String.class;
-        }
-    }
 }

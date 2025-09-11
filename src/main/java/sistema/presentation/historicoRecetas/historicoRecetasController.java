@@ -2,38 +2,34 @@ package sistema.presentation.historicoRecetas;
 
 import sistema.logic.Service;
 import sistema.logic.entities.Receta;
-
 import java.util.List;
 
 public class historicoRecetasController {
-
     private historicoRecetasModel model;
 
     public historicoRecetasController(historicoRecetasModel model) {
         this.model = model;
-        refresh();
     }
 
-    public void refresh() {
+    public void refresh() throws Exception {
         List<Receta> recetas = Service.instance().findAllRecetas();
-        model.setList(recetas);
-    }
-
-    public void loadAllRecetas() {
-        refresh();
+        model.setCurrentList(recetas);
     }
 
     public void searchById(String id) throws Exception {
         Receta receta = Service.instance().findRecetaById(id);
-        model.setList(List.of(receta));
         model.setCurrent(receta);
+        // También actualizar la lista para mostrar solo esa receta
+        List<Receta> singleReceta = List.of(receta);
+        model.setCurrentList(singleReceta);
     }
 
-    public void select(Receta receta) {
-        model.setCurrent(receta);
-    }
+    public void buscarPorId(String id) {
+        // Usar el nuevo método del Service
+        List<Receta> recetas = Service.instance().searchRecetaById(id);
+        model.setCurrentList(recetas);
 
-    public historicoRecetasModel getModel() {
-        return model;
+        // Limpiar current cuando se hace una búsqueda nueva
+        model.setCurrent(new Receta());
     }
 }

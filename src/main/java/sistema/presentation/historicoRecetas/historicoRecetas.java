@@ -1,16 +1,19 @@
 package sistema.presentation.historicoRecetas;
 
-import sistema.logic.Service;
 import sistema.logic.entities.MedicamentoDetalle;
 import sistema.logic.entities.Receta;
 import sistema.presentation.tableModels.HistoricoRecetasTableModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Collections;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
-public class historicoRecetas extends JDialog {
+public class historicoRecetas extends JDialog implements PropertyChangeListener {
 
     private JPanel main;
     private JTextField idFld;
@@ -19,7 +22,6 @@ public class historicoRecetas extends JDialog {
     private JTable miTabla;
     private JButton verDetallesButton;
 
-    private HistoricoRecetasTableModel tableModel;
     private historicoRecetasModel model;
     private historicoRecetasController controller;
 
@@ -29,95 +31,123 @@ public class historicoRecetas extends JDialog {
         this.controller = controller;
 
         setContentPane(main);
-        setSize(800, 500);
+        setSize(1000, 600); // Aumentado para mostrar más columnas
         setResizable(false);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        initTable();
         setupEventListeners();
+
+        model.addPropertyChangeListener(this);
 
         try {
             controller.refresh();
-            refreshTable(model.getList());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(main, "Error al cargar recetas: " + e.getMessage());
         }
     }
 
-    private void initTable() {
-        int[] cols = {
-                HistoricoRecetasTableModel.ID,
-                HistoricoRecetasTableModel.ESTADO,
-                HistoricoRecetasTableModel.FECHA,
-                HistoricoRecetasTableModel.PACIENTE
-        };
-        tableModel = new HistoricoRecetasTableModel(cols, Collections.emptyList());
-        miTabla.setModel(tableModel);
-        miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    }
-
     private void setupEventListeners() {
-        buscarButton.addActionListener(e -> {
-            String id = idFld.getText().trim();
-            if (!id.isEmpty()) {
-                try {
-                    controller.searchById(id);
-                    refreshTable(model.getCurrentList());
-                } catch (Exception ex) {
+        // Búsqueda en tiempo real mientras escribes
+        idFld.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                String id = idFld.getText().trim();
+                controller.buscarPorId(id);
+            }
+        });
+
+        buscarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String id = idFld.getText().trim();
+                controller.buscarPorId(id);
+            }
+        });
+
+        verTodasButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                idFld.setText(""); // Limpiar campo de búsqueda
+                controller.refresh();
+            }
+        });
+
+        verDetallesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = miTabla.getSelectedRow();
+                List<Receta> recetas = model.getCurrentList();
+                if (row >= 0 && row < recetas.size()) {
+                    Receta receta = recetas.get(row);
+                    showRecetaDetails(receta);
+                } else {
                     JOptionPane.showMessageDialog(main,
-                            "Receta no encontrada: " + ex.getMessage(),
-                            "Error", JOptionPane.ERROR_MESSAGE);
+                            "Seleccione una receta para ver detalles",
+                            "Advertencia", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
 
-        verTodasButton.addActionListener(e -> {
-            try {
-                controller.refresh();
-                refreshTable(model.getList());
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(main,
-                        "Error al cargar recetas: " + ex.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        verDetallesButton.addActionListener(e -> {
-            int row = miTabla.getSelectedRow();
-            List<Receta> recetas = model.getCurrentList();
-            if (row >= 0 && row < recetas.size()) {
-                Receta receta = recetas.get(row);
-                showRecetaDetails(receta);
-            } else {
-                JOptionPane.showMessageDialog(main,
-                        "Seleccione una receta para ver detalles",
-                        "Advertencia", JOptionPane.WARNING_MESSAGE);
+        // Listener para selección de fila en la tabla
+        miTabla.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int row = miTabla.getSelectedRow();
+                if (row >= 0 && model.getCurrentList() != null && row < model.getCurrentList().size()) {
+                    Receta recetaSeleccionada = model.getCurrentList().get(row);
+                    model.setCurrent(recetaSeleccionada);
+                }
             }
         });
     }
 
-    private void refreshTable(List<Receta> recetas) {
-        tableModel.setRows(recetas);
-        miTabla.revalidate();
-        miTabla.repaint();
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        switch (evt.getPropertyName()) {
+            case historicoRecetasModel.LIST:
+                actualizarTabla();
+                break;
+            case historicoRecetasModel.CURRENT:
+                // Puedes agregar lógica adicional aquí si necesitas
+                break;
+        }
+        this.main.revalidate();
+    }
+
+    private void actualizarTabla() {
+        int[] cols = {
+                HistoricoRecetasTableModel.ID,
+                HistoricoRecetasTableModel.ESTADO,
+                HistoricoRecetasTableModel.FECHA,
+                HistoricoRecetasTableModel.PACIENTE,
+                HistoricoRecetasTableModel.ID_PACIENTE,
+                HistoricoRecetasTableModel.MEDICO
+        };
+
+        List<Receta> recetas = new ArrayList<>();
+        if (model.getCurrentList() != null) {
+            recetas = model.getCurrentList();
+        }
+
+        HistoricoRecetasTableModel tableModel = new HistoricoRecetasTableModel(cols, recetas);
+        miTabla.setModel(tableModel);
+        miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
     private void showRecetaDetails(Receta receta) {
         if (receta == null) return;
 
         JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
-        panel.add(new JLabel("ID: " + (receta.getId() != null ? receta.getId() : "Sin ID")));
-        panel.add(new JLabel("Estado: " + (receta.getEstado() != null ? receta.getEstado() : "Sin estado")));
-        panel.add(new JLabel("Fecha Confección: " + (receta.getFechaConfeccion() != null ? receta.getFechaConfeccion() : "Sin fecha")));
-        panel.add(new JLabel("Fecha Retiro: " + (receta.getFechaRetiro() != null ? receta.getFechaRetiro() : "Sin fecha")));
-        panel.add(new JLabel("Paciente: " + (receta.getPaciente() != null ? receta.getPaciente().getNombre() : "Sin paciente")));
-        panel.add(new JLabel("Médico: " + (receta.getMedico() != null ? receta.getMedico().getNombre() : "Sin médico")));
+        panel.add(new JLabel("ID: " + getValue(receta.getId(), "Sin ID")));
+        panel.add(new JLabel("Estado: " + getValue(receta.getEstado(), "Sin estado")));
+        panel.add(new JLabel("Fecha Confección: " + getValue(receta.getFechaConfeccion(), "Sin fecha")));
+        panel.add(new JLabel("Fecha Retiro: " + getValue(receta.getFechaRetiro(), "Sin fecha")));
+        panel.add(new JLabel("Paciente: " + getValue(receta.getPaciente() != null ? receta.getPaciente().getNombre() : null, "Sin paciente")));
+        panel.add(new JLabel("ID Paciente: " + getValue(receta.getPaciente() != null ? receta.getPaciente().getId() : null, "Sin ID")));
+        panel.add(new JLabel("Médico: " + getValue(receta.getMedico() != null ? receta.getMedico().getNombre() : null, "Sin médico")));
 
         if (receta.getMedicamentos() != null && !receta.getMedicamentos().isEmpty()) {
             panel.add(new JLabel("Cantidad de Medicamentos: " + receta.getMedicamentos().size()));
 
-            // Mostrar medicamentos con validación de null
             for (int i = 0; i < receta.getMedicamentos().size(); i++) {
                 MedicamentoDetalle detalle = receta.getMedicamentos().get(i);
                 if (detalle != null) {
@@ -130,7 +160,7 @@ public class historicoRecetas extends JDialog {
                     }
 
                     medicamentoInfo += ", Cantidad: " + detalle.getCantidad();
-                    medicamentoInfo += ", Indicaciones: " + (detalle.getIndicaciones() != null ? detalle.getIndicaciones() : "Sin indicaciones");
+                    medicamentoInfo += ", Indicaciones: " + getValue(detalle.getIndicaciones(), "Sin indicaciones");
                     medicamentoInfo += ", Días: " + detalle.getDias();
 
                     panel.add(new JLabel(medicamentoInfo));
@@ -146,6 +176,9 @@ public class historicoRecetas extends JDialog {
         JOptionPane.showMessageDialog(this, panel, "Detalles de Receta", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    private String getValue(Object value, String defaultValue) {
+        return value != null ? value.toString() : defaultValue;
+    }
 
     private void createUIComponents() {
         miTabla = new JTable();
