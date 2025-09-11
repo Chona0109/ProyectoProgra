@@ -69,6 +69,7 @@ public class MenuFarmaceutico extends JFrame {
         tabbedPane.addTab("Pacientes", pacientesForm.getPanel());
 
 
+
         despachoModel = new DespachoModel();
         despachoController = new DespachoController(despachoModel);
         despachoForm = new DespachoForm(this, despachoModel, despachoController);
