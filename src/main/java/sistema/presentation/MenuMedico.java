@@ -43,9 +43,6 @@ public class MenuMedico extends JFrame {
         tabbedPane.addTab("Prescribir Receta", prescribirRecetaForm.getPanel());
 
 
-        JPanel panelDashboard = new JPanel();
-        panelDashboard.add(new JLabel("Aquí van los gráficos de indicadores"));
-        tabbedPane.addTab("Dashboard", panelDashboard);
 
         // HISTÓRICO DE RECETAS
         historicoRecetasModel = new historicoRecetasModel();

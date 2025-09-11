@@ -90,13 +90,6 @@ public class MenuAdmin extends JFrame {
         pacientesForm.setModel(pacientesModel);
         tabbedPane.addTab("Pacientes", pacientesForm.getPanel());
 
-        // DASHBOARD (placeholder)
-        JPanel panelDashboard = new JPanel();
-        panelDashboard.add(new JLabel("Aquí van los gráficos de indicadores"));
-        tabbedPane.addTab("Dashboard", panelDashboard);
-
-
-
         historicoRecetasModel = new historicoRecetasModel();
         historicoRecetasController = new historicoRecetasController(historicoRecetasModel);
         historicoRecetas = new historicoRecetas(this, historicoRecetasModel, historicoRecetasController);
