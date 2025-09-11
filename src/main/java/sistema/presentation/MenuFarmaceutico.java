@@ -1,5 +1,8 @@
 package sistema.presentation;
 
+import sistema.presentation.Dashboard.DashboardController;
+import sistema.presentation.Dashboard.DashboardForm;
+import sistema.presentation.Dashboard.DashboardModel;
 import sistema.presentation.historicoRecetas.historicoRecetas;
 import sistema.presentation.historicoRecetas.historicoRecetasController;
 import sistema.presentation.historicoRecetas.historicoRecetasModel;
@@ -35,6 +38,11 @@ public class MenuFarmaceutico extends JFrame {
     private historicoRecetasModel historicoRecetasModel;
     private historicoRecetasController historicoRecetasController;
     private historicoRecetas historicoRecetasForm;
+
+    // Dashboard
+    private DashboardModel dashboardModel;
+    private DashboardController dashboardController;
+    private DashboardForm dashboardForm;
 
     public MenuFarmaceutico() {
         setTitle("Farmacéutico - Sistema Recetas");
@@ -72,9 +80,12 @@ public class MenuFarmaceutico extends JFrame {
         historicoRecetasForm = new historicoRecetas(this, historicoRecetasModel, historicoRecetasController);
         tabbedPane.addTab("Histórico", historicoRecetasForm.getPanel());
 
-        JPanel panelDashboard = new JPanel();
-        panelDashboard.add(new JLabel("Indicadores y gráficos para farmacéuticos"));
-        tabbedPane.addTab("Dashboard", panelDashboard);
+
+
+        DashboardModel dashboardModel = new DashboardModel();
+        DashboardController dashboardController = new DashboardController(dashboardModel);
+        DashboardForm dashboardForm = new DashboardForm(dashboardModel, dashboardController);
+        tabbedPane.addTab("Dashboard", dashboardForm);
 
 
         add(tabbedPane);

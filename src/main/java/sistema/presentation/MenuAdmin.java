@@ -1,5 +1,8 @@
 package sistema.presentation;
 
+import sistema.presentation.Dashboard.DashboardController;
+import sistema.presentation.Dashboard.DashboardForm;
+import sistema.presentation.Dashboard.DashboardModel;
 import sistema.presentation.medicos.MedicosController;
 import sistema.presentation.medicos.MedicosForm.MedicosForm;
 import sistema.presentation.medicos.MedicosModel;
@@ -41,6 +44,11 @@ public class MenuAdmin extends JFrame {
     private historicoRecetas historicoRecetas;
     private historicoRecetasModel historicoRecetasModel;
     private historicoRecetasController historicoRecetasController;
+
+    // Dashboard
+    private DashboardModel dashboardModel;
+    private DashboardController dashboardController;
+    private DashboardForm dashboardForm;
 
     public MenuAdmin() {
         setTitle("Administrador - Sistema Recetas");
@@ -93,6 +101,11 @@ public class MenuAdmin extends JFrame {
         historicoRecetasController = new historicoRecetasController(historicoRecetasModel);
         historicoRecetas = new historicoRecetas(this, historicoRecetasModel, historicoRecetasController);
         tabbedPane.addTab("Histórico", historicoRecetas.getPanel());
+
+        DashboardModel dashboardModel = new DashboardModel();
+        DashboardController dashboardController = new DashboardController(dashboardModel);
+        DashboardForm dashboardForm = new DashboardForm(dashboardModel, dashboardController);
+        tabbedPane.addTab("Dashboard", dashboardForm);
 
 
         add(tabbedPane);

@@ -1,5 +1,8 @@
 package sistema.presentation;
 
+import sistema.presentation.Dashboard.DashboardController;
+import sistema.presentation.Dashboard.DashboardForm;
+import sistema.presentation.Dashboard.DashboardModel;
 import sistema.presentation.prescribirReceta.prescribirReceta;
 import sistema.presentation.prescribirReceta.prescribirRecetaModel;
 import sistema.presentation.prescribirReceta.prescribirRecetaController;
@@ -19,6 +22,11 @@ public class MenuMedico extends JFrame {
     private historicoRecetas historicoRecetasForm;
     private historicoRecetasModel historicoRecetasModel;
     private historicoRecetasController historicoRecetasController;
+
+    // Dashboard
+    private DashboardModel dashboardModel;
+    private DashboardController dashboardController;
+    private DashboardForm dashboardForm;
 
     public MenuMedico() {
         setTitle("Médico - Sistema Recetas");
@@ -44,6 +52,11 @@ public class MenuMedico extends JFrame {
         historicoRecetasController = new historicoRecetasController(historicoRecetasModel);
         historicoRecetasForm = new historicoRecetas(this, historicoRecetasModel, historicoRecetasController);
         tabbedPane.addTab("Histórico", historicoRecetasForm.getPanel());
+
+        DashboardModel dashboardModel = new DashboardModel();
+        DashboardController dashboardController = new DashboardController(dashboardModel);
+        DashboardForm dashboardForm = new DashboardForm(dashboardModel, dashboardController);
+        tabbedPane.addTab("Dashboard", dashboardForm);
 
         add(tabbedPane);
     }

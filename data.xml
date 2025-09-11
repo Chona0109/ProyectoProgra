@@ -173,7 +173,7 @@
             </medicamentos>
             <fechaConfeccion>2025-09-08</fechaConfeccion>
             <fechaRetiro>2025-09-11</fechaRetiro>
-            <estado>EN_PROCESO</estado>
+            <estado>ENTREGADA</estado>
         </receta>
         <receta>
             <id>R2</id>
@@ -202,6 +202,70 @@
                 <cantidad>30</cantidad>
                 <indicaciones>Tomar Todos los Dias</indicaciones>
                 <dias>2</dias>
+            </medicamentos>
+            <fechaConfeccion>2025-09-10</fechaConfeccion>
+            <fechaRetiro>2025-09-13</fechaRetiro>
+            <estado>EN_PROCESO</estado>
+        </receta>
+        <receta>
+            <id>R3</id>
+            <medico>
+                <id>111</id>
+                <nombre>Juan Perez</nombre>
+                <clave>111</clave>
+                <departamento>
+                    <codigo>002</codigo>
+                    <nombre>Medico</nombre>
+                </departamento>
+                <especialidad>Cardiología</especialidad>
+            </medico>
+            <paciente>
+                <id>777</id>
+                <nombre>Pedro Martinez</nombre>
+                <fechaNacimiento>1980-01-01</fechaNacimiento>
+                <telefono>555-6789</telefono>
+            </paciente>
+            <medicamentos>
+                <medicamento>
+                    <codigo>333</codigo>
+                    <nombre>Viagra</nombre>
+                    <presentacion>50mg</presentacion>
+                </medicamento>
+                <cantidad>10</cantidad>
+                <indicaciones>Tomar despues de almorzar</indicaciones>
+                <dias>8</dias>
+            </medicamentos>
+            <fechaConfeccion>2025-09-10</fechaConfeccion>
+            <fechaRetiro>2025-09-13</fechaRetiro>
+            <estado>EN_PROCESO</estado>
+        </receta>
+        <receta>
+            <id>R4</id>
+            <medico>
+                <id>111</id>
+                <nombre>Juan Perez</nombre>
+                <clave>111</clave>
+                <departamento>
+                    <codigo>002</codigo>
+                    <nombre>Medico</nombre>
+                </departamento>
+                <especialidad>Cardiología</especialidad>
+            </medico>
+            <paciente>
+                <id>888</id>
+                <nombre>Laura Gonzalez</nombre>
+                <fechaNacimiento>1990-05-15</fechaNacimiento>
+                <telefono>555-9876</telefono>
+            </paciente>
+            <medicamentos>
+                <medicamento>
+                    <codigo>222</codigo>
+                    <nombre>Panadol</nombre>
+                    <presentacion>100mg</presentacion>
+                </medicamento>
+                <cantidad>100</cantidad>
+                <indicaciones>Tomar cada 5 horas</indicaciones>
+                <dias>6</dias>
             </medicamentos>
             <fechaConfeccion>2025-09-10</fechaConfeccion>
             <fechaRetiro>2025-09-13</fechaRetiro>
