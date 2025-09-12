@@ -17,7 +17,7 @@ public class prescribirRecetaController {
         model.setList(Service.instance().findAllRecetas());
     }
 
-    // -------------------- CRUD --------------------
+
 
     public void create(Receta receta) throws Exception {
         Service.instance().createReceta(receta);
@@ -56,7 +56,7 @@ public class prescribirRecetaController {
         model.setCurrent(new Receta());
     }
 
-    // -------------------- Operaciones específicas de receta --------------------
+
 
     public void setPaciente(Paciente paciente) throws Exception {
         Receta current = model.getCurrent();

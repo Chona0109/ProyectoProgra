@@ -19,7 +19,7 @@ public class MedicamentosRecetaTableModel extends AbstractTableModel<Medicamento
 
     @Override
     protected void initColNames() {
-        colNames = new String[5]; // Crear array con 5 elementos
+        colNames = new String[5];
         colNames[MEDICAMENTO] = "Medicamento";
         colNames[PRESENTACION] = "Presentación";
         colNames[CANTIDAD] = "Cantidad";
@@ -29,7 +29,7 @@ public class MedicamentosRecetaTableModel extends AbstractTableModel<Medicamento
 
     @Override
     protected Object getPropetyAt(MedicamentoDetalle detalle, int col) {
-        // col aquí es el índice de la columna en el array cols[], no el valor directo
+
         switch (cols[col]) {
             case MEDICAMENTO:
                 return detalle.getMedicamento() != null ? detalle.getMedicamento().getNombre() : "";

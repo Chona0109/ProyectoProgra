@@ -22,7 +22,7 @@ public class Application {
 
     public Application() {
         model = new LogInModel();
-        view = new loginForm(null); // JDialog modal
+        view = new loginForm(null);
         controller = new LogInController(model, view);
         view.setController(controller);
         view.setModel(model);

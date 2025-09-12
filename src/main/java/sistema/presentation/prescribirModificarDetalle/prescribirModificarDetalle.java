@@ -29,18 +29,18 @@ public class prescribirModificarDetalle extends JDialog {
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        // Mostrar nombre del medicamento
+
         if (medicamento != null) {
             this.medicamento.setText(medicamento.getNombre());
         }
 
-        // Guardar
+
         guardarButton.addActionListener(e -> {
             guardado = true;
             dispose();
         });
 
-        // Cancelar
+
         cancelarButton.addActionListener(e -> dispose());
     }
 
@@ -57,7 +57,7 @@ public class prescribirModificarDetalle extends JDialog {
         );
     }
 
-    // GETTERS
+
     public int getCantidad() {
         return (Integer) cantidad.getValue();
     }
@@ -70,7 +70,7 @@ public class prescribirModificarDetalle extends JDialog {
         return indicaciones.getText();
     }
 
-    // SETTERS
+
     public void setCantidad(int cant) {
         cantidad.setValue(cant);
     }

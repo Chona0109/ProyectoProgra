@@ -13,7 +13,7 @@ public class prescribirBuscarPacienteController {
         this.model = model;
     }
 
-    // Buscar pacientes según criterio
+
     public void search(String criterio, String valor) {
         List<Paciente> resultados;
 
@@ -37,7 +37,7 @@ public class prescribirBuscarPacienteController {
             Paciente encontrado = Service.instance().read(p);
             model.setCurrent(encontrado);
         } catch (Exception e) {
-            // Silenciar error si no se encuentra
+
         }
     }
 }

@@ -39,7 +39,7 @@ public class MenuFarmaceutico extends JFrame {
     private historicoRecetasController historicoRecetasController;
     private historicoRecetas historicoRecetasForm;
 
-    // Dashboard
+
     private DashboardModel dashboardModel;
     private DashboardController dashboardController;
     private DashboardForm dashboardForm;

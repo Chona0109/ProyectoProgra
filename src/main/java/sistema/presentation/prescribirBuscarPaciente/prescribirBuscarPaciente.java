@@ -55,7 +55,7 @@ public class prescribirBuscarPaciente extends JDialog implements PropertyChangeL
             }
         });
 
-        // Búsqueda en tiempo real
+
         buscarFld.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) { filtrar(); }

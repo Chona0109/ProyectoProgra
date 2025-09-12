@@ -62,7 +62,7 @@ public class MedicamentosForm implements PropertyChangeListener {
             }
         });
 
-        // Limpiar formulario
+
         limpiarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -101,7 +101,7 @@ public class MedicamentosForm implements PropertyChangeListener {
             }
         });
 
-        // Selección en tabla
+
         miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         miTabla.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && controller != null) {

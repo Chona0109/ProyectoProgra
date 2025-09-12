@@ -12,11 +12,11 @@ public class MedicamentosTableModel extends AbstractTableModel<Medicamento> {
 
     public static final int CODIGO = 0;
     public static final int NOMBRE = 1;
-    public static final int PRESENTACION = 2;  // Nuevo campo
+    public static final int PRESENTACION = 2;
 
     @Override
     protected void initColNames() {
-        colNames = new String[3];  // Cambiar a 3 columnas
+        colNames = new String[3];
         colNames[CODIGO] = "Código";
         colNames[NOMBRE] = "Nombre";
         colNames[PRESENTACION] = "Presentación";

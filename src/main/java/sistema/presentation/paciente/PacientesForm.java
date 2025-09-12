@@ -35,7 +35,7 @@ public class PacientesForm implements PropertyChangeListener {
     private PacientesTableModel tableModel;
 
     public PacientesForm() {
-        // Guardar
+
         guardarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -51,7 +51,7 @@ public class PacientesForm implements PropertyChangeListener {
             }
         });
 
-        // Limpiar
+
         limpiarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -59,7 +59,7 @@ public class PacientesForm implements PropertyChangeListener {
             }
         });
 
-        // Borrar
+
         borrarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -77,7 +77,7 @@ public class PacientesForm implements PropertyChangeListener {
             }
         });
 
-        // Buscar
+
         buscarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -89,7 +89,7 @@ public class PacientesForm implements PropertyChangeListener {
             }
         });
 
-        // Selección en tabla
+
         miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         miTabla.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && controller != null) {

@@ -37,7 +37,7 @@ public class Service {
         }
     }
 
-    // =============== MÉDICOS ===============
+
     public void create(Medico e) throws Exception {
         Medico result = data.getMedicos().stream()
                 .filter(m -> m.getId().equals(e.getId()))
@@ -82,7 +82,7 @@ public class Service {
                 .collect(Collectors.toList());
     }
 
-    // =============== MEDICAMENTOS ===============
+
     public void create(Medicamento m) throws Exception {
         Medicamento result = data.getMedicamentos().stream()
                 .filter(med -> med.getCodigo().equals(m.getCodigo()))
@@ -134,7 +134,7 @@ public class Service {
                 .collect(Collectors.toList());
     }
 
-    // =============== RECETAS ===============
+
     private String generarIdUnico() {
         int max = data.getRecetas().stream()
                 .mapToInt(r -> {
@@ -355,7 +355,7 @@ public class Service {
     }
 
 
-    // =============== FARMACÉUTICOS ===============
+
     public void create(Farmaceutico f) throws Exception {
         Farmaceutico result = data.getFarmaceuticos().stream()
                 .filter(far -> far.getId().equals(f.getId()))
@@ -400,7 +400,7 @@ public class Service {
                 .collect(Collectors.toList());
     }
 
-    // =============== PACIENTES ===============
+
     public void create(Paciente p) throws Exception {
         Paciente result = data.getPacientes().stream()
                 .filter(pac -> pac.getId().equals(p.getId()))
@@ -452,7 +452,7 @@ public class Service {
                 .collect(Collectors.toList());
     }
 
-    // =============== USUARIOS ===============
+
     public void create(Usuario u) throws Exception {
         Usuario result = data.getUsuarios().stream()
                 .filter(us -> us.getId().equals(u.getId()))
@@ -499,7 +499,7 @@ public class Service {
         return usuario.getDepartamento().getNombre();
     }
 
-    // =============== DEPARTAMENTOS ===============
+
     public List<Departamento> findAllDepartamentos() {
         return data.getDepartamentos();
     }

@@ -23,7 +23,7 @@ public class MenuMedico extends JFrame {
     private historicoRecetasModel historicoRecetasModel;
     private historicoRecetasController historicoRecetasController;
 
-    // Dashboard
+
     private DashboardModel dashboardModel;
     private DashboardController dashboardController;
     private DashboardForm dashboardForm;
@@ -36,7 +36,7 @@ public class MenuMedico extends JFrame {
 
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // PRESCRIBIR RECETA
+
         prescribirRecetaModel = new prescribirRecetaModel();
         prescribirRecetaController = new prescribirRecetaController(prescribirRecetaModel);
         prescribirRecetaForm = new prescribirReceta(this, prescribirRecetaModel, prescribirRecetaController);
@@ -44,7 +44,7 @@ public class MenuMedico extends JFrame {
 
 
 
-        // HISTÓRICO DE RECETAS
+
         historicoRecetasModel = new historicoRecetasModel();
         historicoRecetasController = new historicoRecetasController(historicoRecetasModel);
         historicoRecetasForm = new historicoRecetas(this, historicoRecetasModel, historicoRecetasController);

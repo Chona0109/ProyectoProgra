@@ -31,7 +31,7 @@ public class FarmaceutasForm implements PropertyChangeListener {
     private FarmaceuticosTableModel tableModel;
 
     public FarmaceutasForm() {
-        // Guardar
+
         guardarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -47,7 +47,7 @@ public class FarmaceutasForm implements PropertyChangeListener {
             }
         });
 
-        // Limpiar
+
         limpiarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -55,7 +55,7 @@ public class FarmaceutasForm implements PropertyChangeListener {
             }
         });
 
-        // Borrar
+
         borrarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -73,7 +73,7 @@ public class FarmaceutasForm implements PropertyChangeListener {
             }
         });
 
-        // Buscar
+
         buscarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -85,7 +85,7 @@ public class FarmaceutasForm implements PropertyChangeListener {
             }
         });
 
-        // Selección en tabla
+
         miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         miTabla.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting() && controller != null) {

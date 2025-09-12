@@ -53,7 +53,7 @@ public class data {
         medicamentos = new ArrayList<>();
         usuarios = new ArrayList<>();
 
-        // Initialize departments
+
         Departamento depAdmin = new Departamento("001", "Administrador");
         Departamento depMedico = new Departamento("002", "Medico");
         Departamento depFarmaceuta = new Departamento("003", "Farmaceutico");
@@ -62,7 +62,7 @@ public class data {
         departamentos.add(depMedico);
         departamentos.add(depFarmaceuta);
 
-        // Initialize doctors
+
         Medico m1 = new Medico("111", "Juan Perez", "Cardiología");
         m1.setDepartamento(depMedico);
 
@@ -72,7 +72,7 @@ public class data {
         medicos.add(m1);
         medicos.add(m2);
 
-        // Initialize pharmacists
+
         Farmaceutico f1 = new Farmaceutico("333", "Carlos Ramos");
         f1.setDepartamento(depFarmaceuta);
 
@@ -82,7 +82,7 @@ public class data {
         farmaceuticos.add(f1);
         farmaceuticos.add(f2);
 
-        // Initialize administrators
+
         Administrador a1 = new Administrador("555", "Admin One");
         a1.setDepartamento(depAdmin);
 
@@ -92,7 +92,7 @@ public class data {
         administradores.add(a1);
         administradores.add(a2);
 
-        // Initialize patients
+
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
         Paciente p1 = new Paciente("777", "Pedro Martinez", LocalDate.parse("1980-01-01", formatter), "555-6789");
@@ -101,17 +101,17 @@ public class data {
         pacientes.add(p1);
         pacientes.add(p2);
 
-        // Initialize medications
+
         Medicamento med1 = new Medicamento("111", "Acetaminofen", "500");
         Medicamento med2 = new Medicamento("222", "Panadol", "100mg");
         medicamentos.add(med1);
         medicamentos.add(med2);
 
-        // Create medication details
+
         MedicamentoDetalle det1 = new MedicamentoDetalle(med1, 2, "Tomar 2 veces al día", 5);
         MedicamentoDetalle det2 = new MedicamentoDetalle(med2, 1, "Tomar después de comida", 7);
 
-        // Create test prescriptions
+
         Receta r1 = new Receta(medicos.get(0), pacientes.get(0));
         r1.setId("R001");
         r1.agregarMedicamento(det1);
@@ -123,11 +123,11 @@ public class data {
         r2.agregarMedicamento(det2);
         r2.setEstado("DESPACHADA");
 
-        // Add prescriptions to the list
+
         recetas.add(r1);
         recetas.add(r2);
 
-        // Add users to the users list
+
         usuarios.add(m1);
         usuarios.add(m2);
         usuarios.add(f1);
@@ -136,7 +136,7 @@ public class data {
         usuarios.add(a2);
     }
 
-    // Getters
+
     public List<Medico> getMedicos() {
         return medicos;
     }
@@ -169,7 +169,7 @@ public class data {
         return usuarios;
     }
 
-    // Setters for XML serialization/deserialization
+
     public void setMedicos(List<Medico> medicos) {
         this.medicos = medicos;
     }
