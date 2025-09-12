@@ -512,4 +512,13 @@ public class Service {
                 .sorted(Comparator.comparing(Departamento::getNombre))
                 .collect(Collectors.toList());
     }
+
+    public Usuario findUserById(String id) {
+        for (Usuario u : data.getUsuarios()) {
+            if (u.getId().equals(id)) {
+                return u;
+            }
+        }
+        return null;
+    }
 }

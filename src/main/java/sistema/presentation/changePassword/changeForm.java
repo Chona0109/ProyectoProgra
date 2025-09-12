@@ -1,16 +1,16 @@
 package sistema.presentation.changePassword;
 
-import sistema.logic.entities.Usuario;
-
 import javax.swing.*;
 
 public class changeForm extends JDialog {
-    private JPasswordField passwordField1; // contraseña actual
-    private JPasswordField passwordField2; // nueva contraseña
-    private JPasswordField passwordField3; // confirmar contraseña
-    private JButton button1; // aceptar
-    private JButton button2; // cancelar
+    private JPasswordField passwordField1;
+    private JPasswordField passwordField2;
+    private JPasswordField passwordField3;
+    private JButton button1;
+    private JButton button2;
     private JPanel principal;
+    private JLabel Idtext;
+    private JTextField IDField;
 
     private ChangePasswordController controller;
     private ChangePasswordModel model;
@@ -40,14 +40,16 @@ public class changeForm extends JDialog {
         if (listenersInit) return;
         listenersInit = true;
 
-        // Aceptar
+
         button1.addActionListener(e -> {
             try {
+                String userId = IDField.getText().trim();
                 String oldPass = new String(passwordField1.getPassword());
                 String newPass = new String(passwordField2.getPassword());
                 String confirmPass = new String(passwordField3.getPassword());
 
-                controller.changePassword(oldPass, newPass, confirmPass);
+                controller.changePassword(userId, oldPass, newPass, confirmPass);
+
                 JOptionPane.showMessageDialog(this, "Contraseña cambiada con éxito.");
                 dispose();
             } catch (Exception ex) {
@@ -58,7 +60,7 @@ public class changeForm extends JDialog {
             }
         });
 
-        // Cancelar
+
         button2.addActionListener(e -> dispose());
     }
 

@@ -16,27 +16,33 @@ public class ChangePasswordController {
         this.view.setModel(model);
     }
 
-    public void changePassword(String oldPass, String newPass, String confirmPass) throws Exception {
-        Usuario current = Sesion.getUsuario();
-        if (current == null) {
-            throw new Exception("No hay usuario en sesión.");
+    public void changePassword(String userId, String oldPass, String newPass, String confirmPass) throws Exception {
+        if (userId == null || userId.isEmpty()) {
+            throw new Exception("Debe ingresar su ID de usuario.");
         }
 
-        if (!current.getClave().equals(oldPass)) {
-            throw new Exception("La contraseña actual no es correcta.");
+
+        Usuario user = Service.instance().findUserById(userId);
+        if (user == null) {
+            throw new Exception("Usuario no encontrado.");
         }
+
+
+        if (!user.getClave().equals(oldPass)) {
+            throw new Exception("La contraseña actual es incorrecta.");
+        }
+
 
         if (!newPass.equals(confirmPass)) {
             throw new Exception("La nueva contraseña y su confirmación no coinciden.");
         }
 
-        // Cambiar contraseña en el usuario actual
-        current.setClave(newPass);
 
-        // Guardar cambios en el Service
-        Service.instance().updateUsuario(current);
+        user.setClave(newPass);
+        Service.instance().updateUsuario(user);
 
-        model.setCurrent(current);
+
+        model.setCurrent(user);
     }
 
     public void clear() {

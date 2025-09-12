@@ -52,13 +52,13 @@ public class Application {
         JFrame mainMenu = null;
 
         switch (dep.getCodigo()) {
-            case "001": // Administrador
+            case "001":
                 mainMenu = new MenuAdmin();
                 break;
-            case "002": // Médico
+            case "002":
                 mainMenu = new MenuMedico();
                 break;
-            case "003": // Farmacéutico
+            case "003":
                 mainMenu = new MenuFarmaceutico();
                 break;
             default:
@@ -85,7 +85,7 @@ public class Application {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
-            System.err.println("No se pudo establecer el Look and Feel: " + e.getMessage());
+            System.err.println("Error al iniciar" + e.getMessage());
         }
 
         SwingUtilities.invokeLater(() -> {

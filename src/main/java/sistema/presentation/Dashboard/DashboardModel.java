@@ -16,6 +16,10 @@ public class DashboardModel extends AbstractModel {
     private Map<Month, Integer> medicamentosPorMes;
     private Map<String, Long> recetasPorEstado;
 
+    private String medicamentoFiltro;
+    private Month mesInicioFiltro;
+    private Month mesFinFiltro;
+
     public static final String RECETAS_POR_MES = "recetasPorMes";
     public static final String RECETAS_POR_ESTADO = "recetasPorEstado";
 
@@ -30,18 +34,38 @@ public class DashboardModel extends AbstractModel {
         return recetas;
     }
 
+    public void setFiltros(String medicamento, Month mesInicio, Month mesFin) {
+        this.medicamentoFiltro = medicamento;
+        this.mesInicioFiltro = mesInicio;
+        this.mesFinFiltro = mesFin;
+        actualizarEstadisticas();
+    }
+
     private void actualizarEstadisticas() {
         if (recetas == null) return;
 
-        // Medicamentos por mes
-        medicamentosPorMes = recetas.stream()
+        List<Receta> recetasFiltradas = recetas.stream()
+                .filter(r -> r.getMedicamentos() != null &&
+                        (medicamentoFiltro == null || medicamentoFiltro.isEmpty() ||
+                                r.getMedicamentos().stream()
+                                        .anyMatch(m -> m.getMedicamento() != null &&
+                                                m.getMedicamento().getNombre().equals(medicamentoFiltro))))
+                .filter(r -> {
+                    if (r.getFechaConfeccion() == null) return false;
+                    int mesValue = r.getFechaConfeccion().getMonth().getValue();
+                    if (mesInicioFiltro != null && mesValue < mesInicioFiltro.getValue()) return false;
+                    if (mesFinFiltro != null && mesValue > mesFinFiltro.getValue()) return false;
+                    return true;
+                })
+                .collect(Collectors.toList());
+
+        medicamentosPorMes = recetasFiltradas.stream()
                 .collect(Collectors.groupingBy(
                         r -> r.getFechaConfeccion().getMonth(),
                         Collectors.summingInt(r -> r.getMedicamentos().size())
                 ));
 
-        // Recetas por estado
-        recetasPorEstado = recetas.stream()
+        recetasPorEstado = recetasFiltradas.stream()
                 .collect(Collectors.groupingBy(
                         Receta::getEstado,
                         Collectors.counting()

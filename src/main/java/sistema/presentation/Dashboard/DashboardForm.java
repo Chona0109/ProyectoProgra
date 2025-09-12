@@ -6,106 +6,154 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import sistema.logic.Service;
-import sistema.logic.entities.Receta;
+import sistema.logic.entities.Medicamento;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.time.Month;
 import java.time.format.TextStyle;
-import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Locale;
+import java.util.Map;
 
-public class DashboardForm extends JPanel {
+public class DashboardForm extends JPanel implements PropertyChangeListener {
 
     private DashboardModel model;
     private DashboardController controller;
 
     private JPanel panelPastel;
     private JPanel panelLinea;
+    private JComboBox<String> comboMedicamentos;
+    private JComboBox<Month> comboMesInicio;
+    private JComboBox<Month> comboMesFin;
+    private JButton btnActualizar;
 
     public DashboardForm(DashboardModel model, DashboardController controller) {
         this.model = model;
         this.controller = controller;
+        this.model.addPropertyChangeListener(this);
 
-        setLayout(new GridLayout(1, 2));
+        initComponents();
+        cargarFiltros();
+        actualizarGraficos();
+    }
+
+    private void initComponents() {
+        setLayout(new BorderLayout());
 
         panelPastel = new JPanel(new BorderLayout());
         panelLinea = new JPanel(new BorderLayout());
 
-        add(panelPastel);
-        add(panelLinea);
+        comboMedicamentos = new JComboBox<>();
+        comboMesInicio = new JComboBox<>(Month.values());
+        comboMesFin = new JComboBox<>(Month.values());
+        btnActualizar = new JButton("Actualizar");
 
-        updateCharts();
+        JPanel panelFiltros = new JPanel();
+        panelFiltros.add(new JLabel("Medicamento:"));
+        panelFiltros.add(comboMedicamentos);
+        panelFiltros.add(new JLabel("Mes Inicio:"));
+        panelFiltros.add(comboMesInicio);
+        panelFiltros.add(new JLabel("Mes Fin:"));
+        panelFiltros.add(comboMesFin);
+        panelFiltros.add(btnActualizar);
+
+        JPanel panelGraficos = new JPanel(new GridLayout(1, 2));
+        panelGraficos.add(panelPastel);
+        panelGraficos.add(panelLinea);
+
+        add(panelFiltros, BorderLayout.NORTH);
+        add(panelGraficos, BorderLayout.CENTER);
+
+        btnActualizar.addActionListener(e -> {
+            String medicamento = (String) comboMedicamentos.getSelectedItem();
+            Month mesInicio = (Month) comboMesInicio.getSelectedItem();
+            Month mesFin = (Month) comboMesFin.getSelectedItem();
+            controller.aplicarFiltros(medicamento, mesInicio, mesFin);
+        });
     }
 
-    public void updateCharts() {
+    private void cargarFiltros() {
         try {
-            // Obtener todas las recetas
-            List<Receta> recetas = Service.instance().findAllRecetas();
-
-            // ------------------ Gráfico de pastel: Recetas por estado ------------------
-            DefaultPieDataset pieDataset = new DefaultPieDataset();
-
-            Map<String, Long> estadoCount = recetas.stream()
-                    .collect(Collectors.groupingBy(Receta::getEstado, Collectors.counting()));
-
-            estadoCount.forEach(pieDataset::setValue);
-
-            JFreeChart pieChart = ChartFactory.createPieChart(
-                    "Recetas por Estado",
-                    pieDataset,
-                    true,   // legend
-                    true,   // tooltips
-                    false   // URLs
-            );
-
-            // Actualizar el panel de pastel
-            panelPastel.removeAll();
-            panelPastel.setLayout(new BorderLayout());
-            panelPastel.add(new ChartPanel(pieChart), BorderLayout.CENTER);
-            panelPastel.revalidate();
-            panelPastel.repaint();
-
-            // ------------------ Gráfico de líneas: Medicamentos por mes ------------------
-            DefaultCategoryDataset lineDataset = new DefaultCategoryDataset();
-
-            Map<Month, Integer> medicamentosPorMes = new HashMap<>();
-
-            for (Receta r : recetas) {
-                if (r.getFechaConfeccion() != null) {
-                    Month mes = r.getFechaConfeccion().getMonth();
-                    int cantidad = (r.getMedicamentos() != null) ? r.getMedicamentos().size() : 0;
-                    medicamentosPorMes.merge(mes, cantidad, Integer::sum);
-                }
+            List<Medicamento> medicamentos = controller.obtenerMedicamentos();
+            comboMedicamentos.removeAllItems();
+            for (Medicamento m : medicamentos) {
+                comboMedicamentos.addItem(m.getNombre());
+            }
+            if (!medicamentos.isEmpty()) {
+                comboMedicamentos.setSelectedIndex(0);
             }
 
-            // Ordenar los meses correctamente (Ene, Feb, ..., Dic)
-            Arrays.stream(Month.values()).forEach(mes -> {
-                Integer cantidad = medicamentosPorMes.getOrDefault(mes, 0);
-                String nombreMes = mes.getDisplayName(TextStyle.SHORT, Locale.getDefault());
-                lineDataset.addValue(cantidad, "Medicamentos", nombreMes);
-            });
+            comboMesInicio.setSelectedIndex(0);
+            comboMesFin.setSelectedIndex(Month.DECEMBER.getValue() - 1);
 
-            JFreeChart lineChart = ChartFactory.createLineChart(
-                    "Medicamentos por Mes",
-                    "Mes",
-                    "Cantidad de Medicamentos",
-                    lineDataset
-            );
-
-            // Actualizar el panel de líneas
-            panelLinea.removeAll();
-            panelLinea.setLayout(new BorderLayout());
-            panelLinea.add(new ChartPanel(lineChart), BorderLayout.CENTER);
-            panelLinea.revalidate();
-            panelLinea.repaint();
-
-        } catch (Exception ex) {
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                    "Error al cargar los gráficos: " + ex.getMessage(),
+                    "Error al cargar medicamentos: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    private void actualizarGraficos() {
+        actualizarGraficoPastel();
+        actualizarGraficoLinea();
+    }
+
+    private void actualizarGraficoPastel() {
+        try {
+            DefaultPieDataset pieDataset = new DefaultPieDataset();
+            Map<String, Long> recetasPorEstado = model.getRecetasPorEstado();
+            recetasPorEstado.forEach(pieDataset::setValue);
+
+            JFreeChart pieChart = ChartFactory.createPieChart(
+                    "Recetas por Estado",
+                    pieDataset,
+                    true, true, false
+            );
+
+            panelPastel.removeAll();
+            panelPastel.add(new ChartPanel(pieChart), BorderLayout.CENTER);
+            panelPastel.revalidate();
+            panelPastel.repaint();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void actualizarGraficoLinea() {
+        try {
+            DefaultCategoryDataset lineDataset = new DefaultCategoryDataset();
+            Map<Month, Integer> medicamentosPorMes = model.getMedicamentosPorMes();
+
+            for (Month mes : Month.values()) {
+                int cantidad = medicamentosPorMes.getOrDefault(mes, 0);
+                String nombreMes = mes.getDisplayName(TextStyle.SHORT, Locale.getDefault());
+                lineDataset.addValue(cantidad, "Medicamentos", nombreMes);
+            }
+
+            JFreeChart lineChart = ChartFactory.createLineChart(
+                    "Medicamentos por Mes",
+                    "Mes",
+                    "Cantidad",
+                    lineDataset
+            );
+
+            panelLinea.removeAll();
+            panelLinea.add(new ChartPanel(lineChart), BorderLayout.CENTER);
+            panelLinea.revalidate();
+            panelLinea.repaint();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (DashboardModel.RECETAS_POR_ESTADO.equals(evt.getPropertyName())
+                || DashboardModel.RECETAS_POR_MES.equals(evt.getPropertyName())) {
+            actualizarGraficos();
+        }
+    }
 }

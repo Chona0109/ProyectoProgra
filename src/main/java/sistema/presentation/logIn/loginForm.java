@@ -4,6 +4,9 @@ import sistema.logic.entities.Usuario;
 import sistema.presentation.MenuAdmin;
 import sistema.presentation.MenuFarmaceutico;
 import sistema.presentation.MenuMedico;
+import sistema.presentation.changePassword.ChangePasswordController;
+import sistema.presentation.changePassword.ChangePasswordModel;
+import sistema.presentation.changePassword.changeForm;
 
 import javax.swing.*;
 
@@ -36,7 +39,7 @@ public class loginForm extends JDialog {
         initListeners();
     }
 
-    // Asignar modelo
+
     public void setModel(LogInModel model) {
         this.model = model;
     }
@@ -52,6 +55,7 @@ public class loginForm extends JDialog {
                     String id = textField1.getText();
                     String clave = new String(passwordField1.getPassword());
                     Usuario u = new Usuario(id, "");
+                    u.setClave(clave);
 
                     controller.login(u);
                     Usuario current = model.getCurrent();
@@ -62,13 +66,13 @@ public class loginForm extends JDialog {
 
                     if (current.getDepartamento() != null) {
                         switch (current.getDepartamento().getCodigo()) {
-                            case "001": // Administrador
+                            case "001":
                                 SwingUtilities.invokeLater(() -> new MenuAdmin().setVisible(true));
                                 break;
-                            case "002": // Médico
+                            case "002":
                                 SwingUtilities.invokeLater(() -> new MenuMedico().setVisible(true));
                                 break;
-                            case "003": // Farmacéutico
+                            case "003":
                                 SwingUtilities.invokeLater(() -> new MenuFarmaceutico().setVisible(true));
                                 break;
                             default:
@@ -88,28 +92,36 @@ public class loginForm extends JDialog {
             }
         });
 
-        // Limpiar campos
+
         limpiarButton.addActionListener(e -> {
             textField1.setText("");
             passwordField1.setText("");
             if (controller != null) controller.clear();
         });
 
-        // Cerrar ventana
-        changePasswordButton.addActionListener(e -> dispose());
+        changePasswordButton.addActionListener(e -> {
+
+            ChangePasswordModel cpModel = new ChangePasswordModel();
+            changeForm cpView = new changeForm(null);
+            ChangePasswordController cpController = new ChangePasswordController(cpModel, cpView);
+            cpView.setController(cpController);
+            cpView.setModel(cpModel);
+            cpView.setVisible(true);
+        });
+
     }
 
     public JPanel getPanel() {
         return principal;
     }
 
-    // Main de prueba
+
     public static void main(String[] args) {
         LogInModel model = new LogInModel();
         loginForm view = new loginForm(null);
         LogInController controller = new LogInController(model, view);
         view.setController(controller);
         view.setModel(model);
-        view.setVisible(true); // mostrar ventana **solo una vez**
+        view.setVisible(true);
     }
 }
