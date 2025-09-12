@@ -115,13 +115,4 @@ public class loginForm extends JDialog {
         return principal;
     }
 
-
-    public static void main(String[] args) {
-        LogInModel model = new LogInModel();
-        loginForm view = new loginForm(null);
-        LogInController controller = new LogInController(model, view);
-        view.setController(controller);
-        view.setModel(model);
-        view.setVisible(true);
-    }
 }

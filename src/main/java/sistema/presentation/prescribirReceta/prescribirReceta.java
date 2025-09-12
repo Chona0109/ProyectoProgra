@@ -85,14 +85,22 @@ public class prescribirReceta extends JDialog implements PropertyChangeListener 
                 int row = miTabla.getSelectedRow();
                 Receta currentReceta = model.getCurrent();
 
-                if (row >= 0 && currentReceta.getMedicamentos() != null && row < currentReceta.getMedicamentos().size()) {
-                    currentReceta.getMedicamentos().remove(row);
-                    model.setCurrent(currentReceta);
+                if (row >= 0 && currentReceta != null) {
+                    try {
+                        controller.removeMedicamento(currentReceta.getId(), row);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(main,
+                                "Error al descartar el medicamento: " + ex.getMessage(),
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 } else {
-                    JOptionPane.showMessageDialog(main, "Seleccione un medicamento para descartar", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(main,
+                            "Seleccione un medicamento para descartar",
+                            "Advertencia", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
+
 
         detallesButton.addActionListener(new ActionListener() {
             @Override
@@ -110,7 +118,12 @@ public class prescribirReceta extends JDialog implements PropertyChangeListener 
                 if (validateForm()) {
                     Receta receta = take();
                     try {
-                        controller.create(receta);
+                        if (receta.getId() == null || receta.getId().isEmpty()) {
+                            controller.create(receta);
+                        } else {
+                            controller.update(receta);
+                            controller.clear();
+                        }
 
                         JOptionPane.showMessageDialog(main,
                                 "Receta guardada para: " + receta.getPaciente().getNombre() +
@@ -124,6 +137,7 @@ public class prescribirReceta extends JDialog implements PropertyChangeListener 
                 }
             }
         });
+
 
         limpiarButton.addActionListener(new ActionListener() {
             @Override
@@ -221,15 +235,6 @@ public class prescribirReceta extends JDialog implements PropertyChangeListener 
         miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            prescribirRecetaModel model = new prescribirRecetaModel();
-            prescribirRecetaController controller = new prescribirRecetaController(model);
-
-            prescribirReceta dialog = new prescribirReceta(null, model, controller);
-            dialog.setVisible(true);
-        });
-    }
 
     public Component getPanel() {
         return main;

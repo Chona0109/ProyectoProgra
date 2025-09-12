@@ -1,8 +1,6 @@
-package sistema.presentation.medicamentos.MedicamentosForm;
+package sistema.presentation.medicamentos;
 
 import sistema.logic.entities.Medicamento;
-import sistema.presentation.medicamentos.MedicamentosController;
-import sistema.presentation.medicamentos.MedicamentosModel;
 import sistema.presentation.tableModels.MedicamentosTableModel;
 
 import javax.swing.*;

@@ -36,8 +36,7 @@ public class prescribirBuscarMedicamentoController {
             m.setCodigo(codigo);
             Medicamento encontrado = Service.instance().read(m);
             if (encontrado != null) {
-                model.setCurrent(encontrado); // 👈 Esto es lo que faltaba
-                System.out.println("Medicamento seleccionado: " + encontrado.getNombre());
+                model.setCurrent(encontrado);
             }
         } catch (Exception e) {
             e.printStackTrace();

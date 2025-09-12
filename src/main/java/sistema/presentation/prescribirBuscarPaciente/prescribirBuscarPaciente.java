@@ -92,15 +92,28 @@ public class prescribirBuscarPaciente extends JDialog implements PropertyChangeL
         miTabla.setModel(tableModel);
     }
 
+
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals(prescribirBuscarPacienteModel.LIST)) {
-            int[] cols = {PacientesTableModel.ID, PacientesTableModel.NOMBRE,
-                    PacientesTableModel.FECHA, PacientesTableModel.TELEFONO};
-            miTabla.setModel(new PacientesTableModel(cols, model.getList()));
+        switch (evt.getPropertyName()) {
+            case prescribirBuscarPacienteModel.LIST:
+                int[] cols = {
+                        PacientesTableModel.ID,
+                        PacientesTableModel.NOMBRE,
+                        PacientesTableModel.FECHA,
+                        PacientesTableModel.TELEFONO
+                };
+                miTabla.setModel(new PacientesTableModel(cols, model.getList()));
+                break;
+
+            case prescribirBuscarPacienteModel.CURRENT:
+                break;
         }
+
         main.revalidate();
     }
+
 
     private void createUIComponents() {
         miTabla = new JTable();

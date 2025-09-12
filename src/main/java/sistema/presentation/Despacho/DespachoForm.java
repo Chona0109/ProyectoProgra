@@ -96,16 +96,28 @@ public class DespachoForm extends JDialog implements PropertyChangeListener {
                 }
             }
         });
-
-
     }
+
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
             case DespachoModel.LIST:
-                actualizarTabla();
+                int[] cols = {
+                        HistoricoRecetasTableModel.ID,
+                        HistoricoRecetasTableModel.ESTADO,
+                        HistoricoRecetasTableModel.FECHA,
+                        HistoricoRecetasTableModel.PACIENTE,
+                        HistoricoRecetasTableModel.ID_PACIENTE,
+                        HistoricoRecetasTableModel.MEDICO
+                };
+
+                List<Receta> recetas = model.getList() != null ? model.getList() : new ArrayList<>();
+
+                miTabla.setModel(new HistoricoRecetasTableModel(cols, recetas));
+                miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 break;
+
 
             case DespachoModel.CURRENT:
                 llenarFormulario();
@@ -127,22 +139,7 @@ public class DespachoForm extends JDialog implements PropertyChangeListener {
         }
     }
 
-    private void actualizarTabla() {
-        int[] cols = {
-                HistoricoRecetasTableModel.ID,
-                HistoricoRecetasTableModel.ESTADO,
-                HistoricoRecetasTableModel.FECHA,
-                HistoricoRecetasTableModel.PACIENTE,
-                HistoricoRecetasTableModel.ID_PACIENTE,
-                HistoricoRecetasTableModel.MEDICO
-        };
 
-        List<Receta> recetas = model.getList() != null ? model.getList() : new ArrayList<>();
-
-        HistoricoRecetasTableModel tableModel = new HistoricoRecetasTableModel(cols, recetas);
-        miTabla.setModel(tableModel);
-        miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    }
 
 
     private Receta take() {
@@ -173,13 +170,4 @@ public class DespachoForm extends JDialog implements PropertyChangeListener {
         return main;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            DespachoModel model = new DespachoModel();
-            DespachoController controller = new DespachoController(model);
-
-            DespachoForm dialog = new DespachoForm(null, model, controller);
-            dialog.setVisible(true);
-        });
-    }
 }

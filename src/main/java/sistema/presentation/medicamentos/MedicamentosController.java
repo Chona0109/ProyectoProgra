@@ -2,7 +2,6 @@ package sistema.presentation.medicamentos;
 
 import sistema.logic.Service;
 import sistema.logic.entities.Medicamento;
-import sistema.presentation.medicamentos.MedicamentosForm.MedicamentosForm;
 
 public class MedicamentosController {
 

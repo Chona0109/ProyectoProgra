@@ -4,14 +4,14 @@ import sistema.presentation.Dashboard.DashboardController;
 import sistema.presentation.Dashboard.DashboardForm;
 import sistema.presentation.Dashboard.DashboardModel;
 import sistema.presentation.medicos.MedicosController;
-import sistema.presentation.medicos.MedicosForm.MedicosForm;
+import sistema.presentation.medicos.MedicosForm;
 import sistema.presentation.medicos.MedicosModel;
 
 import sistema.presentation.medicamentos.MedicamentosController;
-import sistema.presentation.medicamentos.MedicamentosForm.MedicamentosForm;
+import sistema.presentation.medicamentos.MedicamentosForm;
 import sistema.presentation.medicamentos.MedicamentosModel;
 
-import sistema.presentation.Farmaceutas.FarmaceutasForm.FarmaceutasForm;
+import sistema.presentation.Farmaceutas.FarmaceutasForm;
 import sistema.presentation.Farmaceutas.FarmaceutasController;
 import sistema.presentation.Farmaceutas.FarmaceutasModel;
 

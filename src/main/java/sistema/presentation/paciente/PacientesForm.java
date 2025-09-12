@@ -99,7 +99,6 @@ public class PacientesForm implements PropertyChangeListener {
                     try {
                         controller.read(id);
                     } catch (Exception ex) {
-                        // Silenciar para no molestar al usuario
                     }
                 }
             }

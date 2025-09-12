@@ -2,7 +2,6 @@ package sistema.presentation.Farmaceutas;
 
 import sistema.logic.Service;
 import sistema.logic.entities.Farmaceutico;
-import sistema.presentation.Farmaceutas.FarmaceutasForm.FarmaceutasForm;
 
 public class FarmaceutasController {
 

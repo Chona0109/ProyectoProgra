@@ -6,13 +6,6 @@ import sistema.presentation.Dashboard.DashboardModel;
 import sistema.presentation.historicoRecetas.historicoRecetas;
 import sistema.presentation.historicoRecetas.historicoRecetasController;
 import sistema.presentation.historicoRecetas.historicoRecetasModel;
-import sistema.presentation.medicamentos.MedicamentosForm.MedicamentosForm;
-import sistema.presentation.medicamentos.MedicamentosController;
-import sistema.presentation.medicamentos.MedicamentosModel;
-
-import sistema.presentation.paciente.PacientesForm;
-import sistema.presentation.paciente.PacienteController;
-import sistema.presentation.paciente.PacienteModel;
 
 import sistema.presentation.Despacho.DespachoForm;
 import sistema.presentation.Despacho.DespachoController;
@@ -22,14 +15,6 @@ import sistema.presentation.Despacho.DespachoModel;
 import javax.swing.*;
 
 public class MenuFarmaceutico extends JFrame {
-
-    private MedicamentosForm medicamentosForm;
-    private MedicamentosController medicamentosController;
-    private MedicamentosModel medicamentosModel;
-
-    private PacientesForm pacientesForm;
-    private PacienteController pacientesController;
-    private PacienteModel pacientesModel;
 
     private DespachoForm despachoForm;
     private DespachoController despachoController;
@@ -51,23 +36,6 @@ public class MenuFarmaceutico extends JFrame {
         setLocationRelativeTo(null);
 
         JTabbedPane tabbedPane = new JTabbedPane();
-
-
-        medicamentosForm = new MedicamentosForm();
-        medicamentosModel = new MedicamentosModel();
-        medicamentosController = new MedicamentosController(medicamentosForm, medicamentosModel);
-        medicamentosForm.setController(medicamentosController);
-        medicamentosForm.setModel(medicamentosModel);
-        tabbedPane.addTab("Medicamentos", medicamentosForm.getPanel());
-
-
-        pacientesForm = new PacientesForm();
-        pacientesModel = new PacienteModel();
-        pacientesController = new PacienteController(pacientesForm, pacientesModel);
-        pacientesForm.setController(pacientesController);
-        pacientesForm.setModel(pacientesModel);
-        tabbedPane.addTab("Pacientes", pacientesForm.getPanel());
-
 
 
         despachoModel = new DespachoModel();

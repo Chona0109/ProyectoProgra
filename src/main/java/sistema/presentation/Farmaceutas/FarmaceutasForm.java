@@ -1,8 +1,6 @@
-package sistema.presentation.Farmaceutas.FarmaceutasForm;
+package sistema.presentation.Farmaceutas;
 
 import sistema.logic.entities.Farmaceutico;
-import sistema.presentation.Farmaceutas.FarmaceutasController;
-import sistema.presentation.Farmaceutas.FarmaceutasModel;
 import sistema.presentation.tableModels.FarmaceuticosTableModel;
 
 import javax.swing.*;
@@ -95,7 +93,6 @@ public class FarmaceutasForm implements PropertyChangeListener {
                     try {
                         controller.read(id);
                     } catch (Exception ex) {
-                        // Silenciar para evitar molestias al usuario
                     }
                 }
             }

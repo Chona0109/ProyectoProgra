@@ -2,33 +2,40 @@ package sistema.presentation.prescribirBuscarPaciente;
 
 import sistema.logic.Service;
 import sistema.logic.entities.Paciente;
+import sistema.presentation.AbstractModel;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.List;
 
-public class prescribirBuscarPacienteModel {
+public class prescribirBuscarPacienteModel extends AbstractModel {
 
     public static final String LIST = "LIST";
     public static final String CURRENT = "CURRENT";
 
     private List<Paciente> list;
     private Paciente current;
-    private PropertyChangeSupport support;
 
     public prescribirBuscarPacienteModel() {
-        support = new PropertyChangeSupport(this);
         list = Service.instance().findAllPaciente();
+        current = new Paciente();
+    }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
+        firePropertyChange(CURRENT);
+        firePropertyChange(LIST);
     }
 
     public List<Paciente> getList() {
         return list;
     }
 
-    public void setList(List<Paciente> newList) {
-        List<Paciente> old = this.list;
-        this.list = newList;
-        support.firePropertyChange(LIST, old, newList);
+    public void setList(List<Paciente> list) {
+        this.list = list != null ? list : new ArrayList<>();
+        firePropertyChange(LIST);
     }
 
     public Paciente getCurrent() {
@@ -36,16 +43,9 @@ public class prescribirBuscarPacienteModel {
     }
 
     public void setCurrent(Paciente current) {
-        Paciente old = this.current;
-        this.current = current;
-        support.firePropertyChange(CURRENT, old, current);
-    }
-
-    public void addPropertyChangeListener(PropertyChangeListener pcl) {
-        support.addPropertyChangeListener(pcl);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener pcl) {
-        support.removePropertyChangeListener(pcl);
+        this.current = current != null ? current : new Paciente();
+        firePropertyChange(CURRENT);
     }
 }
+
+

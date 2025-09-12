@@ -62,27 +62,6 @@ public class data {
         departamentos.add(depMedico);
         departamentos.add(depFarmaceuta);
 
-
-        Medico m1 = new Medico("111", "Juan Perez", "Cardiología");
-        m1.setDepartamento(depMedico);
-
-        Medico m2 = new Medico("222", "Maria Lopez", "Neurología");
-        m2.setDepartamento(depMedico);
-
-        medicos.add(m1);
-        medicos.add(m2);
-
-
-        Farmaceutico f1 = new Farmaceutico("333", "Carlos Ramos");
-        f1.setDepartamento(depFarmaceuta);
-
-        Farmaceutico f2 = new Farmaceutico("444", "Lucia Hernandez");
-        f2.setDepartamento(depFarmaceuta);
-
-        farmaceuticos.add(f1);
-        farmaceuticos.add(f2);
-
-
         Administrador a1 = new Administrador("555", "Admin One");
         a1.setDepartamento(depAdmin);
 
@@ -92,46 +71,6 @@ public class data {
         administradores.add(a1);
         administradores.add(a2);
 
-
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
-
-        Paciente p1 = new Paciente("777", "Pedro Martinez", LocalDate.parse("1980-01-01", formatter), "555-6789");
-        Paciente p2 = new Paciente("888", "Laura Gonzalez", LocalDate.parse("1990-05-15", formatter), "555-9876");
-
-        pacientes.add(p1);
-        pacientes.add(p2);
-
-
-        Medicamento med1 = new Medicamento("111", "Acetaminofen", "500");
-        Medicamento med2 = new Medicamento("222", "Panadol", "100mg");
-        medicamentos.add(med1);
-        medicamentos.add(med2);
-
-
-        MedicamentoDetalle det1 = new MedicamentoDetalle(med1, 2, "Tomar 2 veces al día", 5);
-        MedicamentoDetalle det2 = new MedicamentoDetalle(med2, 1, "Tomar después de comida", 7);
-
-
-        Receta r1 = new Receta(medicos.get(0), pacientes.get(0));
-        r1.setId("R001");
-        r1.agregarMedicamento(det1);
-        r1.agregarMedicamento(det2);
-        r1.setEstado("CONFECCIONADA");
-
-        Receta r2 = new Receta(medicos.get(1), pacientes.get(1));
-        r2.setId("R002");
-        r2.agregarMedicamento(det2);
-        r2.setEstado("DESPACHADA");
-
-
-        recetas.add(r1);
-        recetas.add(r2);
-
-
-        usuarios.add(m1);
-        usuarios.add(m2);
-        usuarios.add(f1);
-        usuarios.add(f2);
         usuarios.add(a1);
         usuarios.add(a2);
     }

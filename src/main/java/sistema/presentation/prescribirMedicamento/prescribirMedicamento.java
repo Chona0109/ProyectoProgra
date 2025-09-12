@@ -107,12 +107,23 @@ public class prescribirMedicamento extends JDialog implements PropertyChangeList
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals(prescribirBuscarMedicamentoModel.LIST)) {
-            int[] cols = {MedicamentosTableModel.CODIGO, MedicamentosTableModel.NOMBRE, MedicamentosTableModel.PRESENTACION};
-            miTabla.setModel(new MedicamentosTableModel(cols, model.getList()));
+        switch (evt.getPropertyName()) {
+            case prescribirBuscarMedicamentoModel.LIST:
+                int[] cols = {
+                        MedicamentosTableModel.CODIGO,
+                        MedicamentosTableModel.NOMBRE,
+                        MedicamentosTableModel.PRESENTACION
+                };
+                miTabla.setModel(new MedicamentosTableModel(cols, model.getList()));
+                break;
+
+            case prescribirBuscarMedicamentoModel.CURRENT:
+                break;
         }
+
         main.revalidate();
     }
+
 
     private void createUIComponents() {
         miTabla = new JTable();

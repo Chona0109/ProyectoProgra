@@ -20,10 +20,11 @@ public class prescribirRecetaController {
 
 
     public void create(Receta receta) throws Exception {
-        Service.instance().createReceta(receta);
-        model.setCurrent(new Receta());
+        Receta creada = Service.instance().createReceta(receta);
+        model.setCurrent(creada);
         model.setList(Service.instance().findAllRecetas());
     }
+
 
     public void read(String id) throws Exception {
         Receta receta = new Receta();
@@ -44,13 +45,6 @@ public class prescribirRecetaController {
         model.setList(Service.instance().findAllRecetas());
     }
 
-    public void delete(String id) throws Exception {
-        Receta receta = new Receta();
-        receta.setId(id);
-        Service.instance().deleteReceta(receta);
-        model.setCurrent(new Receta());
-        model.setList(Service.instance().findAllRecetas());
-    }
 
     public void clear() {
         model.setCurrent(new Receta());
@@ -65,10 +59,7 @@ public class prescribirRecetaController {
         model.setCurrent(current);
     }
 
-    public void addMedicamento(String recetaId, MedicamentoDetalle detalle) throws Exception {
-        Service.instance().addMedicamentoToReceta(recetaId, detalle);
-        model.setCurrent(Service.instance().readReceta(new Receta(){{ setId(recetaId); }}));
-    }
+
 
     public void removeMedicamento(String recetaId, int index) throws Exception {
         Service.instance().removeMedicamentoFromReceta(recetaId, index);

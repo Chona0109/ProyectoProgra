@@ -35,9 +35,6 @@ public class DespachoController {
         model.setList(Service.instance().findAllRecetas());
     }
 
-    public void actualizarHistorico() {
-        model.setList(Service.instance().findAllRecetas());
-    }
 
     public String generarDetallesDe(Receta receta) {
         return Service.instance().generarDetallesReceta(receta);

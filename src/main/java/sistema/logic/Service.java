@@ -38,16 +38,38 @@ public class Service {
     }
 
 
-    public void create(Medico e) throws Exception {
-        Medico result = data.getMedicos().stream()
-                .filter(m -> m.getId().equals(e.getId()))
+
+    //Medicos
+    public void create(Medico m) throws Exception {
+
+        Medico existente = data.getMedicos().stream()
+                .filter(med -> med.getId().equals(m.getId()))
                 .findFirst()
                 .orElse(null);
-        if (result == null) {
-            data.getMedicos().add(e);
-        } else {
-            throw new Exception("Médico ya existe");
+        if (existente != null) throw new Exception("Médico ya existe");
+
+        Departamento dep = data.getDepartamentos().stream()
+                .filter(d -> d.getCodigo().equals("002")) // 002 = Medico
+                .findFirst()
+                .orElseThrow(() -> new Exception("Departamento de médico no existe"));
+        m.setDepartamento(dep);
+
+        data.getMedicos().add(m);
+
+        Usuario u = new Usuario();
+        u.setId(m.getId());
+        u.setClave(m.getId());
+        u.setDepartamento(dep);
+
+        Usuario userExistente = data.getUsuarios().stream()
+                .filter(us -> us.getId().equals(u.getId()))
+                .findFirst()
+                .orElse(null);
+        if (userExistente == null) {
+            data.getUsuarios().add(u);
         }
+
+        XmlPersister.instance().store(data);
     }
 
     public Medico read(Medico e) throws Exception {
@@ -75,14 +97,8 @@ public class Service {
         return data.getMedicos();
     }
 
-    public List<Medico> searchMedicoByName(String name) {
-        return data.getMedicos().stream()
-                .filter(m -> m.getNombre().toLowerCase().contains(name.toLowerCase()))
-                .sorted(Comparator.comparing(Medico::getNombre))
-                .collect(Collectors.toList());
-    }
 
-
+    //Medicamentos
     public void create(Medicamento m) throws Exception {
         Medicamento result = data.getMedicamentos().stream()
                 .filter(med -> med.getCodigo().equals(m.getCodigo()))
@@ -92,18 +108,6 @@ public class Service {
             data.getMedicamentos().add(m);
         } else {
             throw new Exception("Medicamento ya existe");
-        }
-    }
-
-    public void delete(Medicamento m) throws Exception {
-        Medicamento result = data.getMedicamentos().stream()
-                .filter(med -> med.getCodigo().equals(m.getCodigo()))
-                .findFirst()
-                .orElse(null);
-        if (result != null) {
-            data.getMedicamentos().remove(result);
-        } else {
-            throw new Exception("Medicamento no existe");
         }
     }
 
@@ -123,6 +127,20 @@ public class Service {
                 .collect(Collectors.toList());
     }
 
+    public void delete(Medicamento m) throws Exception {
+        Medicamento result = data.getMedicamentos().stream()
+                .filter(med -> med.getCodigo().equals(m.getCodigo()))
+                .findFirst()
+                .orElse(null);
+        if (result != null) {
+            data.getMedicamentos().remove(result);
+        } else {
+            throw new Exception("Medicamento no existe");
+        }
+    }
+
+
+
     public List<Medicamento> findAllMedicamentos() {
         return data.getMedicamentos();
     }
@@ -134,6 +152,7 @@ public class Service {
                 .collect(Collectors.toList());
     }
 
+    //Recetas
 
     private String generarIdUnico() {
         int max = data.getRecetas().stream()
@@ -149,6 +168,7 @@ public class Service {
         return "R" + (max + 1);
     }
 
+
     private boolean recetaYaExiste(Receta r) {
         return data.getRecetas().stream().anyMatch(existing ->
                 existing.getPaciente().getId().equals(r.getPaciente().getId()) &&
@@ -160,11 +180,19 @@ public class Service {
 
 
 
-    public void createReceta(Receta r) throws Exception {
+    public Receta createReceta(Receta r) throws Exception {
         if (r.getMedico() == null) {
             Usuario usuarioLogueado = Sesion.getUsuario();
-            if (usuarioLogueado instanceof Medico) {
-                r.setMedico((Medico) usuarioLogueado);
+            if (usuarioLogueado == null) {
+                throw new Exception("No hay usuario logueado");
+            }
+            if (usuarioLogueado.getDepartamento() != null &&
+                    usuarioLogueado.getDepartamento().getCodigo().equals("002")) {
+                Medico m = data.getMedicos().stream()
+                        .filter(med -> med.getId().equals(usuarioLogueado.getId()))
+                        .findFirst()
+                        .orElseThrow(() -> new Exception("Médico logueado no existe en la lista"));
+                r.setMedico(m);
             } else {
                 throw new Exception("Usuario no autorizado o médico no asignado");
             }
@@ -180,7 +208,9 @@ public class Service {
 
         data.getRecetas().add(r);
         XmlPersister.instance().store(data);
+        return r;
     }
+
 
     public List<Receta> searchRecetaById(String id) {
         if (id == null || id.isEmpty()) {
@@ -209,17 +239,6 @@ public class Service {
         existente.setMedicamentos(r.getMedicamentos());
     }
 
-    public void deleteReceta(Receta r) throws Exception {
-        Receta existente = data.getRecetas().stream()
-                .filter(rec -> rec.getId().equals(r.getId()))
-                .findFirst()
-                .orElse(null);
-        if (existente != null) {
-            data.getRecetas().remove(existente);
-        } else {
-            throw new Exception("Receta no existe");
-        }
-    }
 
     public Receta readReceta(Receta r) throws Exception {
         Receta result = data.getRecetas().stream()
@@ -312,12 +331,7 @@ public class Service {
                 .collect(Collectors.toList());
     }
 
-    public void addMedicamentoToReceta(String recetaId, MedicamentoDetalle detalle) throws Exception {
-        Receta r = readReceta(new Receta(){{
-            setId(recetaId);
-        }});
-        r.getMedicamentos().add(detalle);
-    }
+
 
     public void removeMedicamentoFromReceta(String recetaId, int index) throws Exception {
         Receta r = readReceta(new Receta(){{
@@ -330,6 +344,7 @@ public class Service {
         }
     }
 
+    //Modificar detalle
     public Receta modificarDetalleMedicamento(Receta receta, int row) throws Exception {
         if (receta == null || receta.getMedicamentos() == null || row < 0 || row >= receta.getMedicamentos().size()) {
             throw new Exception("Índice inválido para modificar detalle");
@@ -355,30 +370,39 @@ public class Service {
     }
 
 
-
+    //Farmaceutas
     public void create(Farmaceutico f) throws Exception {
-        Farmaceutico result = data.getFarmaceuticos().stream()
+        Farmaceutico existente = data.getFarmaceuticos().stream()
                 .filter(far -> far.getId().equals(f.getId()))
                 .findFirst()
                 .orElse(null);
-        if (result == null) {
-            data.getFarmaceuticos().add(f);
-        } else {
-            throw new Exception("Farmacéutico ya existe");
+        if (existente != null) throw new Exception("Farmacéutico ya existe");
+
+        Departamento dep = data.getDepartamentos().stream()
+                .filter(d -> d.getCodigo().equals("003")) // 003 = Farmaceutico
+                .findFirst()
+                .orElseThrow(() -> new Exception("Departamento de farmacéutico no existe"));
+        f.setDepartamento(dep);
+
+        data.getFarmaceuticos().add(f);
+
+        Usuario u = new Usuario();
+        u.setId(f.getId());
+        u.setClave(f.getId());
+        u.setDepartamento(dep);
+
+        Usuario userExistente = data.getUsuarios().stream()
+                .filter(us -> us.getId().equals(u.getId()))
+                .findFirst()
+                .orElse(null);
+        if (userExistente == null) {
+            data.getUsuarios().add(u);
         }
+
+        XmlPersister.instance().store(data);
     }
 
-    public void delete(Farmaceutico f) throws Exception {
-        Farmaceutico result = data.getFarmaceuticos().stream()
-                .filter(far -> far.getId().equals(f.getId()))
-                .findFirst()
-                .orElse(null);
-        if (result != null) {
-            data.getFarmaceuticos().remove(result);
-        } else {
-            throw new Exception("Farmacéutico no existe");
-        }
-    }
+
 
     public Farmaceutico read(Farmaceutico f) throws Exception {
         Farmaceutico result = data.getFarmaceuticos().stream()
@@ -400,7 +424,19 @@ public class Service {
                 .collect(Collectors.toList());
     }
 
+    public void delete(Farmaceutico f) throws Exception {
+        Farmaceutico result = data.getFarmaceuticos().stream()
+                .filter(far -> far.getId().equals(f.getId()))
+                .findFirst()
+                .orElse(null);
+        if (result != null) {
+            data.getFarmaceuticos().remove(result);
+        } else {
+            throw new Exception("Farmacéutico no existe");
+        }
+    }
 
+    //Paciente
     public void create(Paciente p) throws Exception {
         Paciente result = data.getPacientes().stream()
                 .filter(pac -> pac.getId().equals(p.getId()))
@@ -452,7 +488,7 @@ public class Service {
                 .collect(Collectors.toList());
     }
 
-
+    //Usuario
     public void create(Usuario u) throws Exception {
         Usuario result = data.getUsuarios().stream()
                 .filter(us -> us.getId().equals(u.getId()))
@@ -494,11 +530,16 @@ public class Service {
         return logged;
     }
 
-    public String getRol(Usuario usuario) {
-        if (usuario.getDepartamento() == null) return "Desconocido";
-        return usuario.getDepartamento().getNombre();
+    public Usuario findUserById(String id) {
+        for (Usuario u : data.getUsuarios()) {
+            if (u.getId().equals(id)) {
+                return u;
+            }
+        }
+        return null;
     }
 
+    //Departamento
 
     public List<Departamento> findAllDepartamentos() {
         return data.getDepartamentos();
@@ -513,12 +554,5 @@ public class Service {
                 .collect(Collectors.toList());
     }
 
-    public Usuario findUserById(String id) {
-        for (Usuario u : data.getUsuarios()) {
-            if (u.getId().equals(id)) {
-                return u;
-            }
-        }
-        return null;
-    }
+
 }

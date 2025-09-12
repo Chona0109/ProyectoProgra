@@ -1,9 +1,7 @@
-package sistema.presentation.medicos.MedicosForm;
+package sistema.presentation.medicos;
 
 import sistema.logic.entities.Medico;
 import sistema.presentation.Departamentos.Departamentos;
-import sistema.presentation.medicos.MedicosController;
-import sistema.presentation.medicos.MedicosModel;
 import sistema.presentation.tableModels.MedicosTableModel;
 
 import javax.swing.*;
@@ -25,8 +23,6 @@ public class MedicosForm implements PropertyChangeListener {
     private JButton borrarButton;
     private JButton buscarButton;
     private JTable miTabla;
-    private JLabel departamento;
-    private JButton buscarDepartamento;
     private JTextField buscarIdFld;
     private JButton reporteButton;
 
@@ -37,16 +33,8 @@ public class MedicosForm implements PropertyChangeListener {
     private MedicosTableModel tableModel;
 
     public MedicosForm() {
-        departamentosView = new Departamentos();
 
-        buscarDepartamento.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                departamentosView.setVisible(true);
-            }
-        });
 
-        // Guardar médico
         guardarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -126,9 +114,6 @@ public class MedicosForm implements PropertyChangeListener {
         this.model = model;
         model.addPropertyChangeListener(this);
 
-        if (departamentosView != null) {
-            departamentosView.setModel(model);
-        }
 
         tableModel = new MedicosTableModel(
                 new int[]{MedicosTableModel.ID, MedicosTableModel.NOMBRE, MedicosTableModel.ESPECIALIDAD},
@@ -149,9 +134,6 @@ public class MedicosForm implements PropertyChangeListener {
                 llenarFormulario();
                 break;
 
-            case MedicosModel.DEPARTMENT:
-                actualizarEtiquetaDepartamento();
-                break;
         }
         main.revalidate();
     }
@@ -162,26 +144,16 @@ public class MedicosForm implements PropertyChangeListener {
             idFld.setText(m.getId());
             nameFld.setText(m.getNombre());
             especialidadFld.setText(m.getEspecialidad());
-            actualizarEtiquetaDepartamento();
         }
     }
 
-    private void actualizarEtiquetaDepartamento() {
-        if (model != null && model.getCurrent() != null && model.getCurrent().getDepartamento() != null) {
-            departamento.setText(model.getCurrent().getDepartamento().getNombre());
-        } else {
-            departamento.setText("No seleccionado");
-        }
-    }
 
     private Medico take() {
         Medico m = new Medico();
         m.setId(idFld.getText().trim());
         m.setNombre(nameFld.getText().trim());
         m.setEspecialidad(especialidadFld.getText().trim());
-        if (model.getCurrent() != null) {
-            m.setDepartamento(model.getCurrent().getDepartamento());
-        }
+
         return m;
     }
 
@@ -200,14 +172,6 @@ public class MedicosForm implements PropertyChangeListener {
             valid = false; especialidadFld.setBackground(Color.PINK);
         } else especialidadFld.setBackground(Color.WHITE);
 
-        if (model.getCurrent() == null || model.getCurrent().getDepartamento() == null) {
-            valid = false;
-            departamento.setOpaque(true);
-            departamento.setBackground(Color.PINK);
-        } else {
-            departamento.setOpaque(false);
-            departamento.setBackground(null);
-        }
 
         return valid;
     }

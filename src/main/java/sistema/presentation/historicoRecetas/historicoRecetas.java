@@ -107,29 +107,27 @@ public class historicoRecetas extends JDialog implements PropertyChangeListener 
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
             case historicoRecetasModel.LIST:
-                actualizarTabla();
+                int[] cols = {
+                        HistoricoRecetasTableModel.ID,
+                        HistoricoRecetasTableModel.ESTADO,
+                        HistoricoRecetasTableModel.FECHA,
+                        HistoricoRecetasTableModel.PACIENTE,
+                        HistoricoRecetasTableModel.ID_PACIENTE,
+                        HistoricoRecetasTableModel.MEDICO
+                };
+
+                List<Receta> recetas = model.getCurrentList();
+
+                miTabla.setModel(new HistoricoRecetasTableModel(cols, recetas));
+                miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 break;
+
             case historicoRecetasModel.CURRENT:
-                break;
         }
-        this.main.revalidate();
+
+        main.revalidate();
     }
 
-    private void actualizarTabla() {
-        int[] cols = {
-                HistoricoRecetasTableModel.ID,
-                HistoricoRecetasTableModel.ESTADO,
-                HistoricoRecetasTableModel.FECHA,
-                HistoricoRecetasTableModel.PACIENTE,
-                HistoricoRecetasTableModel.ID_PACIENTE,
-                HistoricoRecetasTableModel.MEDICO
-        };
-
-        List<Receta> recetas = model.getCurrentList() != null ? model.getCurrentList() : new ArrayList<>();
-        HistoricoRecetasTableModel tableModel = new HistoricoRecetasTableModel(cols, recetas);
-        miTabla.setModel(tableModel);
-        miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    }
 
     private void showRecetaDetails(Receta receta) {
         if (receta == null) {
@@ -155,14 +153,6 @@ public class historicoRecetas extends JDialog implements PropertyChangeListener 
         miTabla = new JTable();
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            historicoRecetasModel model = new historicoRecetasModel();
-            historicoRecetasController controller = new historicoRecetasController(model);
-            historicoRecetas dialog = new historicoRecetas(null, model, controller);
-            dialog.setVisible(true);
-        });
-    }
 
     public Component getPanel() {
         return main;

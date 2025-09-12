@@ -1,33 +1,28 @@
 package sistema.presentation.historicoRecetas;
 
 import sistema.logic.entities.Receta;
-
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
+import sistema.presentation.AbstractModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class historicoRecetasModel {
+public class historicoRecetasModel extends AbstractModel {
 
     public static final String LIST = "list";
     public static final String CURRENT = "current";
 
     private List<Receta> list;
     private Receta current;
-    private PropertyChangeSupport propertyChangeSupport;
 
     public historicoRecetasModel() {
         list = new ArrayList<>();
-        current = null;
-        propertyChangeSupport = new PropertyChangeSupport(this);
+        current = new Receta();
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        propertyChangeSupport.addPropertyChangeListener(listener);
-    }
-
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        propertyChangeSupport.removePropertyChangeListener(listener);
+    @Override
+    public void addPropertyChangeListener(java.beans.PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
+        firePropertyChange(LIST);
+        firePropertyChange(CURRENT);
     }
 
     public List<Receta> getList() {
@@ -36,7 +31,7 @@ public class historicoRecetasModel {
 
     public void setList(List<Receta> list) {
         this.list = list != null ? list : new ArrayList<>();
-        propertyChangeSupport.firePropertyChange(LIST, null, this.list);
+        firePropertyChange(LIST);
     }
 
     public Receta getCurrent() {
@@ -44,12 +39,11 @@ public class historicoRecetasModel {
     }
 
     public void setCurrent(Receta current) {
-        this.current = current;
-        propertyChangeSupport.firePropertyChange(CURRENT, null, this.current);
+        this.current = current != null ? current : new Receta();
+        firePropertyChange(CURRENT);
     }
 
     public List<Receta> getCurrentList() {
         return list != null ? list : new ArrayList<>();
     }
-
 }
