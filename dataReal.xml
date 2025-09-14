@@ -127,7 +127,7 @@
             </medicamentos>
             <fechaConfeccion>2025-09-12</fechaConfeccion>
             <fechaRetiro>2025-09-15</fechaRetiro>
-            <estado>CONFECCIONADA</estado>
+            <estado>LISTA</estado>
         </receta>
         <receta>
             <id>R2</id>
@@ -189,7 +189,7 @@
                 <indicaciones>una cada dos dias</indicaciones>
                 <dias>30</dias>
             </medicamentos>
-            <fechaConfeccion>2025-09-12</fechaConfeccion>
+            <fechaConfeccion>2025-07-12</fechaConfeccion>
             <fechaRetiro>2025-09-15</fechaRetiro>
             <estado>PROCESO</estado>
         </receta>
@@ -221,8 +221,40 @@
                 <indicaciones>cada dos dias</indicaciones>
                 <dias>20</dias>
             </medicamentos>
-            <fechaConfeccion>2025-09-12</fechaConfeccion>
+            <fechaConfeccion>2025-08-12</fechaConfeccion>
             <fechaRetiro>2025-09-15</fechaRetiro>
+            <estado>CONFECCIONADA</estado>
+        </receta>
+        <receta>
+            <id>R5</id>
+            <medico>
+                <id>001</id>
+                <nombre>Sebastian Gonzales</nombre>
+                <clave></clave>
+                <departamento>
+                    <codigo>002</codigo>
+                    <nombre>Medico</nombre>
+                </departamento>
+                <especialidad>Cardiologo</especialidad>
+            </medico>
+            <paciente>
+                <id>PAC-003</id>
+                <nombre>Mattiw</nombre>
+                <fechaNacimiento>2005-08-01</fechaNacimiento>
+                <telefono>555-7777</telefono>
+            </paciente>
+            <medicamentos>
+                <medicamento>
+                    <codigo>MEDI-001</codigo>
+                    <nombre>Acetaminofen</nombre>
+                    <presentacion>100mg</presentacion>
+                </medicamento>
+                <cantidad>3</cantidad>
+                <indicaciones>Tomar cada 2 dias</indicaciones>
+                <dias>8</dias>
+            </medicamentos>
+            <fechaConfeccion>2025-09-14</fechaConfeccion>
+            <fechaRetiro>2025-09-17</fechaRetiro>
             <estado>CONFECCIONADA</estado>
         </receta>
     </recetas>
