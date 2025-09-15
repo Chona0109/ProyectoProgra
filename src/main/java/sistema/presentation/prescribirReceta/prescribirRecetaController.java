@@ -64,18 +64,31 @@ public class prescribirRecetaController {
     public void removeMedicamento(String recetaId, int index) throws Exception {
         Service.instance().removeMedicamentoFromReceta(recetaId, index);
         model.setCurrent(Service.instance().readReceta(new Receta(){{ setId(recetaId); }}));
+
     }
     public void modificarDetalleMedicamento(int row) {
         try {
-            Receta recetaActualizada = Service.instance().modificarDetalleMedicamento(model.getCurrent(), row);
+            Receta recetaActual = model.getCurrent();
+            if (recetaActual == null) {
+                JOptionPane.showMessageDialog(null, "No hay receta seleccionada",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            Receta recetaActualizada = Service.instance().modificarDetalleMedicamento(null, recetaActual, row);
+
             if (recetaActualizada != null) {
                 model.setCurrent(recetaActualizada);
+                model.setDetalleList(recetaActualizada.getMedicamentos());
             }
+
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Error al modificar detalle: " + ex.getMessage(),
+            JOptionPane.showMessageDialog(null,
+                    "Error al modificar detalle: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
 
 }

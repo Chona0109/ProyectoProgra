@@ -1,5 +1,6 @@
 package sistema.presentation.prescribirReceta;
 
+import com.github.lgooddatepicker.components.DatePicker;
 import sistema.logic.entities.MedicamentoDetalle;
 import sistema.logic.entities.Paciente;
 import sistema.logic.entities.Receta;
@@ -18,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +34,7 @@ public class prescribirReceta extends JDialog implements PropertyChangeListener 
     private JButton detallesButton;
     private JTable miTabla;
     private JLabel paciente;
+    private DatePicker datePicker;
 
     private prescribirRecetaModel model;
     private prescribirRecetaController controller;
@@ -83,23 +86,31 @@ public class prescribirReceta extends JDialog implements PropertyChangeListener 
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = miTabla.getSelectedRow();
-                Receta currentReceta = model.getCurrent();
+                if (row < 0) {
+                    JOptionPane.showMessageDialog(main, "Seleccione un medicamento para descartar", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
 
-                if (row >= 0 && currentReceta != null) {
-                    try {
-                        controller.removeMedicamento(currentReceta.getId(), row);
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(main,
-                                "Error al descartar el medicamento: " + ex.getMessage(),
-                                "Error", JOptionPane.ERROR_MESSAGE);
+                Receta currentReceta = model.getCurrent();
+                if (currentReceta == null) {
+                    JOptionPane.showMessageDialog(main, "No hay receta seleccionada", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                int confirm = JOptionPane.showConfirmDialog(main, "¿Eliminar este medicamento?", "Confirmar", JOptionPane.YES_NO_OPTION);
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    List<MedicamentoDetalle> detalles = currentReceta.getMedicamentos();
+                    if (row >= 0 && row < detalles.size()) {
+                        detalles.remove(row);
+
+                        model.setDetalleList(detalles);
                     }
-                } else {
-                    JOptionPane.showMessageDialog(main,
-                            "Seleccione un medicamento para descartar",
-                            "Advertencia", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
+
+
 
 
         detallesButton.addActionListener(new ActionListener() {
@@ -122,13 +133,15 @@ public class prescribirReceta extends JDialog implements PropertyChangeListener 
                             controller.create(receta);
                         } else {
                             controller.update(receta);
-                            controller.clear();
                         }
 
                         JOptionPane.showMessageDialog(main,
                                 "Receta guardada para: " + receta.getPaciente().getNombre() +
                                         "\nCantidad de medicamentos: " + receta.getMedicamentos().size(),
                                 "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+                        controller.clear();
+
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(main,
                                 "Error al guardar la receta: " + ex.getMessage(),
@@ -137,6 +150,7 @@ public class prescribirReceta extends JDialog implements PropertyChangeListener 
                 }
             }
         });
+
 
 
         limpiarButton.addActionListener(new ActionListener() {
@@ -195,8 +209,16 @@ public class prescribirReceta extends JDialog implements PropertyChangeListener 
     }
 
     private Receta take() {
-        return model.getCurrent();
+        Receta receta = model.getCurrent();
+
+
+        if (datePicker.getDate() != null) {
+            receta.setFechaRetiro(datePicker.getDate());
+        }
+
+        return receta;
     }
+
 
     private boolean validateForm() {
         boolean valid = true;

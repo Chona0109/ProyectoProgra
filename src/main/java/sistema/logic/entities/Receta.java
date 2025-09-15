@@ -25,7 +25,6 @@ public class Receta {
         this.medicamentos = new ArrayList<>();
         this.fechaConfeccion = LocalDate.now();
         this.estado = "CONFECCIONADA";
-        this.fechaRetiro = LocalDate.now().plusDays(3);
     }
 
     public Receta(Medico medico, Paciente paciente) {

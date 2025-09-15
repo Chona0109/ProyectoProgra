@@ -1,5 +1,6 @@
 package sistema.presentation.prescribirReceta;
 
+import sistema.logic.entities.MedicamentoDetalle;
 import sistema.logic.entities.Receta;
 import sistema.presentation.AbstractModel;
 
@@ -11,9 +12,11 @@ public class prescribirRecetaModel extends AbstractModel {
 
     private Receta current;
     private List<Receta> list;
+    private List<MedicamentoDetalle> detalleList = new ArrayList<>();
 
     public static final String CURRENT = "current";
     public static final String LIST = "list";
+    public static final String DETALLE_LIST = "detalleList";
 
     public prescribirRecetaModel() {
         current = new Receta();
@@ -44,5 +47,14 @@ public class prescribirRecetaModel extends AbstractModel {
     public void setList(List<Receta> list) {
         this.list = list != null ? list : new ArrayList<>();
         firePropertyChange(LIST);
+    }
+
+    public List<MedicamentoDetalle> getDetalleList() {
+        return detalleList;
+    }
+
+    public void setDetalleList(List<MedicamentoDetalle> list) {
+        this.detalleList = list != null ? list : new ArrayList<>();
+        firePropertyChange(DETALLE_LIST);
     }
 }

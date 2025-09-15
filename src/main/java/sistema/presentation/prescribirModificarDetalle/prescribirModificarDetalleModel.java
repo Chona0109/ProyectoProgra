@@ -1,59 +1,69 @@
 package sistema.presentation.prescribirModificarDetalle;
 
+import sistema.presentation.AbstractModel;
+import sistema.logic.entities.MedicamentoDetalle;
+
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.List;
 
-public class prescribirModificarDetalleModel {
+public class prescribirModificarDetalleModel extends AbstractModel {
 
-    public static final String INDICACIONES = "INDICACIONES";
-    public static final String CANTIDAD = "CANTIDAD";
-    public static final String DIAS = "DIAS";
+    private MedicamentoDetalle current = new MedicamentoDetalle();
+    private List<MedicamentoDetalle> list = new ArrayList<>();
 
-    private String indicaciones;
-    private int cantidad;
-    private int dias;
+    public static final String CURRENT = "current";
+    public static final String LIST = "list";
 
-    private PropertyChangeSupport support;
-
-    public prescribirModificarDetalleModel() {
-        support = new PropertyChangeSupport(this);
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
+        firePropertyChange(CURRENT);
+        firePropertyChange(LIST);
     }
 
-    public String getIndicaciones() {
-        return indicaciones;
+    public MedicamentoDetalle getCurrent() {
+        return current;
     }
 
-    public void setIndicaciones(String indicaciones) {
-        String old = this.indicaciones;
-        this.indicaciones = indicaciones;
-        support.firePropertyChange(INDICACIONES, old, indicaciones);
+    public void setCurrent(MedicamentoDetalle current) {
+        this.current = current;
+        firePropertyChange(CURRENT);
     }
 
-    public int getCantidad() {
-        return cantidad;
+    public List<MedicamentoDetalle> getList() {
+        return list;
+    }
+
+    public void setList(List<MedicamentoDetalle> list) {
+        this.list = list != null ? list : new ArrayList<>();
+        firePropertyChange(LIST);
     }
 
     public void setCantidad(int cantidad) {
-        int old = this.cantidad;
-        this.cantidad = cantidad;
-        support.firePropertyChange(CANTIDAD, old, cantidad);
+        current.setCantidad(cantidad);
+        firePropertyChange("cantidad");
     }
 
-    public int getDias() {
-        return dias;
+    public int getCantidad() {
+        return current.getCantidad();
     }
 
     public void setDias(int dias) {
-        int old = this.dias;
-        this.dias = dias;
-        support.firePropertyChange(DIAS, old, dias);
+        current.setDias(dias);
+        firePropertyChange("dias");
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener pcl) {
-        support.addPropertyChangeListener(pcl);
+    public int getDias() {
+        return current.getDias();
     }
 
-    public void removePropertyChangeListener(PropertyChangeListener pcl) {
-        support.removePropertyChangeListener(pcl);
+    public void setIndicaciones(String indicaciones) {
+        current.setIndicaciones(indicaciones);
+        firePropertyChange("indicaciones");
+    }
+
+    public String getIndicaciones() {
+        return current.getIndicaciones();
     }
 }

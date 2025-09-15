@@ -1,5 +1,7 @@
 package sistema.presentation.prescribirModificarDetalle;
 
+import sistema.logic.entities.MedicamentoDetalle;
+
 public class prescribirModificarDetalleController {
 
     private prescribirModificarDetalleModel model;
@@ -8,8 +10,8 @@ public class prescribirModificarDetalleController {
         this.model = model;
     }
 
-    public void cambiarIndicaciones(String indicaciones) {
-        model.setIndicaciones(indicaciones);
+    public void setCurrentDetalle(MedicamentoDetalle detalle) {
+        model.setCurrent(detalle);
     }
 
     public void cambiarCantidad(int cantidad) {
@@ -20,5 +22,7 @@ public class prescribirModificarDetalleController {
         model.setDias(dias);
     }
 
-
+    public void cambiarIndicaciones(String indicaciones) {
+        model.setIndicaciones(indicaciones);
+    }
 }

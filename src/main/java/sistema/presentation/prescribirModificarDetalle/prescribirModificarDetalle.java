@@ -1,10 +1,11 @@
 package sistema.presentation.prescribirModificarDetalle;
 
-import sistema.logic.entities.Medicamento;
 import sistema.logic.entities.MedicamentoDetalle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class prescribirModificarDetalle extends JDialog {
 
@@ -16,12 +17,18 @@ public class prescribirModificarDetalle extends JDialog {
     private JPanel main;
     private JLabel medicamento;
 
-    private Medicamento medicamentoSeleccionado;
+
+    private prescribirModificarDetalleModel model;
+    private prescribirModificarDetalleController controller;
     private boolean guardado = false;
 
-    public prescribirModificarDetalle(Window parent, Medicamento medicamento) {
+    public prescribirModificarDetalle(Window parent, MedicamentoDetalle detalle) {
         super(parent, "Modificar Detalle", ModalityType.APPLICATION_MODAL);
-        this.medicamentoSeleccionado = medicamento;
+
+        model = new prescribirModificarDetalleModel();
+        controller = new prescribirModificarDetalleController(model);
+
+        controller.setCurrentDetalle(detalle);
 
         setContentPane(main);
         setSize(550, 310);
@@ -30,18 +37,27 @@ public class prescribirModificarDetalle extends JDialog {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 
-        if (medicamento != null) {
-            this.medicamento.setText(medicamento.getNombre());
-        }
+        cantidad.setValue(model.getCantidad());
+        dias.setValue(model.getDias());
+        indicaciones.setText(model.getIndicaciones());
 
-
-        guardarButton.addActionListener(e -> {
-            guardado = true;
-            dispose();
+        guardarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.cambiarCantidad((Integer) cantidad.getValue());
+                controller.cambiarDias((Integer) dias.getValue());
+                controller.cambiarIndicaciones(indicaciones.getText());
+                guardado = true;
+                dispose();
+            }
         });
 
-
-        cancelarButton.addActionListener(e -> dispose());
+        cancelarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
     }
 
     public boolean isGuardado() {
@@ -49,37 +65,6 @@ public class prescribirModificarDetalle extends JDialog {
     }
 
     public MedicamentoDetalle take() {
-        return new MedicamentoDetalle(
-                medicamentoSeleccionado,
-                (Integer) cantidad.getValue(),
-                indicaciones.getText(),
-                (Integer) dias.getValue()
-        );
-    }
-
-
-    public int getCantidad() {
-        return (Integer) cantidad.getValue();
-    }
-
-    public int getDias() {
-        return (Integer) dias.getValue();
-    }
-
-    public String getIndicaciones() {
-        return indicaciones.getText();
-    }
-
-
-    public void setCantidad(int cant) {
-        cantidad.setValue(cant);
-    }
-
-    public void setDias(int d) {
-        dias.setValue(d);
-    }
-
-    public void setIndicaciones(String ind) {
-        indicaciones.setText(ind);
+        return model.getCurrent();
     }
 }

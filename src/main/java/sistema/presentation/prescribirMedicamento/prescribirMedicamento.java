@@ -1,6 +1,7 @@
 package sistema.presentation.prescribirMedicamento;
 
 import sistema.logic.entities.Medicamento;
+import sistema.logic.entities.MedicamentoDetalle;
 import sistema.presentation.prescribirModificarDetalle.prescribirModificarDetalle;
 import sistema.presentation.prescribirReceta.prescribirReceta;
 import sistema.presentation.tableModels.MedicamentosTableModel;
@@ -42,19 +43,18 @@ public class prescribirMedicamento extends JDialog implements PropertyChangeList
             public void actionPerformed(ActionEvent e) {
                 int row = miTabla.getSelectedRow();
                 if (row >= 0 && controller != null) {
-                    String codigo = (String) miTabla.getValueAt(row, 0);
-                    controller.seleccionarMedicamento(codigo);
+                    Medicamento seleccionado = model.getList().get(row);
 
-                    if (model.getCurrent() != null) {
-                        prescribirModificarDetalle detalleDialog =
-                                new prescribirModificarDetalle(prescribirMedicamento.this, model.getCurrent());
-                        detalleDialog.setVisible(true);
+                    MedicamentoDetalle detalle = new MedicamentoDetalle();
+                    detalle.setMedicamento(seleccionado);
 
-                        if (detalleDialog.isGuardado()) {
-                            if (getParent() instanceof prescribirReceta) {
-                                prescribirReceta recetaDialog = (prescribirReceta) getParent();
-                                recetaDialog.agregarDetalle(detalleDialog.take());
-                            }
+                    prescribirModificarDetalle detalleDialog = new prescribirModificarDetalle(prescribirMedicamento.this, detalle);
+                    detalleDialog.setVisible(true);
+
+                    if (detalleDialog.isGuardado()) {
+                        if (getParent() instanceof prescribirReceta) {
+                            prescribirReceta recetaDialog = (prescribirReceta) getParent();
+                            recetaDialog.agregarDetalle(detalleDialog.take());
                         }
                     }
 
@@ -62,6 +62,7 @@ public class prescribirMedicamento extends JDialog implements PropertyChangeList
                 }
             }
         });
+
 
         cancelarButton.addActionListener(new ActionListener() {
             @Override

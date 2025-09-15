@@ -4,7 +4,10 @@ import sistema.data.data;
 import sistema.data.XmlPersister;
 import sistema.logic.entities.*;
 import sistema.presentation.prescribirModificarDetalle.prescribirModificarDetalle;
+import sistema.presentation.prescribirModificarDetalle.prescribirModificarDetalleController;
+import sistema.presentation.prescribirModificarDetalle.prescribirModificarDetalleModel;
 
+import java.awt.*;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -345,29 +348,26 @@ public class Service {
     }
 
     //Modificar detalle
-    public Receta modificarDetalleMedicamento(Receta receta, int row) throws Exception {
+    public Receta modificarDetalleMedicamento(Window parent, Receta receta, int row) throws Exception {
         if (receta == null || receta.getMedicamentos() == null || row < 0 || row >= receta.getMedicamentos().size()) {
             throw new Exception("Índice inválido para modificar detalle");
         }
 
         MedicamentoDetalle detalle = receta.getMedicamentos().get(row);
 
-        prescribirModificarDetalle detalleDialog = new prescribirModificarDetalle(null, detalle.getMedicamento());
+        prescribirModificarDetalle dialog = new prescribirModificarDetalle(parent, detalle);
+        dialog.setVisible(true);
 
-        detalleDialog.setCantidad(detalle.getCantidad());
-        detalleDialog.setDias(detalle.getDias());
-        detalleDialog.setIndicaciones(detalle.getIndicaciones());
-
-        detalleDialog.setVisible(true);
-
-        if (detalleDialog.isGuardado()) {
-            detalle.setCantidad(detalleDialog.getCantidad());
-            detalle.setDias(detalleDialog.getDias());
-            detalle.setIndicaciones(detalleDialog.getIndicaciones());
+        if (dialog.isGuardado()) {
+            receta.getMedicamentos().set(row, dialog.take());
         }
 
         return receta;
     }
+
+
+
+
 
 
     //Farmaceutas
