@@ -36,8 +36,13 @@ public class FarmaceutasForm implements PropertyChangeListener {
                 if (validateForm()) {
                     Farmaceutico f = take();
                     try {
-                        controller.create(f);
-                        JOptionPane.showMessageDialog(main, "REGISTRO APLICADO", "", JOptionPane.INFORMATION_MESSAGE);
+                        if (idFld.isEnabled()) {
+                            controller.create(f);
+                            JOptionPane.showMessageDialog(main, "Farmaceuta agregado correctamente", "", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            controller.update(f);
+                            JOptionPane.showMessageDialog(main, "Farmaceuta actualizado correctamente", "", JOptionPane.INFORMATION_MESSAGE);
+                        }
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(main, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -84,15 +89,19 @@ public class FarmaceutasForm implements PropertyChangeListener {
         });
 
 
-        miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        miTabla.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting() && controller != null) {
-                int row = miTabla.getSelectedRow();
-                if (row >= 0) {
-                    String id = (String) miTabla.getValueAt(row, 0);
+        miTabla.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2 && miTabla.getSelectedRow() != -1) {
+                    int row = miTabla.getSelectedRow();
+                    FarmaceuticosTableModel tm = (FarmaceuticosTableModel) miTabla.getModel();
+                    Farmaceutico seleccionado = tm.getRowAt(row);
+
                     try {
-                        controller.read(id);
+                        controller.read(seleccionado.getId());
+                        controller.setCurrent(model.getCurrent());
                     } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(main, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
@@ -127,7 +136,14 @@ public class FarmaceutasForm implements PropertyChangeListener {
                 break;
 
             case FarmaceutasModel.CURRENT:
-                llenarFormulario();
+                Farmaceutico f = model.getCurrent();
+                if (f.getId() == null || f.getId().isEmpty()) {
+                    idFld.setText("");
+                    idFld.setEnabled(true);
+                    nombreFld.setText("");
+                }else{
+                    llenarFormulario();
+                }
                 break;
         }
         main.revalidate();
@@ -137,6 +153,7 @@ public class FarmaceutasForm implements PropertyChangeListener {
         if (model.getCurrent() != null) {
             Farmaceutico f = model.getCurrent();
             idFld.setText(f.getId());
+            idFld.setEnabled(false);
             nombreFld.setText(f.getNombre());
         }
     }

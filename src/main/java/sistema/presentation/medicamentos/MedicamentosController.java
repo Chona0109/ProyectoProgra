@@ -1,6 +1,7 @@
 package sistema.presentation.medicamentos;
 
 import sistema.logic.Service;
+import sistema.logic.entities.Farmaceutico;
 import sistema.logic.entities.Medicamento;
 
 public class MedicamentosController {
@@ -29,6 +30,20 @@ public class MedicamentosController {
             model.setCurrent(nuevo);
             throw ex;
         }
+    }
+
+    public void setCurrent(Medicamento v) {
+        model.setCurrent(v);
+    }
+
+    public void update(Medicamento medicamento) throws Exception {
+        Service.instance().updateMedicamento(medicamento);
+        refreshMedicamentos();
+    }
+
+    private void refreshMedicamentos() {
+        model.setList(Service.instance().findAllMedicamentos());
+        model.setCurrent(new Medicamento());
     }
 
     public void clear() {

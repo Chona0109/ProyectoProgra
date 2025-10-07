@@ -75,6 +75,20 @@ public class Service {
         XmlPersister.instance().store(data);
     }
 
+    public void updateMedico(Medico medico) throws Exception {
+        boolean encontrado = false;
+        for (int i = 0; i < data.getMedicos().size(); i++) {
+            if (data.getMedicos().get(i).getId().equals(medico.getId())) {
+                data.getMedicos().set(i, medico);
+                encontrado = true;
+                break;
+            }
+        }
+        if (!encontrado) {
+            throw new Exception("Medico no existe");
+        }
+    }
+
     public Medico read(Medico e) throws Exception {
         Medico result = data.getMedicos().stream()
                 .filter(m -> m.getId().equals(e.getId()))
@@ -138,6 +152,20 @@ public class Service {
         if (result != null) {
             data.getMedicamentos().remove(result);
         } else {
+            throw new Exception("Medicamento no existe");
+        }
+    }
+
+    public void updateMedicamento(Medicamento medicamento) throws Exception {
+        boolean encontrado = false;
+        for (int i = 0; i < data.getMedicamentos().size(); i++) {
+            if (data.getMedicamentos().get(i).getCodigo().equals(medicamento.getCodigo())) {
+                data.getMedicamentos().set(i, medicamento);
+                encontrado = true;
+                break;
+            }
+        }
+        if (!encontrado) {
             throw new Exception("Medicamento no existe");
         }
     }
@@ -367,9 +395,6 @@ public class Service {
 
 
 
-
-
-
     //Farmaceutas
     public void create(Farmaceutico f) throws Exception {
         Farmaceutico existente = data.getFarmaceuticos().stream()
@@ -436,6 +461,20 @@ public class Service {
         }
     }
 
+    public void updateFarmaceutico(Farmaceutico farmaceutico) throws Exception {
+        boolean encontrado = false;
+        for (int i = 0; i < data.getFarmaceuticos().size(); i++) {
+            if (data.getFarmaceuticos().get(i).getId().equals(farmaceutico.getId())) {
+                data.getFarmaceuticos().set(i, farmaceutico);
+                encontrado = true;
+                break;
+            }
+        }
+        if (!encontrado) {
+            throw new Exception("Farmaceuta no existe");
+        }
+    }
+
     //Paciente
     public void create(Paciente p) throws Exception {
         Paciente result = data.getPacientes().stream()
@@ -446,6 +485,20 @@ public class Service {
             data.getPacientes().add(p);
         } else {
             throw new Exception("Paciente ya existe");
+        }
+    }
+
+    public void updatePaciente(Paciente paciente) throws Exception {
+        boolean encontrado = false;
+        for (int i = 0; i < data.getPacientes().size(); i++) {
+            if (data.getPacientes().get(i).getId().equals(paciente.getId())) {
+                data.getPacientes().set(i, paciente);
+                encontrado = true;
+                break;
+            }
+        }
+        if (!encontrado) {
+            throw new Exception("Paciente no existe");
         }
     }
 

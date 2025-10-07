@@ -1,5 +1,7 @@
 package sistema.presentation.tableModels;
 
+import sistema.logic.entities.Farmaceutico;
+import sistema.logic.entities.Medicamento;
 import sistema.logic.entities.MedicamentoDetalle;
 import sistema.presentation.AbstractTableModel;
 

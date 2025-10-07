@@ -1,5 +1,6 @@
 package sistema.presentation.tableModels;
 
+import sistema.logic.entities.Medicamento;
 import sistema.logic.entities.Paciente;
 import sistema.presentation.AbstractTableModel;
 
@@ -23,6 +24,10 @@ public class PacientesTableModel extends AbstractTableModel<Paciente> {
         colNames[NOMBRE] = "Nombre";
         colNames[FECHA] = "Fecha Nacimiento";
         colNames[TELEFONO] = "Teléfono";
+    }
+
+    public Paciente getRowAt(int row) {
+        return rows.get(row);
     }
 
     @Override

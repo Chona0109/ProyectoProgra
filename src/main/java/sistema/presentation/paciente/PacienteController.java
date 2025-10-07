@@ -1,6 +1,7 @@
 package sistema.presentation.paciente;
 
 import sistema.logic.Service;
+import sistema.logic.entities.Medico;
 import sistema.logic.entities.Paciente;
 import sistema.presentation.paciente.PacientesForm.*;
 
@@ -17,6 +18,20 @@ public class PacienteController {
         Service.instance().create(p);
         model.setCurrent(new Paciente());
         model.setList(Service.instance().findAllPaciente());
+    }
+
+    public void setCurrent(Paciente v) {
+        model.setCurrent(v);
+    }
+
+    public void update(Paciente paciente) throws Exception {
+        Service.instance().updatePaciente(paciente);
+        refreshPacientes();
+    }
+
+    private void refreshPacientes() {
+        model.setList(Service.instance().findAllPaciente());
+        model.setCurrent(new Paciente());
     }
 
     public void read(String id) throws Exception {

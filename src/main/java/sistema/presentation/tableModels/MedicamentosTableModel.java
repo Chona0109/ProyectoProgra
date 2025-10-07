@@ -22,6 +22,10 @@ public class MedicamentosTableModel extends AbstractTableModel<Medicamento> {
         colNames[PRESENTACION] = "Presentación";
     }
 
+    public Medicamento getRowAt(int row) {
+        return rows.get(row);
+    }
+
     @Override
     protected Object getPropetyAt(Medicamento e, int col) {
         switch (cols[col]) {

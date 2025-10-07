@@ -51,8 +51,13 @@ public class MedicamentosForm implements PropertyChangeListener {
                 if (validateForm()) {
                     Medicamento m = take();
                     try {
-                        controller.create(m);
-                        JOptionPane.showMessageDialog(main, "REGISTRO APLICADO", "", JOptionPane.INFORMATION_MESSAGE);
+                        if (CodigoButton.isEnabled()) {
+                            controller.create(m);
+                            JOptionPane.showMessageDialog(main, "Medicamento agregado correctamente", "", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            controller.update(m);
+                            JOptionPane.showMessageDialog(main, "Medicamento actualizado correctamente", "", JOptionPane.INFORMATION_MESSAGE);
+                        }
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(main, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -100,13 +105,20 @@ public class MedicamentosForm implements PropertyChangeListener {
         });
 
 
-        miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        miTabla.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting() && controller != null) {
-                int row = miTabla.getSelectedRow();
-                if (row >= 0) {
-                    String id = (String) miTabla.getValueAt(row, 0);
-                    try { controller.read(id); } catch (Exception ex) {}
+        miTabla.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2 && miTabla.getSelectedRow() != -1) {
+                    int row = miTabla.getSelectedRow();
+                    MedicamentosTableModel tm = (MedicamentosTableModel) miTabla.getModel();
+                    Medicamento seleccionado = tm.getRowAt(row);
+
+                    try {
+                        controller.read(seleccionado.getCodigo());
+                        controller.setCurrent(model.getCurrent());
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(main, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
         });
@@ -132,16 +144,21 @@ public class MedicamentosForm implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
             case MedicamentosModel.LIST:
-
-                int[] cols = {MedicamentosTableModel.CODIGO, MedicamentosTableModel.NOMBRE, MedicamentosTableModel.PRESENTACION };
+                int[] cols = {MedicamentosTableModel.CODIGO, MedicamentosTableModel.NOMBRE, MedicamentosTableModel.PRESENTACION};
                 miTabla.setModel(new MedicamentosTableModel(cols, model.getList()));
                 break;
 
-
             case MedicamentosModel.CURRENT:
-                llenarFormulario();
+                Medicamento m = model.getCurrent();
+                if (m.getCodigo() == null || m.getCodigo().isEmpty()) {
+                    CodigoButton.setText("");
+                    CodigoButton.setEnabled(true);
+                    NombreButton.setText("");
+                    presentacionButton.setText("");
+                } else {
+                    llenarFormulario();
+                }
                 break;
-
         }
         main.revalidate();
     }
@@ -150,9 +167,9 @@ public class MedicamentosForm implements PropertyChangeListener {
         if (model.getCurrent() != null) {
             Medicamento m = model.getCurrent();
             CodigoButton.setText(m.getCodigo());
+            CodigoButton.setEnabled(false);
             NombreButton.setText(m.getNombre());
             presentacionButton.setText(m.getPresentacion());
-
         }
     }
 

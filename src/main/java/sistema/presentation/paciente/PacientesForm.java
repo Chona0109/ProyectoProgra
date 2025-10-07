@@ -42,8 +42,13 @@ public class PacientesForm implements PropertyChangeListener {
                 if (validateForm()) {
                     Paciente p = take();
                     try {
-                        controller.create(p);
-                        JOptionPane.showMessageDialog(main, "REGISTRO APLICADO", "", JOptionPane.INFORMATION_MESSAGE);
+                        if (idFld.isEnabled()) {
+                            controller.create(p);
+                            JOptionPane.showMessageDialog(main, "Paciente agregado correctamente", "", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            controller.update(p);
+                            JOptionPane.showMessageDialog(main, "Paciente actualizado correctamente", "", JOptionPane.INFORMATION_MESSAGE);
+                        }
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(main, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -90,15 +95,19 @@ public class PacientesForm implements PropertyChangeListener {
         });
 
 
-        miTabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        miTabla.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting() && controller != null) {
-                int row = miTabla.getSelectedRow();
-                if (row >= 0) {
-                    String id = (String) miTabla.getValueAt(row, 0);
+        miTabla.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2 && miTabla.getSelectedRow() != -1) {
+                    int row = miTabla.getSelectedRow();
+                    PacientesTableModel tm = (PacientesTableModel) miTabla.getModel();
+                    Paciente seleccionado = tm.getRowAt(row);
+
                     try {
-                        controller.read(id);
+                        controller.read(seleccionado.getId());
+                        controller.setCurrent(model.getCurrent());
                     } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(main, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }
@@ -133,7 +142,16 @@ public class PacientesForm implements PropertyChangeListener {
                 break;
 
             case PacienteModel.CURRENT:
-                llenarFormulario();
+                Paciente p = model.getCurrent();
+                if (p.getId() == null || p.getId().isEmpty()) {
+                    idFld.setText("");
+                    idFld.setEnabled(true);
+                    nombreFld.setText("");
+                    fechaFld.setText("");
+                    telefonoFld.setText("");
+                } else {
+                    llenarFormulario();
+                }
                 break;
         }
         main.revalidate();
@@ -143,6 +161,7 @@ public class PacientesForm implements PropertyChangeListener {
         if (model.getCurrent() != null) {
             Paciente p = model.getCurrent();
             idFld.setText(p.getId());
+            idFld.setEnabled(false);
             nombreFld.setText(p.getNombre());
             fechaFld.setText(p.getFechaNacimiento() != null ? p.getFechaNacimiento().toString() : "");
             telefonoFld.setText(p.getTelefono());

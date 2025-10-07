@@ -32,4 +32,8 @@ public class FarmaceuticosTableModel extends AbstractTableModel<Farmaceutico> {
                 return "";
         }
     }
+
+    public Farmaceutico getRowAt(int row) {
+        return rows.get(row);
+    }
 }

@@ -20,6 +20,20 @@ public class MedicosController {
         model.setList(Service.instance().findAllMedicos());
     }
 
+    public void setCurrent(Medico v) {
+        model.setCurrent(v);
+    }
+
+    public void update(Medico medico) throws Exception {
+        Service.instance().updateMedico(medico);
+        refreshMedicos();
+    }
+
+    private void refreshMedicos() {
+        model.setList(Service.instance().findAllMedicos());
+        model.setCurrent(new Medico());
+    }
+
     public void read(String id) throws Exception {
         Medico e = new Medico();
         e.setId(id);

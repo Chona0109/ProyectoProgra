@@ -22,6 +22,10 @@ public class MedicosTableModel extends AbstractTableModel<Medico> implements jav
         colNames[ESPECIALIDAD] = "Especialidad";
     }
 
+    public Medico getRowAt(int row) {
+        return rows.get(row);
+    }
+
     @Override
     protected Object getPropetyAt(Medico e, int col) {
         switch (cols[col]) {
