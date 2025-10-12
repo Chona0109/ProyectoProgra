@@ -1,17 +1,10 @@
 package sistema.logic.entities;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlID;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Paciente {
-    @XmlID
     private String id;
     private String nombre;
-    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate fechaNacimiento;
     private String telefono;
 

@@ -1,12 +1,6 @@
 package sistema.logic.entities;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlID;
-
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Departamento {
-    @XmlID
     private String codigo;
     private String nombre;
 

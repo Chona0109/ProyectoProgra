@@ -1,9 +1,5 @@
 package sistema.logic.entities;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Medico extends Usuario {
     private String especialidad;
 
