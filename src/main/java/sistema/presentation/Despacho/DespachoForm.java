@@ -130,17 +130,14 @@ public class DespachoForm extends JDialog implements PropertyChangeListener {
         if (model.getCurrent() != null) {
             Receta receta = model.getCurrent();
 
-            if (receta.getId() != null && !receta.getId().isEmpty()) {
+            if (receta.getId() != null) {
                 recetaLabel.setText("Receta #" + receta.getId() + " - Estado: " +
                         (receta.getEstado() != null ? receta.getEstado() : "N/A"));
             } else {
-                recetaLabel.setText("Receta");
+                recetaLabel.setText("Nueva Receta");
             }
         }
     }
-
-
-
 
     private Receta take() {
         return model.getCurrent();
@@ -150,7 +147,9 @@ public class DespachoForm extends JDialog implements PropertyChangeListener {
         boolean valid = true;
         Receta current = model.getCurrent();
 
-        if (current == null || current.getId() == null || current.getId().isEmpty()) {
+        // Para recetas nuevas, el ID será null (se genera al guardar)
+        // Para recetas existentes, el ID será un Integer
+        if (current == null) {
             valid = false;
             recetaLabel.setBackground(Color.PINK);
         } else {

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Receta {
-    private String id;
+    private Integer id;
     private Medico medico;
     private Paciente paciente;
     private List<MedicamentoDetalle> medicamentos;
@@ -25,8 +25,8 @@ public class Receta {
         this.paciente = paciente;
     }
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
     public Medico getMedico() { return medico; }
     public void setMedico(Medico medico) { this.medico = medico; }
     public Paciente getPaciente() { return paciente; }

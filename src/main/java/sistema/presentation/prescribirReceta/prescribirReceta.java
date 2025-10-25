@@ -129,7 +129,7 @@ public class prescribirReceta extends JDialog implements PropertyChangeListener 
                 if (validateForm()) {
                     Receta receta = take();
                     try {
-                        if (receta.getId() == null || receta.getId().isEmpty()) {
+                        if (receta.getId() == null) {
                             controller.create(receta);
                         } else {
                             controller.update(receta);

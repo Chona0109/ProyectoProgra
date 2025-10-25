@@ -26,7 +26,7 @@ public class prescribirRecetaController {
     }
 
 
-    public void read(String id) throws Exception {
+    public void read(int id) throws Exception {
         Receta receta = new Receta();
         receta.setId(id);
         try {
@@ -61,7 +61,7 @@ public class prescribirRecetaController {
 
 
 
-    public void removeMedicamento(String recetaId, int index) throws Exception {
+    public void removeMedicamento(int recetaId, int index) throws Exception {
         Service.instance().removeMedicamentoFromReceta(recetaId, index);
         model.setCurrent(Service.instance().readReceta(new Receta(){{ setId(recetaId); }}));
 

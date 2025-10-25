@@ -116,20 +116,7 @@ public class Service {
     }
 
     // =============== RECETAS ===============
-    private String generarIdUnico() {
-        List<Receta> todasRecetas = recetaDao.findAll();
-        int max = todasRecetas.stream()
-                .mapToInt(r -> {
-                    try {
-                        return Integer.parseInt(r.getId().replace("R", ""));
-                    } catch (Exception e) {
-                        return 0;
-                    }
-                })
-                .max()
-                .orElse(0);
-        return "R" + (max + 1);
-    }
+
 
     public Receta createReceta(Receta r) throws Exception {
         if (r.getMedico() == null) {
@@ -144,10 +131,6 @@ public class Service {
             } else {
                 throw new Exception("Usuario no autorizado o médico no asignado");
             }
-        }
-
-        if (r.getId() == null || r.getId().isEmpty()) {
-            r.setId(generarIdUnico());
         }
 
         recetaDao.create(r);
@@ -228,7 +211,7 @@ public class Service {
         recetaDao.update(receta);
     }
 
-    public Receta findRecetaById(String id) throws Exception {
+    public Receta findRecetaById(int id) throws Exception {
         return recetaDao.read(id);
     }
 
@@ -240,7 +223,7 @@ public class Service {
         return recetaDao.searchByPacienteId(idPaciente);
     }
 
-    public void removeMedicamentoFromReceta(String recetaId, int index) throws Exception {
+    public void removeMedicamentoFromReceta(int recetaId, int index) throws Exception {
         Receta r = recetaDao.read(recetaId);
         if (index >= 0 && index < r.getMedicamentos().size()) {
             r.getMedicamentos().remove(index);

@@ -69,7 +69,7 @@ CREATE TABLE Medicamento (
 
 -- Tabla Receta
 CREATE TABLE Receta (
-                        id VARCHAR(10) NOT NULL,
+                        id INT AUTO_INCREMENT,
                         medicoId VARCHAR(10) NOT NULL,
                         pacienteId VARCHAR(10) NOT NULL,
                         fechaConfeccion DATE NOT NULL,
@@ -80,10 +80,9 @@ CREATE TABLE Receta (
                         FOREIGN KEY (pacienteId) REFERENCES Paciente(id)
 );
 
--- Tabla MedicamentoDetalle (relación muchos a muchos entre Receta y Medicamento)
 CREATE TABLE MedicamentoDetalle (
                                     id INT AUTO_INCREMENT,
-                                    recetaId VARCHAR(10) NOT NULL,
+                                    recetaId INT NOT NULL,
                                     medicamentoCodigo VARCHAR(10) NOT NULL,
                                     cantidad INT NOT NULL,
                                     indicaciones TEXT,
@@ -93,7 +92,7 @@ CREATE TABLE MedicamentoDetalle (
                                     FOREIGN KEY (medicamentoCodigo) REFERENCES Medicamento(codigo)
 );
 
--- Tabla Mensaje (para el sistema de chat)
+-- Tabla Mensaje
 CREATE TABLE Mensaje (
                          id INT AUTO_INCREMENT,
                          remitenteId VARCHAR(10) NOT NULL,
