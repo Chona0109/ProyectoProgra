@@ -8,6 +8,12 @@
     <groupId>org.example</groupId>
     <artifactId>ProyectoProgra</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>Protocol</module>
+        <module>Front-end</module>
+        <module>Back-end</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>24</maven.compiler.source>
