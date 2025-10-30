@@ -18,6 +18,7 @@ import java.awt.event.WindowEvent;
 //Andrey Jesús Solano Rojas 402690459
 //Gabriel Sanchez Chacon 1197440164
 
+
 public class Application {
 
     private LogInModel model;
