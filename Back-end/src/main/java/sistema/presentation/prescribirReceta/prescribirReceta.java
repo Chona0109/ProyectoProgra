@@ -1,16 +1,15 @@
 package sistema.presentation.prescribirReceta;
 
 import com.github.lgooddatepicker.components.DatePicker;
-import sistema.logic.entities.MedicamentoDetalle;
-import sistema.logic.entities.Paciente;
-import sistema.logic.entities.Receta;
+import logic.entities.MedicamentoDetalle;
+import logic.entities.Paciente;
+import logic.entities.Receta;
 import sistema.presentation.prescribirBuscarPaciente.prescribirBuscarPaciente;
 import sistema.presentation.prescribirBuscarPaciente.prescribirBuscarPacienteController;
 import sistema.presentation.prescribirBuscarPaciente.prescribirBuscarPacienteModel;
 import sistema.presentation.prescribirMedicamento.prescribirMedicamento;
 import sistema.presentation.prescribirMedicamento.prescribirBuscarMedicamentoController;
 import sistema.presentation.prescribirMedicamento.prescribirBuscarMedicamentoModel;
-import sistema.presentation.prescribirModificarDetalle.prescribirModificarDetalle;
 import sistema.presentation.tableModels.MedicamentosRecetaTableModel;
 
 import javax.swing.*;
@@ -19,7 +18,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 

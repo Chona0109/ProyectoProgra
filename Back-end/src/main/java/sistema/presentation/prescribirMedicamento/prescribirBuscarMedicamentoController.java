@@ -1,7 +1,7 @@
 package sistema.presentation.prescribirMedicamento;
 
 import sistema.logic.Service;
-import sistema.logic.entities.Medicamento;
+import logic.entities.Medicamento;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package sistema.logic.entities;
+package logic.entities;
 
 public class Administrador extends Usuario {
 

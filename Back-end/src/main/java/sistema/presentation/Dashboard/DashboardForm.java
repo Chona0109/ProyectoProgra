@@ -5,8 +5,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
-import sistema.logic.Service;
-import sistema.logic.entities.Medicamento;
+import logic.entities.Medicamento;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,6 +1,6 @@
 package sistema.presentation.tableModels;
 
-import sistema.logic.entities.*;
+import logic.entities.Medico;
 import sistema.presentation.AbstractTableModel;
 import java.util.List;
 

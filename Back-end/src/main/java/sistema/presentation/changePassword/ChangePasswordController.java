@@ -2,8 +2,7 @@ package sistema.presentation.changePassword;
 
 
 import sistema.logic.Service;
-import sistema.logic.entities.Usuario;
-import sistema.logic.Sesion;
+import logic.entities.Usuario;
 
 public class ChangePasswordController {
     private final ChangePasswordModel model;

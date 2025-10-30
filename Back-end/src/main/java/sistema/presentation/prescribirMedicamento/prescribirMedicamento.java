@@ -1,7 +1,7 @@
 package sistema.presentation.prescribirMedicamento;
 
-import sistema.logic.entities.Medicamento;
-import sistema.logic.entities.MedicamentoDetalle;
+import logic.entities.Medicamento;
+import logic.entities.MedicamentoDetalle;
 import sistema.presentation.prescribirModificarDetalle.prescribirModificarDetalle;
 import sistema.presentation.prescribirReceta.prescribirReceta;
 import sistema.presentation.tableModels.MedicamentosTableModel;

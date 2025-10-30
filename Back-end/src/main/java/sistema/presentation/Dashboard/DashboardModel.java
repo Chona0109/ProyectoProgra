@@ -1,9 +1,8 @@
 package sistema.presentation.Dashboard;
 
-import sistema.logic.entities.Receta;
+import logic.entities.Receta;
 import sistema.presentation.AbstractModel;
 
-import java.beans.PropertyChangeListener;
 import java.time.Month;
 import java.util.HashMap;
 import java.util.List;

@@ -1,9 +1,9 @@
 package sistema.presentation.prescribirReceta;
 
 import sistema.logic.Service;
-import sistema.logic.entities.MedicamentoDetalle;
-import sistema.logic.entities.Paciente;
-import sistema.logic.entities.Receta;
+import logic.entities.MedicamentoDetalle;
+import logic.entities.Paciente;
+import logic.entities.Receta;
 
 import javax.swing.*;
 

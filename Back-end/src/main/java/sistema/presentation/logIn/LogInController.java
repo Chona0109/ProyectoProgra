@@ -1,7 +1,7 @@
 package sistema.presentation.logIn;
 
 import sistema.logic.Service;
-import sistema.logic.entities.Usuario;
+import logic.entities.Usuario;
 
 public class LogInController {
     private final LogInModel model;

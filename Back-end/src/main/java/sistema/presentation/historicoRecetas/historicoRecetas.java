@@ -1,6 +1,6 @@
 package sistema.presentation.historicoRecetas;
 
-import sistema.logic.entities.Receta;
+import logic.entities.Receta;
 import sistema.presentation.tableModels.HistoricoRecetasTableModel;
 
 import javax.swing.*;
@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.List;
 
 public class historicoRecetas extends JDialog implements PropertyChangeListener {

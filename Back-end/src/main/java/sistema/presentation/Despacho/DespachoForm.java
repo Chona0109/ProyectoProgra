@@ -1,6 +1,6 @@
 package sistema.presentation.Despacho;
 
-import sistema.logic.entities.Receta;
+import logic.entities.Receta;
 import sistema.presentation.tableModels.HistoricoRecetasTableModel;
 
 import javax.swing.*;

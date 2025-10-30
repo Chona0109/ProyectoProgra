@@ -1,6 +1,6 @@
 package sistema.presentation.changePassword;
 
-import sistema.logic.entities.Usuario;
+import logic.entities.Usuario;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

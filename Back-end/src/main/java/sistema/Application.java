@@ -1,7 +1,7 @@
 package sistema;
 
-import sistema.logic.entities.Usuario;
-import sistema.logic.entities.Departamento;
+import logic.entities.Usuario;
+import logic.entities.Departamento;
 import sistema.logic.Service;
 import sistema.presentation.MenuAdmin;
 import sistema.presentation.MenuMedico;

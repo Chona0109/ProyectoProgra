@@ -1,8 +1,7 @@
 package sistema.presentation.medicos;
 
-import sistema.logic.entities.*;
 import sistema.presentation.AbstractModel;
-
+import logic.entities.*;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;

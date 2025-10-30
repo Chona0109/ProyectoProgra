@@ -1,6 +1,6 @@
 package sistema.presentation.tableModels;
 
-import sistema.logic.entities.*;
+import logic.entities.Departamento;
 import sistema.presentation.AbstractTableModel;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package sistema.presentation.logIn;
 
-import sistema.logic.entities.Usuario;
+import logic.entities.Usuario;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

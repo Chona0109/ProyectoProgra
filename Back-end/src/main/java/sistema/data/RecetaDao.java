@@ -1,6 +1,8 @@
 package sistema.data;
 
-import sistema.logic.entities.*;
+import logic.entities.MedicamentoDetalle;
+import logic.entities.Receta;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

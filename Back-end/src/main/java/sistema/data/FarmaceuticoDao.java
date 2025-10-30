@@ -1,6 +1,6 @@
 package sistema.data;
 
-import sistema.logic.entities.Farmaceutico;
+import logic.entities.Farmaceutico;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

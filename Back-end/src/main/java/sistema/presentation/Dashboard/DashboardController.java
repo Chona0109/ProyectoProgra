@@ -1,8 +1,8 @@
 package sistema.presentation.Dashboard;
 
 import sistema.logic.Service;
-import sistema.logic.entities.Receta;
-import sistema.logic.entities.Medicamento;
+import logic.entities.Receta;
+import logic.entities.Medicamento;
 
 import java.time.Month;
 import java.util.List;

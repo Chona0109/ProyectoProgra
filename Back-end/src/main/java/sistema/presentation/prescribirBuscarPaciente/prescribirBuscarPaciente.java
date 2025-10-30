@@ -1,7 +1,6 @@
 package sistema.presentation.prescribirBuscarPaciente;
 
-import sistema.logic.Service;
-import sistema.logic.entities.Paciente;
+import logic.entities.Paciente;
 import sistema.presentation.tableModels.PacientesTableModel;
 
 import javax.swing.*;
@@ -13,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
-import java.util.List;
 
 public class prescribirBuscarPaciente extends JDialog implements PropertyChangeListener {
 

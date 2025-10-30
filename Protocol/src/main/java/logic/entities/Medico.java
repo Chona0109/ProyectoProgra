@@ -1,4 +1,4 @@
-package sistema.logic.entities;
+package logic.entities;
 
 public class Medico extends Usuario {
     private String especialidad;

@@ -1,7 +1,7 @@
 package sistema.presentation.prescribirReceta;
 
-import sistema.logic.entities.MedicamentoDetalle;
-import sistema.logic.entities.Receta;
+import logic.entities.MedicamentoDetalle;
+import logic.entities.Receta;
 import sistema.presentation.AbstractModel;
 
 import java.beans.PropertyChangeListener;

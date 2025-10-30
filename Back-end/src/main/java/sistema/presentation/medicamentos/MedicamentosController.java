@@ -1,8 +1,8 @@
 package sistema.presentation.medicamentos;
 
 import sistema.logic.Service;
-import sistema.logic.entities.Farmaceutico;
-import sistema.logic.entities.Medicamento;
+import logic.entities.Farmaceutico;
+import logic.entities.Medicamento;
 
 public class MedicamentosController {
 

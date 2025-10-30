@@ -1,6 +1,6 @@
 package sistema.presentation.logIn;
 
-import sistema.logic.entities.Usuario;
+import logic.entities.Usuario;
 import sistema.presentation.changePassword.ChangePasswordController;
 import sistema.presentation.changePassword.ChangePasswordModel;
 import sistema.presentation.changePassword.changeForm;

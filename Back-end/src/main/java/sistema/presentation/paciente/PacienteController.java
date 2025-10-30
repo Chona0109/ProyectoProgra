@@ -1,9 +1,8 @@
 package sistema.presentation.paciente;
 
 import sistema.logic.Service;
-import sistema.logic.entities.Medico;
-import sistema.logic.entities.Paciente;
-import sistema.presentation.paciente.PacientesForm.*;
+import logic.entities.Medico;
+import logic.entities.Paciente;
 
 public class PacienteController {
 

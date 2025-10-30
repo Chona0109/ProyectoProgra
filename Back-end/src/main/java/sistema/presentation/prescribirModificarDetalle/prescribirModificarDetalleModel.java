@@ -1,7 +1,7 @@
 package sistema.presentation.prescribirModificarDetalle;
 
 import sistema.presentation.AbstractModel;
-import sistema.logic.entities.MedicamentoDetalle;
+import logic.entities.MedicamentoDetalle;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;

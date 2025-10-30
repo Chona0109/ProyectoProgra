@@ -1,7 +1,7 @@
 package sistema.presentation.tableModels;
 
-import sistema.logic.entities.Medicamento;
-import sistema.logic.entities.Paciente;
+import logic.entities.Medicamento;
+import logic.entities.Paciente;
 import sistema.presentation.AbstractTableModel;
 
 import java.util.List;

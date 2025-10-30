@@ -1,6 +1,6 @@
 package sistema.presentation.prescribirMedicamento;
 
-import sistema.logic.entities.Medicamento;
+import logic.entities.Medicamento;
 import sistema.presentation.AbstractModel;
 
 import java.beans.PropertyChangeListener;

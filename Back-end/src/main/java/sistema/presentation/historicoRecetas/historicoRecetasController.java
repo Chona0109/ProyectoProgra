@@ -1,7 +1,7 @@
 package sistema.presentation.historicoRecetas;
 
 import sistema.logic.Service;
-import sistema.logic.entities.Receta;
+import logic.entities.Receta;
 
 import java.util.ArrayList;
 import java.util.List;

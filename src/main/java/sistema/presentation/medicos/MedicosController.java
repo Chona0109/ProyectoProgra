@@ -1,7 +1,6 @@
 package sistema.presentation.medicos;
 
 import sistema.logic.Service;
-import sistema.logic.entities.*;
 
 public class MedicosController {
 

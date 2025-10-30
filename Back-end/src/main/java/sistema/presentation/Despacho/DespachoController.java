@@ -1,9 +1,7 @@
 package sistema.presentation.Despacho;
 
 import sistema.logic.Service;
-import sistema.logic.entities.Receta;
-import java.util.List;
-import java.util.stream.Collectors;
+import logic.entities.Receta;
 
 public class DespachoController {
     private DespachoModel model;

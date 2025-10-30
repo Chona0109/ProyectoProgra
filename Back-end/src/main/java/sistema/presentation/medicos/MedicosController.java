@@ -1,8 +1,7 @@
 package sistema.presentation.medicos;
 
 import sistema.logic.Service;
-import sistema.logic.entities.*;
-
+import logic.entities.*;
 public class MedicosController {
 
     private MedicosModel model;

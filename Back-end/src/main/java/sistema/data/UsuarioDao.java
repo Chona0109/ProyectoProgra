@@ -1,6 +1,6 @@
 package sistema.data;
 
-import sistema.logic.entities.Usuario;
+import logic.entities.Usuario;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

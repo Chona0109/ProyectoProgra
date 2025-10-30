@@ -1,7 +1,7 @@
 package sistema.logic;
 
 import sistema.data.*;
-import sistema.logic.entities.*;
+import logic.entities.*;
 import java.awt.*;
 import java.util.Comparator;
 import java.util.List;

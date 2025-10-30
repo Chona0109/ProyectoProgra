@@ -1,6 +1,6 @@
 package sistema.presentation.Farmaceutas;
 
-import sistema.logic.entities.Farmaceutico;
+import logic.entities.Farmaceutico;
 import sistema.presentation.AbstractModel;
 
 import java.beans.PropertyChangeListener;

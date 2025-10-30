@@ -1,6 +1,6 @@
 package sistema.data;
 
-import sistema.logic.entities.Departamento;
+import logic.entities.Departamento;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

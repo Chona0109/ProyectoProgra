@@ -1,6 +1,6 @@
 package sistema.presentation.prescribirModificarDetalle;
 
-import sistema.logic.entities.MedicamentoDetalle;
+import logic.entities.MedicamentoDetalle;
 
 public class prescribirModificarDetalleController {
 

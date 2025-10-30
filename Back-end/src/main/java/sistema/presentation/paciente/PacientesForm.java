@@ -1,8 +1,6 @@
 package sistema.presentation.paciente;
 
-import sistema.logic.entities.Paciente;
-import sistema.presentation.paciente.PacienteController;
-import sistema.presentation.paciente.PacienteModel;
+import logic.entities.Paciente;
 import sistema.presentation.tableModels.PacientesTableModel;
 
 import javax.swing.*;

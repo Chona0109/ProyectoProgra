@@ -1,6 +1,6 @@
 package sistema.presentation.medicos;
 
-import sistema.logic.entities.Medico;
+import logic.entities.Medico;
 import sistema.presentation.Departamentos.Departamentos;
 import sistema.presentation.tableModels.MedicosTableModel;
 

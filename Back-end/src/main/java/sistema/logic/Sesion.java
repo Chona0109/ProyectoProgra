@@ -1,6 +1,6 @@
 package sistema.logic;
 
-import sistema.logic.entities.Usuario;
+import logic.entities.Usuario;
 
 public class Sesion {
     private static Usuario usuario;
