@@ -1,8 +1,11 @@
 package logic.entities;
 
 import java.time.LocalDate;
+import java.io.Serializable;
 
-public class Paciente {
+public class Paciente implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String id;
     private String nombre;
     private LocalDate fechaNacimiento;

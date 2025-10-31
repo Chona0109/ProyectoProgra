@@ -1,6 +1,10 @@
 package logic.entities;
 
-public class Medico extends Usuario {
+import java.io.Serializable;
+
+public class Medico extends Usuario implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String especialidad;
 
     public Medico(String id, String nombre, String especialidad) {

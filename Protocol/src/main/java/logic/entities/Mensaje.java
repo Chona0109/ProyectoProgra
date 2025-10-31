@@ -1,8 +1,11 @@
 package logic.entities;
 
 import java.time.LocalDateTime;
+import java.io.Serializable;
 
-public class Mensaje {
+public class Mensaje implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int id;
     private String remitenteId;
     private String destinatarioId;

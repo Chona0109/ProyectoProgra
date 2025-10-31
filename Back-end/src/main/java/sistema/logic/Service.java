@@ -17,6 +17,7 @@ public class Service {
     private PacienteDao pacienteDao;
     private MedicamentoDao medicamentoDao;
     private RecetaDao recetaDao;
+    private AdministradorDao administradorDao;
 
     public static Service instance() {
         if (theInstance == null) {
@@ -34,6 +35,7 @@ public class Service {
             pacienteDao = new PacienteDao();
             medicamentoDao = new MedicamentoDao();
             recetaDao = new RecetaDao();
+            administradorDao = new AdministradorDao();
         } catch (Exception e) {
             System.err.println("Error al inicializar Service: " + e.getMessage());
             System.exit(-1);

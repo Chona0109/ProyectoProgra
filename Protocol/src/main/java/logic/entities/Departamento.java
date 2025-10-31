@@ -1,6 +1,10 @@
 package logic.entities;
 
-public class Departamento {
+import java.io.Serializable;
+
+public class Departamento implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String codigo;
     private String nombre;
 

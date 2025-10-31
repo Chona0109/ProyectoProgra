@@ -1,6 +1,9 @@
 package logic.entities;
 
-public class MedicamentoDetalle {
+import java.io.Serializable;
+
+public class MedicamentoDetalle implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Medicamento medicamento;
     private int cantidad;
     private String indicaciones;

@@ -3,8 +3,12 @@ package logic.entities;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public class Receta {
+public class Receta implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private Integer id;
     private Medico medico;
     private Paciente paciente;
