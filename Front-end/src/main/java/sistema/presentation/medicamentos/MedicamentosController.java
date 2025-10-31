@@ -1,0 +1,70 @@
+package sistema.presentation.medicamentos;
+
+import logic.entities.Farmaceutico;
+import sistema.logic.Proxy;
+import logic.entities.Medicamento;
+import sistema.presentation.ThhreadListener;
+public class MedicamentosController implements ThhreadListener {
+
+    private MedicamentosModel model;
+
+    public MedicamentosController(MedicamentosForm medicamentosForm, MedicamentosModel model) {
+        this.model = model;
+        model.setList(Proxy.instance().search(new Medicamento()));
+    }
+
+    public void create(Medicamento e) throws Exception {
+        Proxy.instance().create(e);
+        model.setCurrent(new Medicamento());
+        model.setList(Proxy.instance().search(new Medicamento()));
+    }
+
+    public void read(String codigo) throws Exception {
+        Medicamento e = new Medicamento();
+        e.setCodigo(codigo);
+        try {
+            model.setCurrent(Proxy.instance().read(e));
+        } catch (Exception ex) {
+            Medicamento nuevo = new Medicamento();
+            nuevo.setCodigo(codigo);
+            model.setCurrent(nuevo);
+            throw ex;
+        }
+    }
+
+    public void setCurrent(Medicamento v) {
+        model.setCurrent(v);
+    }
+
+    public void update(Medicamento medicamento) throws Exception {
+        Proxy.instance().updateMedicamento(medicamento);
+        refreshMedicamentos();
+    }
+
+    private void refreshMedicamentos() {
+        model.setList(Proxy.instance().search(new Medicamento()));
+        model.setCurrent(new Medicamento());
+    }
+
+    public void clear() {
+        model.setCurrent(new Medicamento());
+    }
+
+    public void delete(String codigo) throws Exception {
+        Medicamento m = new Medicamento();
+        m.setCodigo(codigo);
+        Proxy.instance().delete(m);
+        model.setCurrent(new Medicamento());
+        model.setList(Proxy.instance().search(new Medicamento()));
+    }
+    @Override
+    public void refresh() {
+        try {
+            model.setList(Proxy.instance().search(new Medicamento()));
+        } catch (Exception e) {}
+    }
+
+    public void searchMedicamentos(String codigo) {
+        model.setList(Proxy.instance().searchMedicamentoByCodigo(codigo));
+    }
+}
