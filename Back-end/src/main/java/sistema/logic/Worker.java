@@ -102,9 +102,17 @@ public class Worker {
                             System.err.println("Error en FARMACEUTICO_SEARCH_BY_NAME: " + ex.getMessage());
                         }
                         break;
-
-                        //FARMACEUTICO SEARCH???
-
+                    case Protocol.FARMACEUTICO_SEARCH:
+                        try {
+                            Farmaceutico filtro = (Farmaceutico) is.readObject();
+                            List<Farmaceutico> lista = service.searchFarmaceutico(filtro);
+                            os.writeInt(Protocol.ERROR_NO_ERROR);
+                            os.writeObject(lista);
+                        } catch (Exception ex) {
+                            os.writeInt(Protocol.ERROR_ERROR);
+                            System.err.println("Error en FARMACEUTICO_SEARCH: " + ex.getMessage());
+                        }
+                        break;
                     // ===================== MEDICAMENTO =====================
                     case Protocol.MEDICAMENTO_READ:
                         try {
@@ -142,7 +150,22 @@ public class Worker {
                             System.err.println("Error en MEDICAMENTO_SEARCH_BY_CODIGO: " + ex.getMessage());
                         }
                         break;
-                    //Medicamento SEARCH???
+                    case Protocol.MEDICAMENTO_SEARCH:
+                        try {
+                            // Recibe un objeto Medicamento del proxy (puede tener filtros)
+                            Medicamento filtro = (Medicamento) is.readObject();
+
+                            // Llama al servicio para obtener la lista
+                            List<Medicamento> lista = service.searchMedicamento(filtro);
+
+                            // Envía la lista de vuelta al proxy/frontend
+                            os.writeInt(Protocol.ERROR_NO_ERROR);
+                            os.writeObject(lista);
+                        } catch (Exception ex) {
+                            os.writeInt(Protocol.ERROR_ERROR);
+                            System.err.println("Error en MEDICAMENTO_SEARCH: " + ex.getMessage());
+                        }
+                        break;
 
                     // ===================== MEDICAMENTO DETALLE =====================
 
@@ -176,15 +199,15 @@ public class Worker {
                             os.writeInt(Protocol.ERROR_ERROR);
                         }
                         break;
-//                    case Protocol.MEDICO_SEARCH:
-//                        try {
-//                            List<Medico> lme = service.search((Medico) is.readObject());
-//                            os.writeInt(Protocol.ERROR_NO_ERROR);
-//                            os.writeObject(lme);
-//                        } catch (Exception ex) {
-//                            os.writeInt(Protocol.ERROR_ERROR);
-//                        }
-//                        break;
+                    case Protocol.MEDICO_SEARCH:
+                        try {
+                            List<Medico> lme = service.search((Medico) is.readObject());
+                            os.writeInt(Protocol.ERROR_NO_ERROR);
+                            os.writeObject(lme);
+                        } catch (Exception ex) {
+                            os.writeInt(Protocol.ERROR_ERROR);
+                        }
+                        break;
                     case Protocol.MEDICAMENTO_SEARCH_BY_NAME:
                         try {
                             String nombre = is.readUTF();
@@ -224,16 +247,16 @@ public class Worker {
                             os.writeInt(Protocol.ERROR_ERROR);
                         }
                         break;
-//                    case Protocol.PACIENTE_SEARCH:
-//                        try {
-//                            List<Paciente> lpac = service.search((Paciente) is.readObject());
-//                            os.writeInt(Protocol.ERROR_NO_ERROR);
-//                            os.writeObject(lpac);
-//                        } catch (Exception ex) {
-//                            os.writeInt(Protocol.ERROR_ERROR);
-//                        }
-//                        break;
                     case Protocol.PACIENTE_SEARCH:
+                        try {
+                            List<Paciente> lpac = service.searchPaciente((Paciente) is.readObject());
+                            os.writeInt(Protocol.ERROR_NO_ERROR);
+                            os.writeObject(lpac);
+                        } catch (Exception ex) {
+                            os.writeInt(Protocol.ERROR_ERROR);
+                        }
+                        break;
+                    case Protocol.PACIENTE_SEARCH_BY_NAME:
                         try {
                             String nombre = is.readUTF();
                             List<Paciente> lista = service.searchPacienteByName(nombre);
@@ -283,15 +306,15 @@ public class Worker {
 //                            os.writeInt(Protocol.ERROR_ERROR);
 //                        }
 //                        break;
-//                    case Protocol.RECETA_SEARCH:
-//                        try {
-//                            List<Receta> lr = service.search((Receta) is.readObject());
-//                            os.writeInt(Protocol.ERROR_NO_ERROR);
-//                            os.writeObject(lr);
-//                        } catch (Exception ex) {
-//                            os.writeInt(Protocol.ERROR_ERROR);
-//                        }
-//                        break;
+                    case Protocol.RECETA_SEARCH:
+                        try {
+                            List<Receta> lr = service.searchReceta((Receta) is.readObject());
+                            os.writeInt(Protocol.ERROR_NO_ERROR);
+                            os.writeObject(lr);
+                        } catch (Exception ex) {
+                            os.writeInt(Protocol.ERROR_ERROR);
+                        }
+                        break;
                     case Protocol.RECETA_SEARCH_BY_PACIENTE:
                         try {
                             String idPaciente = is.readUTF(); // recibimos el ID del paciente
@@ -397,17 +420,12 @@ public class Worker {
 //                        break;
                     case Protocol.USUARIO_FIND_BY_ID:
                         try {
-                            String id = is.readUTF(); // Recibimos el ID como String
-                            Usuario user = service.findUserById(id); // Buscamos en el servicio
-                            if (user != null) {
-                                os.writeInt(Protocol.ERROR_NO_ERROR);
-                                os.writeObject(user); // Enviamos el usuario al frontend
-                            } else {
-                                os.writeInt(Protocol.ERROR_ERROR);
-                            }
+                            String id = (String) is.readObject(); // <- lee el mismo tipo que mandó el cliente
+                            Usuario u = service.findUserById(id);
+                            os.writeInt(Protocol.ERROR_NO_ERROR);
+                            os.writeObject(u);
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
-                            System.err.println("Error en USUARIO_FIND_BY_ID: " + ex.getMessage());
                         }
                         break;
                     case Protocol.USUARIO_LOGIN:

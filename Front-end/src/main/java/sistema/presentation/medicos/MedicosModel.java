@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MedicosModel extends AbstractModel {
-
+    Medico filter;
     private Medico current;
     private List<Medico> list;
     private List<Departamento> departamentos;
@@ -59,4 +59,12 @@ public class MedicosModel extends AbstractModel {
         if (current != null) current.setDepartamento(departamento);
         firePropertyChange(DEPARTMENT);
     }
+    public  void init() {
+        filter = new Medico();
+        current = new Medico();
+        List<Medico> rows = new ArrayList<Medico>();
+        this.setList(rows);
+
+    }
+    public Medico getFilter() { return filter; }
 }

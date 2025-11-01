@@ -113,6 +113,7 @@ public class Proxy {
 
     public List<Departamento> search(Departamento e) {
         try {
+
             os.writeInt(Protocol.DEPARTAMENTO_SEARCH);
             os.writeObject(e);
             os.flush();
@@ -309,12 +310,17 @@ public class Proxy {
 
     public List<Medico> search(Medico e) {
         try {
+            System.out.println("Pidiendo Lista");
             os.writeInt(Protocol.MEDICO_SEARCH);
             os.writeObject(e);
             os.flush();
-            if (is.readInt() == Protocol.ERROR_NO_ERROR)
+            System.out.println("Pidiendo Lista");
+            if (is.readInt() == Protocol.ERROR_NO_ERROR) {
+
                 return (List<Medico>) is.readObject();
-            else return List.of();
+            }else{
+                System.out.println("Encontrada");
+                return List.of();}
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -548,7 +554,7 @@ public class Proxy {
     public Usuario findUserById(String userId) throws Exception {
         try {
             os.writeInt(Protocol.USUARIO_FIND_BY_ID); // Código de operación
-            os.writeUTF(userId);                      // Enviamos el ID (String)
+            os.writeObject(userId);                   // Enviamos el ID como objeto
             os.flush();
 
             int response = is.readInt();              // Leemos respuesta del backend
@@ -873,5 +879,21 @@ public class Proxy {
         }
 
         return receta;
+    }
+
+    public List<Paciente> searchPaciente(Paciente filtro) {
+        try {
+            os.writeInt(Protocol.PACIENTE_SEARCH);
+            os.writeObject(filtro);
+            os.flush();
+
+            if (is.readInt() == Protocol.ERROR_NO_ERROR) {
+                return (List<Paciente>) is.readObject();
+            } else {
+                return List.of();
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error buscando pacientes: " + ex.getMessage(), ex);
+        }
     }
 }

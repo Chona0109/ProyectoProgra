@@ -3,16 +3,36 @@ package sistema.presentation.medicamentos;
 import logic.entities.Farmaceutico;
 import sistema.logic.Proxy;
 import logic.entities.Medicamento;
+import sistema.presentation.Refresher;
 import sistema.presentation.ThhreadListener;
+
+import java.util.List;
+
 public class MedicamentosController implements ThhreadListener {
 
     private MedicamentosModel model;
+private Refresher refresher;
 
     public MedicamentosController(MedicamentosForm medicamentosForm, MedicamentosModel model) {
         this.model = model;
-        model.setList(Proxy.instance().search(new Medicamento()));
-    }
 
+
+        refresher = new Refresher(this);
+        refresher.start();
+
+
+        loadMedicamentos();
+    }
+    private void loadMedicamentos() {
+        new Thread(() -> {
+            try {
+                List<Medicamento> lista = Proxy.instance().search(new Medicamento());
+                model.setList(lista);
+            } catch (Exception e) {
+                System.err.println("Error cargando medicamentos: " + e.getMessage());
+            }
+        }).start();
+    }
     public void create(Medicamento e) throws Exception {
         Proxy.instance().create(e);
         model.setCurrent(new Medicamento());
@@ -60,8 +80,11 @@ public class MedicamentosController implements ThhreadListener {
     @Override
     public void refresh() {
         try {
-            model.setList(Proxy.instance().search(new Medicamento()));
-        } catch (Exception e) {}
+            List<Medicamento> lista = Proxy.instance().search(new Medicamento());
+            model.setList(lista);
+        } catch (Exception e) {
+
+        }
     }
 
     public void searchMedicamentos(String codigo) {

@@ -41,48 +41,68 @@ public class Application {
     }
 
     private void doRun() {
-        Usuario current = model.getCurrent();
 
-        if (current == null) {
-            JOptionPane.showMessageDialog(null, "No se pudo iniciar sesión");
-            return;
-        }
+        try {
+            Usuario current = model.getCurrent();
 
-        Departamento dep = current.getDepartamento();
-        if (dep == null) {
-            JOptionPane.showMessageDialog(null, "El usuario no tiene departamento asignado");
-            return;
-        }
-
-        JFrame mainMenu = null;
-
-        switch (dep.getCodigo()) {
-            case "001":
-                mainMenu = new MenuAdmin();
-                break;
-            case "002":
-                mainMenu = new MenuMedico();
-                break;
-            case "003":
-                mainMenu = new MenuFarmaceutico();
-                break;
-            default:
-                JOptionPane.showMessageDialog(null,
-                        "Departamento no reconocido: " + dep.getNombre());
+            if (current == null) {
+                JOptionPane.showMessageDialog(null, "No se pudo iniciar sesión");
                 return;
-        }
+            }
 
-        if (mainMenu != null) {
-            final JFrame menu = mainMenu;
-            menu.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    Proxy.instance().stop();
-                    System.exit(0);
-                }
-            });
 
-            SwingUtilities.invokeLater(() -> menu.setVisible(true));
+
+            Departamento dep = current.getDepartamento();
+            if (dep == null) {
+                JOptionPane.showMessageDialog(null, "El usuario no tiene departamento asignado");
+                return;
+            }
+
+
+
+            JFrame mainMenu = null;
+
+            switch (dep.getCodigo()) {
+                case "001":
+                    System.out.println("entra");
+                    mainMenu = new MenuAdmin();
+                    System.out.println("Funciono");
+
+                    break;
+                case "002":
+                    mainMenu = new MenuMedico();
+                    break;
+                case "003":
+                    mainMenu = new MenuFarmaceutico();
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null,
+                            "Departamento no reconocido: " + dep.getNombre());
+                    return;
+            }
+
+
+            if (mainMenu != null) {
+                final JFrame menu = mainMenu;
+                menu.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+
+                        Proxy.instance().stop();
+                        System.exit(0);
+                    }
+                });
+
+                SwingUtilities.invokeLater(() -> {
+                    menu.setVisible(true);
+                    System.out.println("Mostrando menú principal...");
+                });
+            } else {
+                JOptionPane.showMessageDialog(null, "Error: menú no creado.");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error en doRun: " + ex.getMessage());
         }
     }
 

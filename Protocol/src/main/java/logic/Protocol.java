@@ -65,6 +65,7 @@ public class Protocol {
     public static final int PACIENTE_DELETE = 3004;
     public static final int PACIENTE_SEARCH = 3005;
     public static final int PACIENTE_SEARCH_BY_ID =  3006;
+    public static final int PACIENTE_SEARCH_BY_NAME =  3007;
 
 
     // ===================== RECETA =====================

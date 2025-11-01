@@ -67,18 +67,25 @@ public class MenuAdmin extends JFrame {
         tabbedPane.addTab("Médicos", medicosForm.getPanel());
 
 
+
         medicamentosForm = new MedicamentosForm();
         medicamentosModel = new MedicamentosModel();
+
         medicamentosController = new MedicamentosController(medicamentosForm, medicamentosModel);
+
         medicamentosForm.setController(medicamentosController);
+
         medicamentosForm.setModel(medicamentosModel);
         tabbedPane.addTab("Medicamentos", medicamentosForm.getPanel());
 
 
+
         farmaceutasForm = new FarmaceutasForm();
         farmaceutasModel = new FarmaceutasModel();
+
         farmaceutasController = new FarmaceutasController(farmaceutasForm, farmaceutasModel);
         farmaceutasForm.setController(farmaceutasController);
+
         farmaceutasForm.setModel(farmaceutasModel);
         tabbedPane.addTab("Farmaceutas", farmaceutasForm.getPanel());
 
@@ -90,14 +97,21 @@ public class MenuAdmin extends JFrame {
         pacientesForm.setModel(pacientesModel);
         tabbedPane.addTab("Pacientes", pacientesForm.getPanel());
 
+
+
+
         historicoRecetasModel = new historicoRecetasModel();
         historicoRecetasController = new historicoRecetasController(historicoRecetasModel);
         historicoRecetas = new historicoRecetas(this, historicoRecetasModel, historicoRecetasController);
         tabbedPane.addTab("Histórico", historicoRecetas.getPanel());
 
+
+
         DashboardModel dashboardModel = new DashboardModel();
         DashboardController dashboardController = new DashboardController(dashboardModel);
+
         DashboardForm dashboardForm = new DashboardForm(dashboardModel, dashboardController);
+
         tabbedPane.addTab("Dashboard", dashboardForm);
 
 

@@ -2,16 +2,38 @@ package sistema.presentation.Farmaceutas;
 
 import sistema.logic.Proxy;
 import logic.entities.Farmaceutico;
+import sistema.presentation.Refresher;
 import sistema.presentation.ThhreadListener;
+
+import java.util.List;
 
 public class FarmaceutasController implements ThhreadListener {
 
     private FarmaceutasModel model;
+    private Refresher refresher;
 
     public FarmaceutasController(FarmaceutasForm farmaceutasForm, FarmaceutasModel model) {
         this.model = model;
-        model.setList(Proxy.instance().search(new Farmaceutico()));
+
+        // Inicia refresher para actualizar la lista periódicamente
+        refresher = new Refresher(this);
+        refresher.start();
+
+        // Carga inicial en segundo plano
+        loadFarmaceuticos();
     }
+
+    private void loadFarmaceuticos() {
+        new Thread(() -> {
+            try {
+                List<Farmaceutico> lista = Proxy.instance().search(new Farmaceutico());
+                model.setList(lista);
+            } catch (Exception e) {
+                System.err.println("Error cargando farmaceuticos: " + e.getMessage());
+            }
+        }).start();
+    }
+
 
     public void setCurrent(Farmaceutico v) {
         model.setCurrent(v);
@@ -61,13 +83,14 @@ public class FarmaceutasController implements ThhreadListener {
         model.setList(Proxy.instance().search(new Farmaceutico()));
     }
 
-    public void search(String nombre) {
-        model.setList(Proxy.instance().searchFarmaceuticoByName(nombre));
-    }
     @Override
     public void refresh() {
         try {
-            model.setList(Proxy.instance().search(new Farmaceutico()));
-        } catch (Exception e) {}
+            List<Farmaceutico> lista = Proxy.instance().search(new Farmaceutico());
+            model.setList(lista);
+        } catch (Exception e) {
+
+        }
     }
+
 }

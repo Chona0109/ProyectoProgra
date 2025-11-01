@@ -2,15 +2,39 @@ package sistema.presentation.medicos;
 
 import sistema.logic.Proxy;
 import logic.entities.*;
+import sistema.presentation.Refresher;
 import sistema.presentation.ThhreadListener;
+
+import javax.swing.*;
+
 public class MedicosController implements ThhreadListener{
 
     private MedicosModel model;
-
-    public MedicosController(MedicosForm medicosForm, MedicosModel model) {
+    Refresher refresher;
+    public MedicosController(MedicosForm form, MedicosModel model) {
         this.model = model;
-        model.setDepartamentos(Proxy.instance().search(new Departamento()));
-        model.setList(Proxy.instance().search(new Medico()));
+
+        // Inicia refresher
+
+        refresher = new Refresher(this);
+        refresher.start();
+    }
+
+    // Cada 2 segundos refresca datos en segundo plano
+    @Override
+    public void refresh() {
+        new SwingWorker<Void, Void>() {
+
+            @Override
+            protected Void doInBackground() throws Exception {
+
+
+                model.setList(Proxy.instance().search(new Medico()));
+                model.setDepartamentos(Proxy.instance().search(new Departamento()));
+
+                return null;
+            }
+        }.execute();
     }
 
     public void create(Medico e) throws Exception {
@@ -71,12 +95,9 @@ public class MedicosController implements ThhreadListener{
         d.setNombre(nombre);
         model.setDepartamentos(Proxy.instance().search(d));
     }
-    @Override
-    public void refresh() {
-        try {
-            model.setList(Proxy.instance().search(new Medico()));
-            model.setDepartamentos(Proxy.instance().search(new Departamento()));
-        } catch (Exception e) {}
+
+    public void stop(){
+        refresher.stop();
     }
 }
 

@@ -380,4 +380,65 @@ public class Service {
                 .sorted(Comparator.comparing(Departamento::getNombre))
                 .collect(Collectors.toList());
     }
+
+    public List<Medico> search(Medico filtro) {
+        // Asegúrate de no tener nulls en los campos de filtro
+        String nombreFiltro = filtro.getNombre() != null ? filtro.getNombre().toLowerCase() : "";
+        String idFiltro = filtro.getId() != null ? filtro.getId().toLowerCase() : "";
+
+        return medicoDao.findAll().stream()
+                .filter(m ->
+                        (m.getNombre() != null && m.getNombre().toLowerCase().contains(nombreFiltro)) &&
+                                (m.getId() != null && m.getId().toLowerCase().contains(idFiltro))
+                )
+                .sorted(Comparator.comparing(Medico::getNombre, Comparator.nullsLast(String::compareTo)))
+                .collect(Collectors.toList());
+    }
+
+    public List<Medicamento> searchMedicamento(Medicamento filtro) {
+        String nombreFiltro = filtro.getNombre() != null ? filtro.getNombre().toLowerCase() : "";
+        String codigoFiltro = filtro.getCodigo() != null ? filtro.getCodigo().toLowerCase() : "";
+
+        return medicamentoDao.findAll().stream()
+                .filter(m ->
+                        (m.getNombre() != null && m.getNombre().toLowerCase().contains(nombreFiltro)) &&
+                                (m.getCodigo() != null && m.getCodigo().toLowerCase().contains(codigoFiltro))
+                )
+                .sorted(Comparator.comparing(Medicamento::getNombre, Comparator.nullsLast(String::compareTo)))
+                .collect(Collectors.toList());
+    }
+
+    public List<Farmaceutico> searchFarmaceutico(Farmaceutico filtro) {
+        return farmaceuticoDao.findAll().stream()
+                .filter(f -> f.getNombre() != null &&
+                        f.getNombre().toLowerCase()
+                                .contains(filtro.getNombre() != null ? filtro.getNombre().toLowerCase() : ""))
+                .sorted(Comparator.comparing(Farmaceutico::getNombre))
+                .collect(Collectors.toList());
+    }
+    public List<Paciente> searchPaciente(Paciente filtro) {
+
+        return pacienteDao.findAll().stream()
+
+                .filter(p -> p.getNombre() != null &&
+                        p.getNombre().toLowerCase().contains(
+                                filtro.getNombre() != null ? filtro.getNombre().toLowerCase() : ""
+                        ))
+
+                .sorted(Comparator.comparing(Paciente::getNombre))
+
+                .collect(Collectors.toList());
+    }
+    public List<Receta> searchReceta(Receta filtro) {
+        return recetaDao.findAll().stream()
+                .filter(r -> {
+                    if (filtro.getId() != null) {
+                        return r.getId().equals(filtro.getId());
+                    }
+                    return true; // si el filtro ID es null, incluye todos
+                })
+                .sorted(Comparator.comparing(Receta::getId))
+                .collect(Collectors.toList());
+    }
+
 }

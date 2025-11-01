@@ -3,15 +3,36 @@ package sistema.presentation.paciente;
 import logic.entities.Medico;
 import sistema.logic.Proxy;
 import logic.entities.Paciente;
+import sistema.presentation.Refresher;
 import sistema.presentation.ThhreadListener;
+
+import java.util.List;
 
 public class PacienteController implements ThhreadListener {
 
     private PacienteModel model;
+    private Refresher refresher;
 
     public PacienteController(PacientesForm pacientesForm, PacienteModel model) {
         this.model = model;
-        model.setList(Proxy.instance().search(new Paciente()));
+
+        // Inicia refresher
+        refresher = new Refresher(this);
+        refresher.start();
+
+        // Carga inicial de pacientes
+        loadPacientes();
+    }
+
+    private void loadPacientes() {
+        new Thread(() -> {
+            try {
+                List<Paciente> lista = Proxy.instance().searchPaciente(new Paciente());
+                model.setList(lista);
+            } catch (Exception e) {
+                System.err.println("Error cargando pacientes: " + e.getMessage());
+            }
+        }).start();
     }
 
     public void create(Paciente p) throws Exception {
