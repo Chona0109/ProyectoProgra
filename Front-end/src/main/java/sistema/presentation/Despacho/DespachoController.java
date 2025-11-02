@@ -2,27 +2,22 @@ package sistema.presentation.Despacho;
 
 import sistema.logic.Proxy;
 import logic.entities.Receta;
-import sistema.presentation.Refresher;
-import sistema.presentation.ThhreadListener;
+import sistema.presentation.ThreadListener;
 
 import javax.swing.*;
 import java.util.List;
 
-public class DespachoController implements ThhreadListener {
+public class DespachoController implements ThreadListener {
+
     private DespachoModel model;
-    private Refresher refresher;
 
     public DespachoController(DespachoModel model) {
         this.model = model;
-        this.model.setCurrent(new Receta());
+        this.model.init(); // inicializa current y lista
 
-        // Inicia refresher
-        refresher = new Refresher(this);
-        refresher.start();
-
-        // Carga inicial de datos
-        cargarRecetas();
+        cargarRecetas(); // carga inicial de recetas
     }
+
     private void cargarRecetas() {
         new Thread(() -> {
             try {
@@ -35,35 +30,49 @@ public class DespachoController implements ThhreadListener {
     }
 
     public void buscarPorIdPaciente(String idPaciente) {
-        if (idPaciente == null || idPaciente.isEmpty()) {
-            model.setList(Proxy.instance().search(new Receta()));
-        } else {
-            model.setList(Proxy.instance().searchRecetaByIdPaciente(idPaciente));
-        }
-
-        model.setCurrent(new Receta());
+        new Thread(() -> {
+            try {
+                List<Receta> resultados;
+                if (idPaciente == null || idPaciente.isEmpty()) {
+                    resultados = Proxy.instance().search(new Receta());
+                } else {
+                    resultados = Proxy.instance().searchRecetaByIdPaciente(idPaciente);
+                }
+                SwingUtilities.invokeLater(() -> {
+                    model.setList(resultados);
+                    model.setCurrent(new Receta());
+                });
+            } catch (Exception e) {
+                System.err.println("Error buscando recetas: " + e.getMessage());
+            }
+        }).start();
     }
 
-    public void avanzarEstado(Receta receta) throws Exception {
-        Proxy.instance().avanzarEstado(receta);
-        model.setList(Proxy.instance().search(new Receta()));
+    public void avanzarEstado(Receta receta) {
+        new Thread(() -> {
+            try {
+                Proxy.instance().avanzarEstado(receta);
+                List<Receta> recetas = Proxy.instance().search(new Receta());
+                SwingUtilities.invokeLater(() -> model.setList(recetas));
+            } catch (Exception e) {
+                System.err.println("Error avanzando estado: " + e.getMessage());
+            }
+        }).start();
     }
 
     public void clear() {
         model.setCurrent(new Receta());
-        model.setList(Proxy.instance().search(new Receta()));
+        cargarRecetas();
     }
-
 
     public String generarDetallesDe(Receta receta) {
         return Proxy.instance().generarDetallesReceta(receta);
     }
 
     @Override
-    public void refresh() {
+    public void deliver_message(String message) {
+        // Cuando llega un mensaje, recarga la lista de recetas
         cargarRecetas();
+        System.out.println("Mensaje recibido: " + message);
     }
-
-
-
 }

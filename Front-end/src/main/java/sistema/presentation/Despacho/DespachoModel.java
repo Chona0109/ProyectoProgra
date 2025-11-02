@@ -15,13 +15,19 @@ public class DespachoModel extends AbstractModel {
     public static final String LIST = "list";
 
     public DespachoModel() {
-        current = new Receta();
-        list = new ArrayList<>();
+        init();
     }
 
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         super.addPropertyChangeListener(listener);
+        firePropertyChange(CURRENT);
+        firePropertyChange(LIST);
+    }
+
+    public void init() {
+        current = new Receta();
+        list = new ArrayList<>();
         firePropertyChange(CURRENT);
         firePropertyChange(LIST);
     }

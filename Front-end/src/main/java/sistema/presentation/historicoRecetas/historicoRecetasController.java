@@ -2,60 +2,66 @@ package sistema.presentation.historicoRecetas;
 
 import logic.entities.Receta;
 import sistema.logic.Proxy;
-import sistema.presentation.ThhreadListener;
-import sistema.presentation.Refresher;
+import sistema.logic.SocketListener;
+import sistema.presentation.ThreadListener;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class historicoRecetasController implements ThhreadListener {
+public class historicoRecetasController implements ThreadListener {
 
     private historicoRecetasModel model;
-    private Refresher refresher;
+    private SocketListener socketListener;
 
     public historicoRecetasController(historicoRecetasModel model) {
         this.model = model;
+        model.init();
 
+        try {
+            socketListener = new SocketListener(this, Proxy.instance().getSid());
+            socketListener.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        refresher = new Refresher(this);
-        refresher.start();
-
-
+        // Carga inicial
         actualizar();
     }
 
+    // ==================== SOCKET LISTENER ====================
+    @Override
+    public void deliver_message(String message) {
+        System.out.println("Mensaje recibido: " + message);
+        actualizar();
+    }
+
+    // ==================== MÉTODOS ====================
     public void actualizar() {
         new Thread(() -> {
             try {
                 List<Receta> recetas = Proxy.instance().search(new Receta());
                 model.setList(recetas);
-                model.setCurrent(null);
+                model.setCurrent(new Receta());
             } catch (Exception e) {
                 System.err.println("Error cargando recetas: " + e.getMessage());
             }
         }).start();
     }
 
-    public void buscarPorId(String id) {
+    public void buscarPorId(String idPaciente) {
         new Thread(() -> {
             try {
-                if (id == null || id.trim().isEmpty()) {
-                    refresh();
-                    return;
+                List<Receta> resultados;
+                if (idPaciente == null || idPaciente.isEmpty()) {
+                    resultados = Proxy.instance().search(new Receta());
+                } else {
+                    resultados = Proxy.instance().searchRecetaByIdPaciente(idPaciente);
                 }
-
-                List<Receta> recetasPorId = Proxy.instance().searchRecetaListById(id);
-                List<Receta> recetasPorPaciente = Proxy.instance().searchRecetaByIdPaciente(id);
-
-                List<Receta> resultado = new ArrayList<>(recetasPorId);
-                for (Receta r : recetasPorPaciente) {
-                    if (!resultado.contains(r)) {
-                        resultado.add(r);
-                    }
-                }
-
-                model.setList(resultado);
-                model.setCurrent(null);
+                SwingUtilities.invokeLater(() -> {
+                    model.setList(resultados);
+                    model.setCurrent(new Receta());
+                });
             } catch (Exception e) {
                 System.err.println("Error buscando recetas: " + e.getMessage());
             }
@@ -66,8 +72,13 @@ public class historicoRecetasController implements ThhreadListener {
         return Proxy.instance().generarDetallesReceta(receta);
     }
 
-    @Override
-    public void refresh() {
-        actualizar();
+    public void setCurrent(Receta receta) {
+        model.setCurrent(receta);
+        model.setMode(historicoRecetasModel.MODE_EDIT);
+    }
+
+    public void clear() {
+        model.setCurrent(new Receta());
+        model.setMode(historicoRecetasModel.MODE_CREATE);
     }
 }

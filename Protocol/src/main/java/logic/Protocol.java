@@ -96,6 +96,8 @@ public class Protocol {
     public static final int ERROR_ERROR = 1;
 
     public static final int DISCONNECT = 99;
-
+    public static final int SYNC = 10;
+    public static final int ASYNC = 11;
+    public static final int DELIVER_MESSAGE = 13;
 
 }

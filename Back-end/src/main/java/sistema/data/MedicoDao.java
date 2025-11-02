@@ -65,14 +65,38 @@ public class MedicoDao {
     }
 
     public void delete(Medico m) throws Exception{
-        String sql = "DELETE FROM Medico WHERE id=?";
-        PreparedStatement stm = db.prepareStatement(sql);
-        stm.setString(1, m.getId());
-        int count = db.executeUpdate(stm);
-        if (count == 0){
-            throw new Exception("Médico no existe");
+        try {
+            // Primero eliminar registros relacionados
+            eliminarRelacionesMedico(m.getId());
+
+            // Luego eliminar médico
+            String sql = "DELETE FROM Medico WHERE id=?";
+            PreparedStatement stm = db.prepareStatement(sql);
+            stm.setString(1, m.getId());
+            int count = db.executeUpdate(stm);
+
+            if (count == 0){
+                throw new Exception("Médico no existe");
+            }
+
+            usuarioDao.delete(m);
+
+        } catch (SQLException e) {
+            if (e.getSQLState().startsWith("23")) { // Código de violación de FK
+                throw new Exception("No se puede eliminar médico con citas o registros relacionados");
+            }
+            throw e;
         }
-        usuarioDao.delete(m);
+    }
+
+    private void eliminarRelacionesMedico(String medicoId) throws Exception {
+        // Eliminar citas del médico
+        String deleteCitas = "DELETE FROM Cita WHERE medico_id=?";
+        PreparedStatement stm = db.prepareStatement(deleteCitas);
+        stm.setString(1, medicoId);
+        db.executeUpdate(stm);
+
+        // Eliminar otras relaciones según tu modelo...
     }
 
     public List<Medico> findAll(){

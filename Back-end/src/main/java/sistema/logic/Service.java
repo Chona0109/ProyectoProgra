@@ -19,7 +19,7 @@ public class Service {
     private RecetaDao recetaDao;
     private AdministradorDao administradorDao;
 
-    public static Service instance() {
+    public static synchronized Service getInstance() {
         if (theInstance == null) {
             theInstance = new Service();
         }

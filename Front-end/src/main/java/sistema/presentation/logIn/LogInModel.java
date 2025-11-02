@@ -1,34 +1,36 @@
 package sistema.presentation.logIn;
 
 import logic.entities.Usuario;
+import sistema.presentation.AbstractModel;
 
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 
-public class LogInModel {
+public class LogInModel extends AbstractModel {
+
     private Usuario current;
-    private final PropertyChangeSupport support;
 
     public static final String CURRENT = "current";
 
     public LogInModel() {
+        init();
+    }
+
+    public void init() {
         current = new Usuario();
-        support = new PropertyChangeSupport(this);
     }
 
-    public void setCurrent(Usuario u) {
-        Usuario old = this.current;
-        this.current = u;
-        support.firePropertyChange(CURRENT, old, u);
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        super.addPropertyChangeListener(listener);
+        firePropertyChange(CURRENT);
     }
 
-    public Usuario getCurrent() { return current; }
-
-    public void addPropertyChangeListener(PropertyChangeListener l) {
-        support.addPropertyChangeListener(l);
+    public Usuario getCurrent() {
+        return current;
     }
 
-    public void removePropertyChangeListener(PropertyChangeListener l) {
-        support.removePropertyChangeListener(l);
+    public void setCurrent(Usuario current) {
+        this.current = current != null ? current : new Usuario();
+        firePropertyChange(CURRENT);
     }
 }

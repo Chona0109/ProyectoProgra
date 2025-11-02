@@ -3,27 +3,32 @@ package sistema.presentation.Dashboard;
 import sistema.logic.Proxy;
 import logic.entities.Receta;
 import logic.entities.Medicamento;
-import java.time.Month;
-import java.util.List;
-import sistema.presentation.ThhreadListener;
-import sistema.presentation.Refresher;
+import sistema.logic.SocketListener;
+import sistema.presentation.ThreadListener;
 
 import javax.swing.*;
+import java.time.Month;
+import java.util.List;
 
-public class DashboardController implements ThhreadListener {
+public class DashboardController implements ThreadListener {
 
     private DashboardModel model;
-    private Refresher refresher;
+    private SocketListener socketListener;
 
     public DashboardController(DashboardModel model) {
         this.model = model;
+        model.init();
 
-
-        refresher = new Refresher(this);
-        refresher.start();
-
-
+        // Carga inicial de recetas
         cargarDatos();
+
+        // Inicia SocketListener para recibir actualizaciones
+        try {
+            socketListener = new SocketListener(this, Proxy.instance().getSid());
+            socketListener.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void cargarDatos() {
@@ -36,7 +41,6 @@ public class DashboardController implements ThhreadListener {
             }
         }).start();
     }
-
 
     public void aplicarFiltros(String medicamentoNombre, Month mesInicio, Month mesFin) {
         model.setFiltros(medicamentoNombre, mesInicio, mesFin);
@@ -51,9 +55,22 @@ public class DashboardController implements ThhreadListener {
         }
     }
 
-    @Override
-    public void refresh() {
+    public void stop() {
+        if (socketListener != null) socketListener.stop();
+    }
 
-        cargarDatos();
+    @Override
+    public void deliver_message(String message) {
+        // Cuando llega un mensaje desde el servidor, recarga las recetas
+        new Thread(() -> {
+            try {
+                List<Receta> recetas = Proxy.instance().search(new Receta());
+                SwingUtilities.invokeLater(() -> model.setRecetas(recetas));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        System.out.println("Mensaje recibido en Dashboard: " + message);
     }
 }

@@ -1,19 +1,27 @@
 package sistema.presentation.prescribirBuscarPaciente;
 
-import logic.entities.Medico;
 import sistema.logic.Proxy;
 import logic.entities.Paciente;
+import sistema.presentation.ThreadListener;
 
 import java.util.List;
-import sistema.presentation.ThhreadListener;
-public class prescribirBuscarPacienteController implements ThhreadListener {
+
+public class prescribirBuscarPacienteController implements ThreadListener {
 
     private prescribirBuscarPacienteModel model;
 
     public prescribirBuscarPacienteController(prescribirBuscarPacienteModel model) {
         this.model = model;
+        model.init();
+        loadPacientes();
     }
 
+    private void loadPacientes() {
+        // Carga inicial de todos los pacientes
+        List<Paciente> lista = Proxy.instance().search(new Paciente());
+        model.setList(lista);
+        model.setMode(prescribirBuscarPacienteModel.MODE_CREATE);
+    }
 
     public void search(String criterio, String valor) {
         List<Paciente> resultados;
@@ -29,6 +37,7 @@ public class prescribirBuscarPacienteController implements ThhreadListener {
         }
 
         model.setList(resultados);
+        model.setMode(prescribirBuscarPacienteModel.MODE_CREATE);
     }
 
     public void seleccionarPaciente(String id) {
@@ -36,15 +45,22 @@ public class prescribirBuscarPacienteController implements ThhreadListener {
             Paciente p = new Paciente();
             p.setId(id);
             Paciente encontrado = Proxy.instance().read(p);
-            model.setCurrent(encontrado);
+            if (encontrado != null) {
+                model.setCurrent(encontrado);
+                model.setMode(prescribirBuscarPacienteModel.MODE_EDIT);
+            }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
+
+    public void clear() {
+        model.setCurrent(new Paciente());
+        model.setMode(prescribirBuscarPacienteModel.MODE_CREATE);
+    }
+
     @Override
-    public void refresh() {
-        try {
-            model.setList(Proxy.instance().search(new Paciente()));
-        } catch (Exception e) {}
+    public void deliver_message(String message) {
+        loadPacientes(); // Refresca toda la lista al recibir mensaje
     }
 }

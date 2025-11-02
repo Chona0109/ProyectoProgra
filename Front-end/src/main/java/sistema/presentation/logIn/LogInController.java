@@ -1,11 +1,11 @@
 package sistema.presentation.logIn;
 
-import logic.entities.Farmaceutico;
 import sistema.logic.Proxy;
 import logic.entities.Usuario;
-import sistema.presentation.ThhreadListener;
+import sistema.presentation.ThreadListener;
 
-public class LogInController implements ThhreadListener {
+public class LogInController implements ThreadListener {
+
     private final LogInModel model;
     private final loginForm view;
 
@@ -14,6 +14,7 @@ public class LogInController implements ThhreadListener {
         this.view = view;
         this.view.setController(this);
         this.view.setModel(model);
+        model.init();
     }
 
     public void login(Usuario usuario) throws Exception {
@@ -26,8 +27,8 @@ public class LogInController implements ThhreadListener {
     }
 
     @Override
-    public void refresh() {
-
+    public void deliver_message(String message) {
+        // En login normalmente no necesitas refrescar nada
+        System.out.println("Mensaje recibido en login: " + message);
     }
 }
-

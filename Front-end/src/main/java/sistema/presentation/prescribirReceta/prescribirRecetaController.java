@@ -1,31 +1,20 @@
 package sistema.presentation.prescribirReceta;
 
-import logic.entities.MedicamentoDetalle;
-import logic.entities.Medico;
 import sistema.logic.Proxy;
 import logic.entities.Paciente;
 import logic.entities.Receta;
-import sistema.presentation.Refresher;
-import sistema.presentation.ThhreadListener;
+import sistema.presentation.ThreadListener;
+
 import javax.swing.*;
 import java.util.List;
 
-public class prescribirRecetaController implements ThhreadListener {
+public class prescribirRecetaController implements ThreadListener {
 
     private prescribirRecetaModel model;
-    private Refresher refresher;
 
     public prescribirRecetaController(prescribirRecetaModel model) {
         this.model = model;
-
-        // Inicializa el refresher
-        refresher = new Refresher(this);
-        refresher.start();
-
-        // Inicializa el modelo
-        model.setCurrent(new Receta());
-
-        // Carga los datos iniciales
+        model.init();
         cargarDatos();
     }
 
@@ -43,35 +32,36 @@ public class prescribirRecetaController implements ThhreadListener {
     public void create(Receta receta) throws Exception {
         Receta creada = Proxy.instance().createReceta(receta);
         model.setCurrent(creada);
-        model.setList(Proxy.instance().search(new Receta()));
+        cargarDatos();
+        model.setMode(prescribirRecetaModel.MODE_EDIT);
     }
-
 
     public void read(int id) throws Exception {
         Receta receta = new Receta();
         receta.setId(id);
         try {
             model.setCurrent(Proxy.instance().readReceta(receta));
+            model.setMode(prescribirRecetaModel.MODE_EDIT);
         } catch (Exception ex) {
             Receta nueva = new Receta();
             nueva.setId(id);
             model.setCurrent(nueva);
+            model.setMode(prescribirRecetaModel.MODE_CREATE);
             throw ex;
         }
     }
 
     public void update(Receta receta) throws Exception {
         Proxy.instance().updateReceta(receta);
-        model.setCurrent(new Receta());
-        model.setList(Proxy.instance().search(new Receta()));
+        model.setCurrent(receta);
+        cargarDatos();
+        model.setMode(prescribirRecetaModel.MODE_EDIT);
     }
-
 
     public void clear() {
         model.setCurrent(new Receta());
+        model.setMode(prescribirRecetaModel.MODE_CREATE);
     }
-
-
 
     public void setPaciente(Paciente paciente) throws Exception {
         Receta current = model.getCurrent();
@@ -80,13 +70,11 @@ public class prescribirRecetaController implements ThhreadListener {
         model.setCurrent(current);
     }
 
-
-
     public void removeMedicamento(int recetaId, int index) throws Exception {
         Proxy.instance().removeMedicamentoFromReceta(recetaId, index);
-        model.setCurrent(Proxy.instance().readReceta(new Receta(){{ setId(recetaId); }}));
-
+        model.setCurrent(Proxy.instance().readReceta(new Receta() {{ setId(recetaId); }}));
     }
+
     public void modificarDetalleMedicamento(int row) {
         try {
             Receta recetaActual = model.getCurrent();
@@ -111,9 +99,7 @@ public class prescribirRecetaController implements ThhreadListener {
     }
 
     @Override
-    public void refresh() {
+    public void deliver_message(String message) {
         cargarDatos();
     }
 }
-
-

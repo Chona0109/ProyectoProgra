@@ -19,18 +19,35 @@ public class DashboardModel extends AbstractModel {
     private Month mesInicioFiltro;
     private Month mesFinFiltro;
 
+    public static final String RECETAS = "recetas";
     public static final String RECETAS_POR_MES = "recetasPorMes";
     public static final String RECETAS_POR_ESTADO = "recetasPorEstado";
 
-    public DashboardModel() {}
+    public DashboardModel() {
+        init();
+    }
 
-    public void setRecetas(List<Receta> recetas) {
-        this.recetas = recetas;
-        actualizarEstadisticas();
+    public void init() {
+        recetas = List.of();
+        medicamentosPorMes = new HashMap<>();
+        recetasPorEstado = new HashMap<>();
+        medicamentoFiltro = null;
+        mesInicioFiltro = null;
+        mesFinFiltro = null;
+
+        firePropertyChange(RECETAS);
+        firePropertyChange(RECETAS_POR_MES);
+        firePropertyChange(RECETAS_POR_ESTADO);
     }
 
     public List<Receta> getRecetas() {
         return recetas;
+    }
+
+    public void setRecetas(List<Receta> recetas) {
+        this.recetas = recetas != null ? recetas : List.of();
+        firePropertyChange(RECETAS);
+        actualizarEstadisticas();
     }
 
     public void setFiltros(String medicamento, Month mesInicio, Month mesFin) {
@@ -41,7 +58,13 @@ public class DashboardModel extends AbstractModel {
     }
 
     private void actualizarEstadisticas() {
-        if (recetas == null) return;
+        if (recetas == null || recetas.isEmpty()) {
+            medicamentosPorMes = new HashMap<>();
+            recetasPorEstado = new HashMap<>();
+            firePropertyChange(RECETAS_POR_MES);
+            firePropertyChange(RECETAS_POR_ESTADO);
+            return;
+        }
 
         List<Receta> recetasFiltradas = recetas.stream()
                 .filter(r -> r.getMedicamentos() != null &&

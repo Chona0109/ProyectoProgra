@@ -9,15 +9,23 @@ import java.util.List;
 
 public class MedicamentosModel extends AbstractModel {
 
+    private Medicamento filter;
     private Medicamento current;
     private List<Medicamento> list;
+    private int mode;
 
     public static final String CURRENT = "current";
     public static final String LIST = "list";
+    public static final String FILTER = "filter";
+
+    public static final int MODE_CREATE = 1;
+    public static final int MODE_EDIT = 2;
 
     public MedicamentosModel() {
+        filter = new Medicamento();
         current = new Medicamento();
         list = new ArrayList<>();
+        mode = MODE_CREATE;
     }
 
     @Override
@@ -25,6 +33,26 @@ public class MedicamentosModel extends AbstractModel {
         super.addPropertyChangeListener(listener);
         firePropertyChange(CURRENT);
         firePropertyChange(LIST);
+        firePropertyChange(FILTER);
+    }
+
+    public void init() {
+        filter = new Medicamento();
+        current = new Medicamento();
+        list = new ArrayList<>();
+        mode = MODE_CREATE;
+        firePropertyChange(CURRENT);
+        firePropertyChange(LIST);
+        firePropertyChange(FILTER);
+    }
+
+    public Medicamento getFilter() {
+        return filter;
+    }
+
+    public void setFilter(Medicamento filter) {
+        this.filter = filter != null ? filter : new Medicamento();
+        firePropertyChange(FILTER);
     }
 
     public Medicamento getCurrent() {
@@ -32,8 +60,7 @@ public class MedicamentosModel extends AbstractModel {
     }
 
     public void setCurrent(Medicamento current) {
-        if (current == null) current = new Medicamento();
-        this.current = current;
+        this.current = current != null ? current : new Medicamento();
         firePropertyChange(CURRENT);
     }
 
@@ -44,5 +71,13 @@ public class MedicamentosModel extends AbstractModel {
     public void setList(List<Medicamento> list) {
         this.list = list != null ? list : new ArrayList<>();
         firePropertyChange(LIST);
+    }
+
+    public int getMode() {
+        return mode;
+    }
+
+    public void setMode(int mode) {
+        this.mode = mode;
     }
 }

@@ -11,18 +11,37 @@ import logic.entities.*;
 public class Worker {
     Server srv;
     Socket s;
-    Service service;
     ObjectOutputStream os;
     ObjectInputStream is;
+    Service service;
 
-    public Worker(Server srv, Socket s, Service service) {
-        try{
-            this.srv=srv;
-            this.s=s;
-            os = new ObjectOutputStream(s.getOutputStream());
-            is = new ObjectInputStream(s.getInputStream());
-            this.service=service;
-        } catch (IOException ex) { System.out.println(ex); }
+    String sid; // Session Id
+    Socket as; // Asynchronous Socket
+    ObjectOutputStream aos;
+    ObjectInputStream ais;
+
+    public Worker(Server srv, Socket s, ObjectOutputStream os, ObjectInputStream is, String sid, Service service) {
+        this.srv = srv;
+        this.s = s;
+        this.os = os;
+        this.is = is;
+        this.service = service;
+        this.sid = sid;
+    }
+
+    public void setAs(Socket as, ObjectOutputStream aos, ObjectInputStream ais) {
+        this.as = as;
+        this.aos = aos;
+        this.ais = ais;
+    }
+
+    private String usuarioId;
+    public void setUsuarioId(String usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    public String getUsuarioId() {
+        return usuarioId;
     }
 
     boolean continuar;
@@ -53,7 +72,6 @@ public class Worker {
 
                 switch (method) {
 
-
                     // ===================== DEPARTAMENTO =====================
                     case Protocol.DEPARTAMENTO_SEARCH:
                         try {
@@ -66,6 +84,15 @@ public class Worker {
                         break;
 
                     // ===================== FARMACEUTICO =====================
+                    case Protocol.FARMACEUTICO_CREATE:
+                        try {
+                            service.create((Farmaceutico) is.readObject());
+                            os.writeInt(Protocol.ERROR_NO_ERROR);
+                            srv.deliver_message(this, "Farmacéutico creado");
+                        } catch (Exception ex) {
+                            os.writeInt(Protocol.ERROR_ERROR);
+                        }
+                        break;
                     case Protocol.FARMACEUTICO_READ:
                         try {
                             Farmaceutico f = service.read((Farmaceutico) is.readObject());
@@ -79,6 +106,7 @@ public class Worker {
                         try {
                             service.updateFarmaceutico((Farmaceutico) is.readObject());
                             os.writeInt(Protocol.ERROR_NO_ERROR);
+                            srv.deliver_message(this, "Farmacéutico actualizado");
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
                         }
@@ -87,6 +115,7 @@ public class Worker {
                         try {
                             service.delete((Farmaceutico) is.readObject());
                             os.writeInt(Protocol.ERROR_NO_ERROR);
+                            srv.deliver_message(this, "Farmacéutico eliminado");
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
                         }
@@ -113,7 +142,17 @@ public class Worker {
                             System.err.println("Error en FARMACEUTICO_SEARCH: " + ex.getMessage());
                         }
                         break;
+
                     // ===================== MEDICAMENTO =====================
+                    case Protocol.MEDICAMENTO_CREATE:
+                        try {
+                            service.create((Medicamento) is.readObject());
+                            os.writeInt(Protocol.ERROR_NO_ERROR);
+                            srv.deliver_message(this, "Medicamento creado");
+                        } catch (Exception ex) {
+                            os.writeInt(Protocol.ERROR_ERROR);
+                        }
+                        break;
                     case Protocol.MEDICAMENTO_READ:
                         try {
                             Medicamento m = service.read((Medicamento) is.readObject());
@@ -127,6 +166,7 @@ public class Worker {
                         try {
                             service.updateMedicamento((Medicamento) is.readObject());
                             os.writeInt(Protocol.ERROR_NO_ERROR);
+                            srv.deliver_message(this, "Medicamento actualizado");
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
                         }
@@ -135,16 +175,17 @@ public class Worker {
                         try {
                             service.delete((Medicamento) is.readObject());
                             os.writeInt(Protocol.ERROR_NO_ERROR);
+                            srv.deliver_message(this, "Medicamento eliminado");
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
                         }
                         break;
                     case Protocol.MEDICAMENTO_SEARCH_BY_CODIGO:
                         try {
-                            String codigo = is.readUTF();                           // recibimos código
-                            List<Medicamento> lista = service.searchMedicamentoByCodigo(codigo); // servicio
+                            String codigo = is.readUTF();
+                            List<Medicamento> lista = service.searchMedicamentoByCodigo(codigo);
                             os.writeInt(Protocol.ERROR_NO_ERROR);
-                            os.writeObject(lista);                                  // enviamos lista al proxy
+                            os.writeObject(lista);
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
                             System.err.println("Error en MEDICAMENTO_SEARCH_BY_CODIGO: " + ex.getMessage());
@@ -152,13 +193,8 @@ public class Worker {
                         break;
                     case Protocol.MEDICAMENTO_SEARCH:
                         try {
-                            // Recibe un objeto Medicamento del proxy (puede tener filtros)
                             Medicamento filtro = (Medicamento) is.readObject();
-
-                            // Llama al servicio para obtener la lista
                             List<Medicamento> lista = service.searchMedicamento(filtro);
-
-                            // Envía la lista de vuelta al proxy/frontend
                             os.writeInt(Protocol.ERROR_NO_ERROR);
                             os.writeObject(lista);
                         } catch (Exception ex) {
@@ -166,14 +202,28 @@ public class Worker {
                             System.err.println("Error en MEDICAMENTO_SEARCH: " + ex.getMessage());
                         }
                         break;
-
-                    // ===================== MEDICAMENTO DETALLE =====================
-
-
-
-                    //Falta todo??
+                    case Protocol.MEDICAMENTO_SEARCH_BY_NAME:
+                        try {
+                            String nombre = is.readUTF();
+                            List<Medicamento> lista = service.searchMedicamentoByName(nombre);
+                            os.writeInt(Protocol.ERROR_NO_ERROR);
+                            os.writeObject(lista);
+                        } catch (Exception ex) {
+                            os.writeInt(Protocol.ERROR_ERROR);
+                            System.err.println("Error en MEDICAMENTO_SEARCH_BY_NAME: " + ex.getMessage());
+                        }
+                        break;
 
                     // ===================== MEDICO =====================
+                    case Protocol.MEDICO_CREATE:
+                        try {
+                            service.create((Medico) is.readObject());
+                            os.writeInt(Protocol.ERROR_NO_ERROR);
+                            srv.deliver_message(this, "Médico creado");
+                        } catch (Exception ex) {
+                            os.writeInt(Protocol.ERROR_ERROR);
+                        }
+                        break;
                     case Protocol.MEDICO_READ:
                         try {
                             Medico me = service.read((Medico) is.readObject());
@@ -187,6 +237,7 @@ public class Worker {
                         try {
                             service.updateMedico((Medico) is.readObject());
                             os.writeInt(Protocol.ERROR_NO_ERROR);
+                            srv.deliver_message(this, "Médico actualizado");
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
                         }
@@ -195,6 +246,7 @@ public class Worker {
                         try {
                             service.delete((Medico) is.readObject());
                             os.writeInt(Protocol.ERROR_NO_ERROR);
+                            srv.deliver_message(this, "Médico eliminado");
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
                         }
@@ -208,20 +260,17 @@ public class Worker {
                             os.writeInt(Protocol.ERROR_ERROR);
                         }
                         break;
-                    case Protocol.MEDICAMENTO_SEARCH_BY_NAME:
-                        try {
-                            String nombre = is.readUTF();
-                            List<Medicamento> lista = service.searchMedicamentoByName(nombre); // servicio
-                            os.writeInt(Protocol.ERROR_NO_ERROR);
-                            os.writeObject(lista);
-                        } catch (Exception ex) {
-                            os.writeInt(Protocol.ERROR_ERROR);
-                            System.err.println("Error en MEDICAMENTO_SEARCH_BY_NAME: " + ex.getMessage());
-                        }
-                        break;
-
 
                     // ===================== PACIENTE =====================
+                    case Protocol.PACIENTE_CREATE:
+                        try {
+                            service.create((Paciente) is.readObject());
+                            os.writeInt(Protocol.ERROR_NO_ERROR);
+                            srv.deliver_message(this, "Paciente creado");
+                        } catch (Exception ex) {
+                            os.writeInt(Protocol.ERROR_ERROR);
+                        }
+                        break;
                     case Protocol.PACIENTE_READ:
                         try {
                             Paciente pa = service.read((Paciente) is.readObject());
@@ -235,6 +284,7 @@ public class Worker {
                         try {
                             service.updatePaciente((Paciente) is.readObject());
                             os.writeInt(Protocol.ERROR_NO_ERROR);
+                            srv.deliver_message(this, "Paciente actualizado");
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
                         }
@@ -243,6 +293,7 @@ public class Worker {
                         try {
                             service.delete((Paciente) is.readObject());
                             os.writeInt(Protocol.ERROR_NO_ERROR);
+                            srv.deliver_message(this, "Paciente eliminado");
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
                         }
@@ -270,7 +321,7 @@ public class Worker {
                     case Protocol.PACIENTE_SEARCH_BY_ID:
                         try {
                             String id = is.readUTF();
-                            List<Paciente> lista = service.searchPacienteById(id); // ahora devuelve lista
+                            List<Paciente> lista = service.searchPacienteById(id);
                             os.writeInt(Protocol.ERROR_NO_ERROR);
                             os.writeObject(lista);
                         } catch (Exception ex) {
@@ -279,8 +330,19 @@ public class Worker {
                         }
                         break;
 
-
                     // ===================== RECETA =====================
+                    case Protocol.RECETA_CREATE:
+                        try {
+                            Receta r = (Receta) is.readObject();
+                            Receta creada = service.createReceta(r);
+                            os.writeInt(Protocol.ERROR_NO_ERROR);
+                            os.writeObject(creada);
+                            srv.deliver_message(this, "Receta creada");
+                        } catch (Exception ex) {
+                            os.writeInt(Protocol.ERROR_ERROR);
+                            System.err.println("Error en RECETA_CREATE: " + ex.getMessage());
+                        }
+                        break;
                     case Protocol.RECETA_READ:
                         try {
                             Receta r = service.readReceta((Receta) is.readObject());
@@ -294,18 +356,11 @@ public class Worker {
                         try {
                             service.updateReceta((Receta) is.readObject());
                             os.writeInt(Protocol.ERROR_NO_ERROR);
+                            srv.deliver_message(this, "Receta actualizada");
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
                         }
                         break;
-//                    case Protocol.RECETA_DELETE:
-//                        try {
-//                            service.delete((Receta) is.readObject());
-//                            os.writeInt(Protocol.ERROR_NO_ERROR);
-//                        } catch (Exception ex) {
-//                            os.writeInt(Protocol.ERROR_ERROR);
-//                        }
-//                        break;
                     case Protocol.RECETA_SEARCH:
                         try {
                             List<Receta> lr = service.searchReceta((Receta) is.readObject());
@@ -329,8 +384,9 @@ public class Worker {
                     case Protocol.RECETA_AVANZAR_ESTADO:
                         try {
                             Receta r = (Receta) is.readObject();
-                            service.avanzarEstado(r); // método en el servicio
+                            service.avanzarEstado(r);
                             os.writeInt(Protocol.ERROR_NO_ERROR);
+                            srv.deliver_message(this, "Estado de receta avanzado");
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
                             System.err.println("Error en RECETA_AVANZAR_ESTADO: " + ex.getMessage());
@@ -339,7 +395,7 @@ public class Worker {
                     case Protocol.RECETA_GENERAR_DETALLES:
                         try {
                             Receta r = (Receta) is.readObject();
-                            String detalles = service.generarDetallesReceta(r); // método en el servicio
+                            String detalles = service.generarDetallesReceta(r);
                             os.writeInt(Protocol.ERROR_NO_ERROR);
                             os.writeUTF(detalles);
                         } catch (Exception ex) {
@@ -349,39 +405,27 @@ public class Worker {
                         break;
                     case Protocol.RECETA_SEARCH_BY_ID:
                         try {
-                            String id = is.readUTF();                      // recibe ID del proxy
-                            List<Receta> recetas = service.searchRecetaById(id); // devuelve lista
+                            String id = is.readUTF();
+                            List<Receta> recetas = service.searchRecetaById(id);
                             os.writeInt(Protocol.ERROR_NO_ERROR);
-                            os.writeObject(recetas);                       // envía lista al proxy
+                            os.writeObject(recetas);
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
                             System.err.println("Error en RECETA_SEARCH_BY_ID: " + ex.getMessage());
                         }
                         break;
-                    case Protocol.RECETA_CREATE:
-                        try {
-                            Receta r = (Receta) is.readObject();
-                            Receta creada = service.createReceta(r); // llama al servicio
-                            os.writeInt(Protocol.ERROR_NO_ERROR);
-                            os.writeObject(creada);                  // devuelve al proxy
-                        } catch (Exception ex) {
-                            os.writeInt(Protocol.ERROR_ERROR);
-                            System.err.println("Error en RECETA_CREATE: " + ex.getMessage());
-                        }
-                        break;
                     case Protocol.RECETA_REMOVE_MEDICAMENTO:
                         try {
-                            int recetaId = is.readInt();  // recibimos ID como int
-                            int index = is.readInt();     // recibimos índice
+                            int recetaId = is.readInt();
+                            int index = is.readInt();
                             service.removeMedicamentoFromReceta(recetaId, index);
                             os.writeInt(Protocol.ERROR_NO_ERROR);
+                            srv.deliver_message(this, "Medicamento eliminado de receta");
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
                             System.err.println("Error en RECETA_REMOVE_MEDICAMENTO: " + ex.getMessage());
                         }
                         break;
-
-
 
                     // ===================== USUARIO =====================
                     case Protocol.USUARIO_READ:
@@ -397,30 +441,14 @@ public class Worker {
                         try {
                             service.updateUsuario((Usuario) is.readObject());
                             os.writeInt(Protocol.ERROR_NO_ERROR);
+                            srv.deliver_message(this, "Usuario actualizado");
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
                         }
                         break;
-//                    case Protocol.USUARIO_DELETE:
-//                        try {
-//                            service.delete((Usuario) is.readObject());
-//                            os.writeInt(Protocol.ERROR_NO_ERROR);
-//                        } catch (Exception ex) {
-//                            os.writeInt(Protocol.ERROR_ERROR);
-//                        }
-//                        break;
-//                    case Protocol.USUARIO_SEARCH:
-//                        try {
-//                            List<Usuario> lu = service.search((Usuario) is.readObject());
-//                            os.writeInt(Protocol.ERROR_NO_ERROR);
-//                            os.writeObject(lu);
-//                        } catch (Exception ex) {
-//                            os.writeInt(Protocol.ERROR_ERROR);
-//                        }
-//                        break;
                     case Protocol.USUARIO_FIND_BY_ID:
                         try {
-                            String id = (String) is.readObject(); // <- lee el mismo tipo que mandó el cliente
+                            String id = (String) is.readObject();
                             Usuario u = service.findUserById(id);
                             os.writeInt(Protocol.ERROR_NO_ERROR);
                             os.writeObject(u);
@@ -435,6 +463,7 @@ public class Worker {
                             if (logged != null) {
                                 os.writeInt(Protocol.ERROR_NO_ERROR);
                                 os.writeObject(logged);
+                                setUsuarioId(logged.getId());
                             } else {
                                 os.writeInt(Protocol.ERROR_ERROR);
                             }
@@ -443,7 +472,6 @@ public class Worker {
                             System.err.println("Error en USUARIO_LOGIN: " + ex.getMessage());
                         }
                         break;
-
 
                     // ===================== DESCONECTAR =====================
                     case Protocol.DISCONNECT:
@@ -456,9 +484,19 @@ public class Worker {
 
             } catch (IOException e) {
                 stop();
-
             }
         }
     }
 
+    public synchronized void deliver_message(String message) {
+        if (as != null) {
+            try {
+                aos.writeInt(Protocol.DELIVER_MESSAGE);
+                aos.writeObject(message);
+                aos.flush();
+            } catch (Exception e) {
+                System.err.println("Error enviando mensaje: " + e.getMessage());
+            }
+        }
+    }
 }

@@ -2,59 +2,72 @@ package sistema.presentation.medicos;
 
 import sistema.logic.Proxy;
 import logic.entities.*;
-import sistema.presentation.Refresher;
-import sistema.presentation.ThhreadListener;
+import sistema.logic.SocketListener;
+import sistema.presentation.ThreadListener;
 
 import javax.swing.*;
+import java.util.List;
 
-public class MedicosController implements ThhreadListener{
+public class MedicosController implements ThreadListener {
 
     private MedicosModel model;
-    Refresher refresher;
-    public MedicosController(MedicosForm form, MedicosModel model) {
+    private MedicosForm view;
+    private SocketListener socketListener;
+
+    public MedicosController(MedicosForm view, MedicosModel model) {
+        this.view = view;
         this.model = model;
 
-        // Inicia refresher
+        model.init();
 
-        refresher = new Refresher(this);
-        refresher.start();
+        view.setController(this);
+        view.setModel(model);
+
+        try {
+            socketListener = new SocketListener(this, Proxy.instance().getSid());
+            socketListener.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Inicializamos la lista y departamentos
+        try {
+            model.setList(Proxy.instance().search(new Medico()));
+            model.setDepartamentos(Proxy.instance().search(new Departamento()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    // Cada 2 segundos refresca datos en segundo plano
+    // ==================== SOCKET LISTENER ====================
     @Override
-    public void refresh() {
-        new SwingWorker<Void, Void>() {
+    public void deliver_message(String message) {
+        System.out.println("Mensaje recibido: " + message);
+        try {
+            search(new Medico()); // refresca la lista al recibir mensaje
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-            @Override
-            protected Void doInBackground() throws Exception {
-
-
-                model.setList(Proxy.instance().search(new Medico()));
-                model.setDepartamentos(Proxy.instance().search(new Departamento()));
-
-                return null;
-            }
-        }.execute();
+    // ==================== MÉTODOS CRUD ====================
+    public void search(Medico filter) throws Exception {
+        model.setFilter(filter);
+        List<Medico> rows = Proxy.instance().search(model.getFilter());
+        model.setMode(MedicosModel.MODE_CREATE);
+        model.setList(rows);
     }
 
     public void create(Medico e) throws Exception {
         e.setDepartamento(model.getCurrent().getDepartamento());
         Proxy.instance().create(e);
         model.setCurrent(new Medico());
-        model.setList(Proxy.instance().search(new Medico()));
+        search(new Medico());
     }
 
-    public void setCurrent(Medico v) {
-        model.setCurrent(v);
-    }
-
-    public void update(Medico medico) throws Exception {
-        Proxy.instance().updateMedico(medico);
-        refreshMedicos();
-    }
-
-    private void refreshMedicos() {
-        model.setList(Proxy.instance().search(new Medico()));
+    public void update(Medico e) throws Exception {
+        Proxy.instance().updateMedico(e);
+        search(new Medico());
         model.setCurrent(new Medico());
     }
 
@@ -71,10 +84,6 @@ public class MedicosController implements ThhreadListener{
         }
     }
 
-    public void clear() {
-        model.setCurrent(new Medico());
-    }
-
     public void delete(String id) throws Exception {
         Medico m = new Medico();
         m.setId(id);
@@ -83,6 +92,17 @@ public class MedicosController implements ThhreadListener{
         model.setList(Proxy.instance().search(new Medico()));
     }
 
+    public void setCurrent(Medico e) {
+        model.setCurrent(e);
+        model.setMode(MedicosModel.MODE_EDIT);
+    }
+
+    public void clear() {
+        model.setCurrent(new Medico());
+        model.setMode(MedicosModel.MODE_CREATE);
+    }
+
+    // ==================== DEPARTAMENTOS ====================
     public void setDepartamento(int row) {
         if (row >= 0 && row < model.getDepartamentos().size()) {
             Departamento dep = model.getDepartamentos().get(row);
@@ -96,8 +116,8 @@ public class MedicosController implements ThhreadListener{
         model.setDepartamentos(Proxy.instance().search(d));
     }
 
-    public void stop(){
-        refresher.stop();
+    // ==================== STOP SOCKET ====================
+    public void stop() {
+        if (socketListener != null) socketListener.stop();
     }
 }
-

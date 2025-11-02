@@ -14,8 +14,6 @@ public class historicoRecetas extends JDialog implements PropertyChangeListener 
 
     private JPanel main;
     private JTextField idFld;
-    private JButton buscarButton;
-    private JButton verTodasButton;
     private JTable miTabla;
     private JButton verDetallesButton;
 
@@ -34,20 +32,6 @@ public class historicoRecetas extends JDialog implements PropertyChangeListener 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 
-        verTodasButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                idFld.setText("");
-                try {
-                    controller.actualizar();
-                    miTabla.clearSelection();
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(historicoRecetas.this,
-                            "Error al cargar todas las recetas: " + ex.getMessage(),
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
 
         idFld.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent evt) {
@@ -56,13 +40,7 @@ public class historicoRecetas extends JDialog implements PropertyChangeListener 
             }
         });
 
-        buscarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String id = idFld.getText().trim();
-                controller.buscarPorId(id);
-            }
-        });
+
 
         verDetallesButton.addActionListener(new ActionListener() {
             @Override

@@ -3,9 +3,9 @@ package sistema.presentation.changePassword;
 
 import sistema.logic.Proxy;
 import logic.entities.Usuario;
-import sistema.presentation.ThhreadListener;
+import sistema.presentation.ThreadListener;
 
-public class ChangePasswordController implements ThhreadListener {
+public class ChangePasswordController{
     private final ChangePasswordModel model;
     private final changeForm view;
 
@@ -39,15 +39,12 @@ public class ChangePasswordController implements ThhreadListener {
 
 
         user.setClave(newPass);
-        Proxy.instance().updateUsuario(user);
+        Proxy.instance().update(user);
 
 
         model.setCurrent(user);
     }
-    @Override
-    public void refresh() {
 
-    }
 
     public void clear() {
         model.setCurrent(new Usuario());

@@ -12,20 +12,41 @@ import java.util.List;
 
 public class Proxy {
     private static Proxy theInstance;
-    public static Proxy instance(){
+
+    public static Proxy instance() {
         if (theInstance == null) theInstance = new Proxy();
         return theInstance;
     }
+
     private ObjectInputStream is;
     private ObjectOutputStream os;
     private Socket socket;
+    private String sid; // Session ID
+
     public Proxy() {
         try {
             socket = new Socket(Protocol.SERVER, Protocol.PORT);
             os = new ObjectOutputStream(socket.getOutputStream());
             is = new ObjectInputStream(socket.getInputStream());
-        } catch (Exception e) { System.exit(-1);}
+
+            // Indicar que es una conexión normal (SYNC)
+            os.writeInt(Protocol.SYNC);
+            os.flush();
+
+            // Recibir el Session ID del servidor
+            sid = (String) is.readObject();
+            System.out.println("Conectado al servidor con SID: " + sid);
+
+        } catch (Exception e) {
+            System.err.println("Error conectando al servidor: " + e.getMessage());
+            System.exit(-1);
+        }
     }
+
+    public String getSid() {
+        return sid;
+    }
+
     // ==========================================================
     // 🔹 ADMINISTRADOR
     // ==========================================================
@@ -113,7 +134,6 @@ public class Proxy {
 
     public synchronized List<Departamento> search(Departamento e) {
         try {
-
             os.writeInt(Protocol.DEPARTAMENTO_SEARCH);
             os.writeObject(e);
             os.flush();
@@ -174,6 +194,38 @@ public class Proxy {
         }
     }
 
+    public synchronized void updateFarmaceutico(Farmaceutico farmaceutico) throws Exception {
+        try {
+            os.writeInt(Protocol.FARMACEUTICO_UPDATE);
+            os.writeObject(farmaceutico);
+            os.flush();
+
+            int response = is.readInt();
+            if (response != Protocol.ERROR_NO_ERROR) {
+                throw new Exception("No se pudo actualizar el farmacéutico.");
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new Exception("Error al actualizar el farmacéutico: " + e.getMessage());
+        }
+    }
+
+    public synchronized List<Farmaceutico> searchFarmaceuticoByName(String nombre) {
+        try {
+            os.writeInt(Protocol.FARMACEUTICO_SEARCH_BY_NAME);
+            os.writeUTF(nombre);
+            os.flush();
+
+            int response = is.readInt();
+            if (response == Protocol.ERROR_NO_ERROR) {
+                return (List<Farmaceutico>) is.readObject();
+            } else {
+                return List.of();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException("Error buscando farmacéuticos: " + e.getMessage());
+        }
+    }
+
     // ==========================================================
     // 🔹 MEDICAMENTO
     // ==========================================================
@@ -220,6 +272,55 @@ public class Proxy {
             else return List.of();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
+        }
+    }
+
+    public synchronized void updateMedicamento(Medicamento medicamento) throws Exception {
+        try {
+            os.writeInt(Protocol.MEDICAMENTO_UPDATE);
+            os.writeObject(medicamento);
+            os.flush();
+
+            int response = is.readInt();
+            if (response != Protocol.ERROR_NO_ERROR) {
+                throw new Exception("No se pudo actualizar el medicamento.");
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new Exception("Error al actualizar el medicamento: " + e.getMessage());
+        }
+    }
+
+    public synchronized List<Medicamento> searchMedicamentoByCodigo(String codigo) {
+        try {
+            os.writeInt(Protocol.MEDICAMENTO_SEARCH_BY_CODIGO);
+            os.writeUTF(codigo);
+            os.flush();
+
+            int response = is.readInt();
+            if (response == Protocol.ERROR_NO_ERROR) {
+                return (List<Medicamento>) is.readObject();
+            } else {
+                return List.of();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException("Error buscando medicamentos: " + e.getMessage());
+        }
+    }
+
+    public synchronized List<Medicamento> searchMedicamentoByName(String nombre) {
+        try {
+            os.writeInt(Protocol.MEDICAMENTO_SEARCH_BY_NAME);
+            os.writeUTF(nombre);
+            os.flush();
+
+            int response = is.readInt();
+            if (response == Protocol.ERROR_NO_ERROR) {
+                return (List<Medicamento>) is.readObject();
+            } else {
+                return List.of();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException("Error buscando medicamentos: " + e.getMessage());
         }
     }
 
@@ -310,19 +411,31 @@ public class Proxy {
 
     public synchronized List<Medico> search(Medico e) {
         try {
-            System.out.println("Pidiendo Lista");
             os.writeInt(Protocol.MEDICO_SEARCH);
             os.writeObject(e);
             os.flush();
-            System.out.println("Pidiendo Lista");
             if (is.readInt() == Protocol.ERROR_NO_ERROR) {
-
                 return (List<Medico>) is.readObject();
-            }else{
-                System.out.println("Encontrada");
-                return List.of();}
+            } else {
+                return List.of();
+            }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
+        }
+    }
+
+    public synchronized void updateMedico(Medico medico) throws Exception {
+        try {
+            os.writeInt(Protocol.MEDICO_UPDATE);
+            os.writeObject(medico);
+            os.flush();
+
+            int response = is.readInt();
+            if (response != Protocol.ERROR_NO_ERROR) {
+                throw new Exception("No se pudo actualizar el médico.");
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new Exception("Error al actualizar el médico: " + e.getMessage());
         }
     }
 
@@ -424,6 +537,71 @@ public class Proxy {
         }
     }
 
+    public synchronized void updatePaciente(Paciente paciente) throws Exception {
+        try {
+            os.writeInt(Protocol.PACIENTE_UPDATE);
+            os.writeObject(paciente);
+            os.flush();
+
+            int response = is.readInt();
+            if (response != Protocol.ERROR_NO_ERROR) {
+                throw new Exception("No se pudo actualizar el paciente.");
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new Exception("Error al actualizar el paciente: " + e.getMessage());
+        }
+    }
+
+    public synchronized List<Paciente> searchPacienteByName(String nombre) {
+        try {
+            os.writeInt(Protocol.PACIENTE_SEARCH);
+            os.writeUTF(nombre);
+            os.flush();
+
+            int response = is.readInt();
+            if (response == Protocol.ERROR_NO_ERROR) {
+                return (List<Paciente>) is.readObject();
+            } else {
+                return List.of();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException("Error buscando pacientes: " + e.getMessage());
+        }
+    }
+
+    public synchronized List<Paciente> searchPacienteById(String id) {
+        try {
+            os.writeInt(Protocol.PACIENTE_SEARCH_BY_ID);
+            os.writeUTF(id);
+            os.flush();
+
+            int response = is.readInt();
+            if (response == Protocol.ERROR_NO_ERROR) {
+                return (List<Paciente>) is.readObject();
+            } else {
+                return List.of();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException("Error buscando paciente por ID: " + e.getMessage());
+        }
+    }
+
+    public synchronized List<Paciente> searchPaciente(Paciente filtro) {
+        try {
+            os.writeInt(Protocol.PACIENTE_SEARCH);
+            os.writeObject(filtro);
+            os.flush();
+
+            if (is.readInt() == Protocol.ERROR_NO_ERROR) {
+                return (List<Paciente>) is.readObject();
+            } else {
+                return List.of();
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException("Error buscando pacientes: " + ex.getMessage(), ex);
+        }
+    }
+
     // ==========================================================
     // 🔹 RECETA
     // ==========================================================
@@ -472,26 +650,28 @@ public class Proxy {
             throw new RuntimeException(ex);
         }
     }
+
     public synchronized List<Receta> searchRecetaByIdPaciente(String idPaciente) {
         try {
-            os.writeInt(Protocol.RECETA_SEARCH_BY_PACIENTE); // nuevo código en Protocol
-            os.writeUTF(idPaciente);                         // enviamos el ID del paciente
+            os.writeInt(Protocol.RECETA_SEARCH_BY_PACIENTE);
+            os.writeUTF(idPaciente);
             os.flush();
 
             int response = is.readInt();
             if (response == Protocol.ERROR_NO_ERROR) {
                 return (List<Receta>) is.readObject();
             } else {
-                return List.of(); // lista vacía si no hay recetas
+                return List.of();
             }
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException("Error buscando recetas: " + e.getMessage());
         }
     }
+
     public synchronized void avanzarEstado(Receta receta) throws Exception {
         try {
-            os.writeInt(Protocol.RECETA_AVANZAR_ESTADO); // enviamos operación
-            os.writeObject(receta);                      // enviamos la receta
+            os.writeInt(Protocol.RECETA_AVANZAR_ESTADO);
+            os.writeObject(receta);
             os.flush();
 
             int response = is.readInt();
@@ -501,6 +681,131 @@ public class Proxy {
         } catch (IOException | ClassNotFoundException e) {
             throw new Exception("Error al avanzar el estado de la receta: " + e.getMessage());
         }
+    }
+
+    public synchronized Receta createReceta(Receta receta) throws Exception {
+        try {
+            os.writeInt(Protocol.RECETA_CREATE);
+            os.writeObject(receta);
+            os.flush();
+
+            int response = is.readInt();
+            if (response == Protocol.ERROR_NO_ERROR) {
+                return (Receta) is.readObject();
+            } else {
+                throw new Exception("No se pudo crear la receta.");
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new Exception("Error al crear receta: " + e.getMessage());
+        }
+    }
+
+    public synchronized Receta readReceta(Receta receta) throws Exception {
+        try {
+            os.writeInt(Protocol.RECETA_READ);
+            os.writeObject(receta);
+            os.flush();
+
+            int response = is.readInt();
+            if (response == Protocol.ERROR_NO_ERROR) {
+                return (Receta) is.readObject();
+            } else {
+                throw new Exception("La receta no existe.");
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new Exception("Error al leer la receta: " + e.getMessage());
+        }
+    }
+
+    public synchronized void updateReceta(Receta receta) throws Exception {
+        try {
+            os.writeInt(Protocol.RECETA_UPDATE);
+            os.writeObject(receta);
+            os.flush();
+
+            int response = is.readInt();
+            if (response != Protocol.ERROR_NO_ERROR) {
+                throw new Exception("No se pudo actualizar la receta.");
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new Exception("Error al actualizar la receta: " + e.getMessage());
+        }
+    }
+
+    public synchronized void removeMedicamentoFromReceta(int recetaId, int index) throws Exception {
+        try {
+            os.writeInt(Protocol.RECETA_REMOVE_MEDICAMENTO);
+            os.writeInt(recetaId);
+            os.writeInt(index);
+            os.flush();
+
+            int response = is.readInt();
+            if (response != Protocol.ERROR_NO_ERROR) {
+                throw new Exception("No se pudo eliminar el medicamento de la receta.");
+            }
+        } catch (IOException e) {
+            throw new Exception("Error al eliminar medicamento de la receta: " + e.getMessage());
+        }
+    }
+
+    public synchronized String generarDetallesReceta(Receta receta) {
+        try {
+            os.writeInt(Protocol.RECETA_GENERAR_DETALLES);
+            os.writeObject(receta);
+            os.flush();
+
+            int response = is.readInt();
+            if (response == Protocol.ERROR_NO_ERROR) {
+                return is.readUTF();
+            } else {
+                return "No se pudieron generar los detalles de la receta.";
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error generando detalles de la receta: " + e.getMessage());
+        }
+    }
+
+    public synchronized List<Receta> searchRecetaListById(String id) {
+        try {
+            os.writeInt(Protocol.RECETA_SEARCH_LIST_BY_ID);
+            os.writeUTF(id);
+            os.flush();
+
+            int response = is.readInt();
+            if (response == Protocol.ERROR_NO_ERROR) {
+                return (List<Receta>) is.readObject();
+            } else {
+                return List.of();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException("Error buscando recetas: " + e.getMessage());
+        }
+    }
+
+    public synchronized Receta modificarDetalleMedicamento(Window parent, Receta receta, int row) throws Exception {
+        if (receta == null) {
+            throw new Exception("Receta inválida");
+        }
+
+        if (receta.getMedicamentos() == null || receta.getMedicamentos().isEmpty()) {
+            throw new Exception("La receta no tiene medicamentos");
+        }
+
+        if (row < 0 || row >= receta.getMedicamentos().size()) {
+            throw new Exception("Índice inválido para modificar detalle");
+        }
+
+        MedicamentoDetalle detalle = receta.getMedicamentos().get(row);
+
+        sistema.presentation.prescribirModificarDetalle.prescribirModificarDetalle dialog =
+                new sistema.presentation.prescribirModificarDetalle.prescribirModificarDetalle(parent, detalle);
+        dialog.setVisible(true);
+
+        if (dialog.isGuardado()) {
+            receta.getMedicamentos().set(row, dialog.take());
+        }
+
+        return receta;
     }
 
     // ==========================================================
@@ -546,27 +851,31 @@ public class Proxy {
             os.flush();
             if (is.readInt() == Protocol.ERROR_NO_ERROR)
                 return (List<Usuario>) is.readObject();
-            else return List.of();
+            else
+                return List.of();
         } catch (Exception ex) {
-            throw new RuntimeException(ex);
+            throw new RuntimeException("Error buscando usuarios: " + ex.getMessage(), ex);
         }
     }
-    public synchronized Usuario findUserById(String userId) throws Exception {
+
+
+    public synchronized Usuario findUserById(String id) throws Exception {
         try {
-            os.writeInt(Protocol.USUARIO_FIND_BY_ID); // Código de operación
-            os.writeObject(userId);                   // Enviamos el ID como objeto
+            os.writeInt(Protocol.USUARIO_FIND_BY_ID);
+            os.writeUTF(id);
             os.flush();
 
-            int response = is.readInt();              // Leemos respuesta del backend
+            int response = is.readInt();
             if (response == Protocol.ERROR_NO_ERROR) {
-                return (Usuario) is.readObject();     // Usuario encontrado
+                return (Usuario) is.readObject();
             } else {
-                return null;                          // No existe o error
+                throw new Exception("USUARIO NO EXISTE");
             }
         } catch (IOException | ClassNotFoundException e) {
-            throw new Exception("Error al buscar usuario: " + e.getMessage());
+            throw new Exception("Error buscando usuario por ID: " + e.getMessage());
         }
     }
+
     public synchronized Usuario login(Usuario usuario) throws Exception {
         try {
             os.writeInt(Protocol.USUARIO_LOGIN); // enviamos operación
@@ -584,316 +893,27 @@ public class Proxy {
         }
     }
 
-
-
-    private synchronized void disconnect() throws Exception {
-        os.writeInt(Protocol.DISCONNECT);
-        os.flush();
-        socket.shutdownOutput();
-        socket.close();
+    // ==========================================================
+    // 🔹 DESCONECTAR
+    // ==========================================================
+    public synchronized void disconnect() {
+        try {
+            os.writeInt(Protocol.DISCONNECT);
+            os.flush();
+            is.close();
+            os.close();
+            socket.close();
+            theInstance = null;
+        } catch (IOException e) {
+            System.err.println("Error al desconectar: " + e.getMessage());
+        }
     }
 
-    public synchronized void stop() {
+    public void stop() {
         try {
             disconnect();
         } catch (Exception e) {
             System.exit(-1);
         }
     }
-
-    public synchronized void updateUsuario(Usuario user) throws Exception {
-        try {
-            os.writeInt(Protocol.USUARIO_UPDATE); // Código de operación
-            os.writeObject(user);                 // Enviamos el objeto Usuario
-            os.flush();
-
-            int response = is.readInt();          // Leemos la respuesta del worker
-            if (response != Protocol.ERROR_NO_ERROR) {
-                throw new Exception("No se pudo actualizar el usuario.");
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            throw new Exception("Error al actualizar el usuario: " + e.getMessage());
-        }
-    }
-
-    public synchronized String generarDetallesReceta(Receta receta) {
-        try {
-            os.writeInt(Protocol.RECETA_GENERAR_DETALLES); // enviamos operación
-            os.writeObject(receta);                        // enviamos la receta
-            os.flush();
-
-            int response = is.readInt();
-            if (response == Protocol.ERROR_NO_ERROR) {
-                return is.readUTF(); // recibimos el detalle como String
-            } else {
-                return "No se pudieron generar los detalles de la receta.";
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Error generando detalles de la receta: " + e.getMessage());
-        }
-    }
-
-    public synchronized void updateFarmaceutico(Farmaceutico farmaceutico) throws Exception {
-        try {
-            os.writeInt(Protocol.FARMACEUTICO_UPDATE); // operación
-            os.writeObject(farmaceutico);             // enviamos objeto
-            os.flush();
-
-            int response = is.readInt();
-            if (response != Protocol.ERROR_NO_ERROR) {
-                throw new Exception("No se pudo actualizar el farmacéutico.");
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            throw new Exception("Error al actualizar el farmacéutico: " + e.getMessage());
-        }
-    }
-
-    public synchronized List<Farmaceutico> searchFarmaceuticoByName(String nombre) {
-        try {
-            os.writeInt(Protocol.FARMACEUTICO_SEARCH_BY_NAME); // enviamos operación
-            os.writeUTF(nombre);                               // enviamos nombre
-            os.flush();
-
-            int response = is.readInt();
-            if (response == Protocol.ERROR_NO_ERROR) {
-                return (List<Farmaceutico>) is.readObject();
-            } else {
-                return List.of(); // lista vacía si no hay resultados
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException("Error buscando farmacéuticos: " + e.getMessage());
-        }
-    }
-
-    public synchronized List<Receta> searchRecetaListById(String id) {
-        try {
-            os.writeInt(Protocol.RECETA_SEARCH_LIST_BY_ID);
-            os.writeUTF(id);
-            os.flush();
-
-            int response = is.readInt();
-            if (response == Protocol.ERROR_NO_ERROR) {
-                return (List<Receta>) is.readObject();
-            } else {
-                return List.of();
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException("Error buscando recetas: " + e.getMessage());
-        }
-    }
-    public synchronized void updateMedicamento(Medicamento medicamento) throws Exception {
-        try {
-            os.writeInt(Protocol.MEDICAMENTO_UPDATE); // enviamos operación
-            os.writeObject(medicamento);             // enviamos objeto
-            os.flush();
-
-            int response = is.readInt();
-            if (response != Protocol.ERROR_NO_ERROR) {
-                throw new Exception("No se pudo actualizar el medicamento.");
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            throw new Exception("Error al actualizar el medicamento: " + e.getMessage());
-        }
-    }
-    public synchronized List<Medicamento> searchMedicamentoByCodigo(String codigo) {
-        try {
-            os.writeInt(Protocol.MEDICAMENTO_SEARCH_BY_CODIGO); // enviamos operación
-            os.writeUTF(codigo);                                // enviamos código
-            os.flush();
-
-            int response = is.readInt();
-            if (response == Protocol.ERROR_NO_ERROR) {
-                return (List<Medicamento>) is.readObject();    // recibimos lista
-            } else {
-                return List.of();                               // lista vacía si no hay resultados
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException("Error buscando medicamentos: " + e.getMessage());
-        }
-    }
-
-    public synchronized void updateMedico(Medico medico) throws Exception {
-        try {
-            os.writeInt(Protocol.MEDICO_UPDATE); // enviamos operación
-            os.writeObject(medico);              // enviamos objeto
-            os.flush();
-
-            int response = is.readInt();
-            if (response != Protocol.ERROR_NO_ERROR) {
-                throw new Exception("No se pudo actualizar el médico.");
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            throw new Exception("Error al actualizar el médico: " + e.getMessage());
-        }
-    }
-
-    public synchronized void updatePaciente(Paciente paciente) throws Exception {
-        try {
-            os.writeInt(Protocol.PACIENTE_UPDATE); // enviamos operación
-            os.writeObject(paciente);             // enviamos objeto
-            os.flush();
-
-            int response = is.readInt();
-            if (response != Protocol.ERROR_NO_ERROR) {
-                throw new Exception("No se pudo actualizar el paciente.");
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            throw new Exception("Error al actualizar el paciente: " + e.getMessage());
-        }
-    }
-
-    public synchronized List<Paciente> searchPacienteByName(String nombre) {
-        try {
-            os.writeInt(Protocol.PACIENTE_SEARCH); // enviamos operación
-            os.writeUTF(nombre);                    // enviamos nombre
-            os.flush();
-
-            int response = is.readInt();
-            if (response == Protocol.ERROR_NO_ERROR) {
-                return (List<Paciente>) is.readObject(); // recibimos lista
-            } else {
-                return List.of();                        // lista vacía si no hay resultados
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException("Error buscando pacientes: " + e.getMessage());
-        }
-    }
-
-    public synchronized List<Paciente> searchPacienteById(String id) {
-        try {
-            os.writeInt(Protocol.PACIENTE_SEARCH_BY_ID); // enviamos operación
-            os.writeUTF(id);                             // enviamos ID
-            os.flush();
-
-            int response = is.readInt();
-            if (response == Protocol.ERROR_NO_ERROR) {
-                return (List<Paciente>) is.readObject(); // recibimos lista
-            } else {
-                return List.of();                        // lista vacía si no existe
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException("Error buscando paciente por ID: " + e.getMessage());
-        }
-    }
-
-    public synchronized List<Medicamento> searchMedicamentoByName(String nombre) {
-        try {
-            os.writeInt(Protocol.MEDICAMENTO_SEARCH_BY_NAME); // operación
-            os.writeUTF(nombre);                              // enviamos nombre
-            os.flush();
-
-            int response = is.readInt();
-            if (response == Protocol.ERROR_NO_ERROR) {
-                return (List<Medicamento>) is.readObject();  // lista de resultados
-            } else {
-                return List.of();                             // lista vacía si no hay resultados
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException("Error buscando medicamentos: " + e.getMessage());
-        }
-    }
-    public synchronized Receta createReceta(Receta receta) throws Exception {
-        try {
-            os.writeInt(Protocol.RECETA_CREATE); // enviamos operación
-            os.writeObject(receta);              // enviamos la receta
-            os.flush();
-
-            int response = is.readInt();
-            if (response == Protocol.ERROR_NO_ERROR) {
-                return (Receta) is.readObject(); // recibimos la receta creada
-            } else {
-                throw new Exception("No se pudo crear la receta.");
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            throw new Exception("Error al crear receta: " + e.getMessage());
-        }
-    }
-    public synchronized Receta readReceta(Receta receta) throws Exception {
-        try {
-            os.writeInt(Protocol.RECETA_READ); // enviamos operación
-            os.writeObject(receta);            // enviamos la receta con ID
-            os.flush();
-
-            int response = is.readInt();
-            if (response == Protocol.ERROR_NO_ERROR) {
-                return (Receta) is.readObject(); // recibimos la receta completa
-            } else {
-                throw new Exception("La receta no existe.");
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            throw new Exception("Error al leer la receta: " + e.getMessage());
-        }
-
-    }
-    public synchronized void updateReceta(Receta receta) throws Exception {
-        try {
-            os.writeInt(Protocol.RECETA_UPDATE); // enviamos operación
-            os.writeObject(receta);              // enviamos la receta actualizada
-            os.flush();
-
-            int response = is.readInt();
-            if (response != Protocol.ERROR_NO_ERROR) {
-                throw new Exception("No se pudo actualizar la receta.");
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            throw new Exception("Error al actualizar la receta: " + e.getMessage());
-        }
-    }
-    public synchronized void removeMedicamentoFromReceta(int recetaId, int index) throws Exception {
-        try {
-            os.writeInt(Protocol.RECETA_REMOVE_MEDICAMENTO); // operación
-            os.writeInt(recetaId);                          // enviamos ID como int
-            os.writeInt(index);                             // índice del medicamento
-            os.flush();
-
-            int response = is.readInt();
-            if (response != Protocol.ERROR_NO_ERROR) {
-                throw new Exception("No se pudo eliminar el medicamento de la receta.");
-            }
-        } catch (IOException e) {
-            throw new Exception("Error al eliminar medicamento de la receta: " + e.getMessage());
-        }
-    }
-    public synchronized Receta modificarDetalleMedicamento(Window parent, Receta receta, int row) throws Exception {
-        // Validar que la receta tenga medicamentos
-        if (receta == null) {
-            throw new Exception("Receta inválida");
-        }
-
-        if (receta.getMedicamentos() == null || receta.getMedicamentos().isEmpty()) {
-            throw new Exception("La receta no tiene medicamentos");
-        }
-
-        if (row < 0 || row >= receta.getMedicamentos().size()) {
-            throw new Exception("Índice inválido para modificar detalle");
-        }
-
-        MedicamentoDetalle detalle = receta.getMedicamentos().get(row);
-
-        sistema.presentation.prescribirModificarDetalle.prescribirModificarDetalle dialog =
-                new sistema.presentation.prescribirModificarDetalle.prescribirModificarDetalle(parent, detalle);
-        dialog.setVisible(true);
-
-        if (dialog.isGuardado()) {
-            receta.getMedicamentos().set(row, dialog.take());
-        }
-
-        return receta;
-    }
-
-    public synchronized List<Paciente> searchPaciente(Paciente filtro) {
-        try {
-            os.writeInt(Protocol.PACIENTE_SEARCH);
-            os.writeObject(filtro);
-            os.flush();
-
-            if (is.readInt() == Protocol.ERROR_NO_ERROR) {
-                return (List<Paciente>) is.readObject();
-            } else {
-                return List.of();
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException("Error buscando pacientes: " + ex.getMessage(), ex);
-        }
-    }
-}
+};

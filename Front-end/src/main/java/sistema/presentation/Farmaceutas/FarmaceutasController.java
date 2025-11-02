@@ -2,61 +2,89 @@ package sistema.presentation.Farmaceutas;
 
 import sistema.logic.Proxy;
 import logic.entities.Farmaceutico;
-import sistema.presentation.Refresher;
-import sistema.presentation.ThhreadListener;
+import sistema.logic.SocketListener;
+import sistema.presentation.ThreadListener;
 
 import java.util.List;
 
-public class FarmaceutasController implements ThhreadListener {
+public class FarmaceutasController implements ThreadListener {
 
     private FarmaceutasModel model;
-    private Refresher refresher;
+    private FarmaceutasForm view;
+    private SocketListener socketListener;
 
-    public FarmaceutasController(FarmaceutasForm farmaceutasForm, FarmaceutasModel model) {
+    public FarmaceutasController(FarmaceutasForm view, FarmaceutasModel model) {
+        this.view = view;
         this.model = model;
 
+        model.init();
 
-        refresher = new Refresher(this);
-        refresher.start();
+        view.setController(this);
+        view.setModel(model);
 
+        try {
+            socketListener = new SocketListener(this, Proxy.instance().getSid());
+            socketListener.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        loadFarmaceuticos();
+        // Inicializamos la lista
+        try {
+            model.setList(Proxy.instance().search(new Farmaceutico()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private void loadFarmaceuticos() {
-        new Thread(() -> {
-            try {
-                List<Farmaceutico> lista = Proxy.instance().search(new Farmaceutico());
-                model.setList(lista);
-            } catch (Exception e) {
-                System.err.println("Error cargando farmaceuticos: " + e.getMessage());
-            }
-        }).start();
+    // ==================== SOCKET LISTENER ====================
+    @Override
+    public void deliver_message(String message) {
+        System.out.println("Mensaje recibido: " + message);
+        try {
+            search(new Farmaceutico()); // refresca la lista al recibir mensaje
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-
-    public void setCurrent(Farmaceutico v) {
-        model.setCurrent(v);
+    // ==================== MÉTODOS CRUD ====================
+    public void search(Farmaceutico filter) throws Exception {
+        model.setFilter(filter);
+        List<Farmaceutico> rows = Proxy.instance().search(model.getFilter());
+        model.setMode(FarmaceutasModel.MODE_CREATE);
+        model.setList(rows);
     }
 
+    public void create(Farmaceutico e) throws Exception {
+        Proxy.instance().create(e);
+        model.setCurrent(new Farmaceutico());
+        search(new Farmaceutico());
+    }
 
-    public void create(Farmaceutico f) throws Exception {
-        Proxy.instance().create(f);
+    public void update(Farmaceutico e) throws Exception {
+        Proxy.instance().updateFarmaceutico(e);
+        search(new Farmaceutico());
+        model.setCurrent(new Farmaceutico());
+    }
+
+    public void delete(String id) throws Exception {
+        Farmaceutico f = new Farmaceutico();
+        f.setId(id);
+        Proxy.instance().delete(f);
         model.setCurrent(new Farmaceutico());
         model.setList(Proxy.instance().search(new Farmaceutico()));
     }
 
-    public void update(Farmaceutico farmaceutico) throws Exception {
-        Proxy.instance().updateFarmaceutico(farmaceutico);
-        refreshFarmaceuticos();
+    public void setCurrent(Farmaceutico e) {
+        model.setCurrent(e);
+        model.setMode(FarmaceutasModel.MODE_EDIT);
     }
 
-    private void refreshFarmaceuticos() {
-        model.setList(Proxy.instance().search(new Farmaceutico()));
+    public void clear() {
         model.setCurrent(new Farmaceutico());
+        model.setMode(FarmaceutasModel.MODE_CREATE);
     }
-
-
 
     public void read(String id) throws Exception {
         Farmaceutico f = new Farmaceutico();
@@ -71,26 +99,8 @@ public class FarmaceutasController implements ThhreadListener {
         }
     }
 
-    public void clear() {
-        model.setCurrent(new Farmaceutico());
+    // ==================== STOP SOCKET ====================
+    public void stop() {
+        if (socketListener != null) socketListener.stop();
     }
-
-    public void delete(String id) throws Exception {
-        Farmaceutico f = new Farmaceutico();
-        f.setId(id);
-        Proxy.instance().delete(f);
-        model.setCurrent(new Farmaceutico());
-        model.setList(Proxy.instance().search(new Farmaceutico()));
-    }
-
-    @Override
-    public void refresh() {
-        try {
-            List<Farmaceutico> lista = Proxy.instance().search(new Farmaceutico());
-            model.setList(lista);
-        } catch (Exception e) {
-
-        }
-    }
-
 }
