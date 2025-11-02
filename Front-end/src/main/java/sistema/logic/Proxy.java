@@ -29,7 +29,7 @@ public class Proxy {
     // ==========================================================
     // 🔹 ADMINISTRADOR
     // ==========================================================
-    public void create(Administrador e) throws Exception {
+    public synchronized void create(Administrador e) throws Exception {
         os.writeInt(Protocol.ADMINISTRADOR_CREATE);
         os.writeObject(e);
         os.flush();
@@ -37,7 +37,7 @@ public class Proxy {
             throw new Exception("ADMINISTRADOR DUPLICADO");
     }
 
-    public Administrador read(Administrador e) throws Exception {
+    public synchronized Administrador read(Administrador e) throws Exception {
         os.writeInt(Protocol.ADMINISTRADOR_READ);
         os.writeObject(e);
         os.flush();
@@ -46,7 +46,7 @@ public class Proxy {
         else throw new Exception("ADMINISTRADOR NO EXISTE");
     }
 
-    public void update(Administrador e) throws Exception {
+    public synchronized void update(Administrador e) throws Exception {
         os.writeInt(Protocol.ADMINISTRADOR_UPDATE);
         os.writeObject(e);
         os.flush();
@@ -54,7 +54,7 @@ public class Proxy {
             throw new Exception("ADMINISTRADOR NO EXISTE");
     }
 
-    public void delete(Administrador e) throws Exception {
+    public synchronized void delete(Administrador e) throws Exception {
         os.writeInt(Protocol.ADMINISTRADOR_DELETE);
         os.writeObject(e);
         os.flush();
@@ -62,7 +62,7 @@ public class Proxy {
             throw new Exception("ADMINISTRADOR NO EXISTE");
     }
 
-    public List<Administrador> search(Administrador e) {
+    public synchronized List<Administrador> search(Administrador e) {
         try {
             os.writeInt(Protocol.ADMINISTRADOR_SEARCH);
             os.writeObject(e);
@@ -78,7 +78,7 @@ public class Proxy {
     // ==========================================================
     // 🔹 DEPARTAMENTO
     // ==========================================================
-    public void create(Departamento e) throws Exception {
+    public synchronized void create(Departamento e) throws Exception {
         os.writeInt(Protocol.DEPARTAMENTO_CREATE);
         os.writeObject(e);
         os.flush();
@@ -86,7 +86,7 @@ public class Proxy {
             throw new Exception("DEPARTAMENTO DUPLICADO");
     }
 
-    public Departamento read(Departamento e) throws Exception {
+    public synchronized Departamento read(Departamento e) throws Exception {
         os.writeInt(Protocol.DEPARTAMENTO_READ);
         os.writeObject(e);
         os.flush();
@@ -95,7 +95,7 @@ public class Proxy {
         else throw new Exception("DEPARTAMENTO NO EXISTE");
     }
 
-    public void update(Departamento e) throws Exception {
+    public synchronized void update(Departamento e) throws Exception {
         os.writeInt(Protocol.DEPARTAMENTO_UPDATE);
         os.writeObject(e);
         os.flush();
@@ -103,7 +103,7 @@ public class Proxy {
             throw new Exception("DEPARTAMENTO NO EXISTE");
     }
 
-    public void delete(Departamento e) throws Exception {
+    public synchronized void delete(Departamento e) throws Exception {
         os.writeInt(Protocol.DEPARTAMENTO_DELETE);
         os.writeObject(e);
         os.flush();
@@ -111,7 +111,7 @@ public class Proxy {
             throw new Exception("DEPARTAMENTO NO EXISTE");
     }
 
-    public List<Departamento> search(Departamento e) {
+    public synchronized List<Departamento> search(Departamento e) {
         try {
 
             os.writeInt(Protocol.DEPARTAMENTO_SEARCH);
@@ -128,7 +128,7 @@ public class Proxy {
     // ==========================================================
     // 🔹 FARMACEUTICO
     // ==========================================================
-    public void create(Farmaceutico e) throws Exception {
+    public synchronized void create(Farmaceutico e) throws Exception {
         os.writeInt(Protocol.FARMACEUTICO_CREATE);
         os.writeObject(e);
         os.flush();
@@ -136,7 +136,7 @@ public class Proxy {
             throw new Exception("FARMACEUTICO DUPLICADO");
     }
 
-    public Farmaceutico read(Farmaceutico e) throws Exception {
+    public synchronized Farmaceutico read(Farmaceutico e) throws Exception {
         os.writeInt(Protocol.FARMACEUTICO_READ);
         os.writeObject(e);
         os.flush();
@@ -145,7 +145,7 @@ public class Proxy {
         else throw new Exception("FARMACEUTICO NO EXISTE");
     }
 
-    public void update(Farmaceutico e) throws Exception {
+    public synchronized void update(Farmaceutico e) throws Exception {
         os.writeInt(Protocol.FARMACEUTICO_UPDATE);
         os.writeObject(e);
         os.flush();
@@ -153,7 +153,7 @@ public class Proxy {
             throw new Exception("FARMACEUTICO NO EXISTE");
     }
 
-    public void delete(Farmaceutico e) throws Exception {
+    public synchronized void delete(Farmaceutico e) throws Exception {
         os.writeInt(Protocol.FARMACEUTICO_DELETE);
         os.writeObject(e);
         os.flush();
@@ -161,7 +161,7 @@ public class Proxy {
             throw new Exception("FARMACEUTICO NO EXISTE");
     }
 
-    public List<Farmaceutico> search(Farmaceutico e) {
+    public synchronized List<Farmaceutico> search(Farmaceutico e) {
         try {
             os.writeInt(Protocol.FARMACEUTICO_SEARCH);
             os.writeObject(e);
@@ -177,7 +177,7 @@ public class Proxy {
     // ==========================================================
     // 🔹 MEDICAMENTO
     // ==========================================================
-    public void create(Medicamento e) throws Exception {
+    public synchronized void create(Medicamento e) throws Exception {
         os.writeInt(Protocol.MEDICAMENTO_CREATE);
         os.writeObject(e);
         os.flush();
@@ -185,7 +185,7 @@ public class Proxy {
             throw new Exception("MEDICAMENTO DUPLICADO");
     }
 
-    public Medicamento read(Medicamento e) throws Exception {
+    public synchronized Medicamento read(Medicamento e) throws Exception {
         os.writeInt(Protocol.MEDICAMENTO_READ);
         os.writeObject(e);
         os.flush();
@@ -194,7 +194,7 @@ public class Proxy {
         else throw new Exception("MEDICAMENTO NO EXISTE");
     }
 
-    public void update(Medicamento e) throws Exception {
+    public synchronized void update(Medicamento e) throws Exception {
         os.writeInt(Protocol.MEDICAMENTO_UPDATE);
         os.writeObject(e);
         os.flush();
@@ -202,7 +202,7 @@ public class Proxy {
             throw new Exception("MEDICAMENTO NO EXISTE");
     }
 
-    public void delete(Medicamento e) throws Exception {
+    public synchronized void delete(Medicamento e) throws Exception {
         os.writeInt(Protocol.MEDICAMENTO_DELETE);
         os.writeObject(e);
         os.flush();
@@ -210,7 +210,7 @@ public class Proxy {
             throw new Exception("MEDICAMENTO NO EXISTE");
     }
 
-    public List<Medicamento> search(Medicamento e) {
+    public synchronized List<Medicamento> search(Medicamento e) {
         try {
             os.writeInt(Protocol.MEDICAMENTO_SEARCH);
             os.writeObject(e);
@@ -226,7 +226,7 @@ public class Proxy {
     // ==========================================================
     // 🔹 MEDICAMENTO DETALLE
     // ==========================================================
-    public void create(MedicamentoDetalle e) throws Exception {
+    public synchronized void create(MedicamentoDetalle e) throws Exception {
         os.writeInt(Protocol.MEDICAMENTO_DETALLE_CREATE);
         os.writeObject(e);
         os.flush();
@@ -234,7 +234,7 @@ public class Proxy {
             throw new Exception("DETALLE DUPLICADO");
     }
 
-    public MedicamentoDetalle read(MedicamentoDetalle e) throws Exception {
+    public synchronized MedicamentoDetalle read(MedicamentoDetalle e) throws Exception {
         os.writeInt(Protocol.MEDICAMENTO_DETALLE_READ);
         os.writeObject(e);
         os.flush();
@@ -243,7 +243,7 @@ public class Proxy {
         else throw new Exception("DETALLE NO EXISTE");
     }
 
-    public void update(MedicamentoDetalle e) throws Exception {
+    public synchronized void update(MedicamentoDetalle e) throws Exception {
         os.writeInt(Protocol.MEDICAMENTO_DETALLE_UPDATE);
         os.writeObject(e);
         os.flush();
@@ -251,7 +251,7 @@ public class Proxy {
             throw new Exception("DETALLE NO EXISTE");
     }
 
-    public void delete(MedicamentoDetalle e) throws Exception {
+    public synchronized void delete(MedicamentoDetalle e) throws Exception {
         os.writeInt(Protocol.MEDICAMENTO_DETALLE_DELETE);
         os.writeObject(e);
         os.flush();
@@ -259,7 +259,7 @@ public class Proxy {
             throw new Exception("DETALLE NO EXISTE");
     }
 
-    public List<MedicamentoDetalle> search(MedicamentoDetalle e) {
+    public synchronized List<MedicamentoDetalle> search(MedicamentoDetalle e) {
         try {
             os.writeInt(Protocol.MEDICAMENTO_DETALLE_SEARCH);
             os.writeObject(e);
@@ -275,7 +275,7 @@ public class Proxy {
     // ==========================================================
     // 🔹 MÉDICO
     // ==========================================================
-    public void create(Medico e) throws Exception {
+    public synchronized void create(Medico e) throws Exception {
         os.writeInt(Protocol.MEDICO_CREATE);
         os.writeObject(e);
         os.flush();
@@ -283,7 +283,7 @@ public class Proxy {
             throw new Exception("MEDICO DUPLICADO");
     }
 
-    public Medico read(Medico e) throws Exception {
+    public synchronized Medico read(Medico e) throws Exception {
         os.writeInt(Protocol.MEDICO_READ);
         os.writeObject(e);
         os.flush();
@@ -292,7 +292,7 @@ public class Proxy {
         else throw new Exception("MEDICO NO EXISTE");
     }
 
-    public void update(Medico e) throws Exception {
+    public synchronized void update(Medico e) throws Exception {
         os.writeInt(Protocol.MEDICO_UPDATE);
         os.writeObject(e);
         os.flush();
@@ -300,7 +300,7 @@ public class Proxy {
             throw new Exception("MEDICO NO EXISTE");
     }
 
-    public void delete(Medico e) throws Exception {
+    public synchronized void delete(Medico e) throws Exception {
         os.writeInt(Protocol.MEDICO_DELETE);
         os.writeObject(e);
         os.flush();
@@ -308,7 +308,7 @@ public class Proxy {
             throw new Exception("MEDICO NO EXISTE");
     }
 
-    public List<Medico> search(Medico e) {
+    public synchronized List<Medico> search(Medico e) {
         try {
             System.out.println("Pidiendo Lista");
             os.writeInt(Protocol.MEDICO_SEARCH);
@@ -329,7 +329,7 @@ public class Proxy {
     // ==========================================================
     // 🔹 MENSAJE
     // ==========================================================
-    public void create(Mensaje e) throws Exception {
+    public synchronized void create(Mensaje e) throws Exception {
         os.writeInt(Protocol.MENSAJE_CREATE);
         os.writeObject(e);
         os.flush();
@@ -337,7 +337,7 @@ public class Proxy {
             throw new Exception("MENSAJE DUPLICADO");
     }
 
-    public Mensaje read(Mensaje e) throws Exception {
+    public synchronized Mensaje read(Mensaje e) throws Exception {
         os.writeInt(Protocol.MENSAJE_READ);
         os.writeObject(e);
         os.flush();
@@ -346,7 +346,7 @@ public class Proxy {
         else throw new Exception("MENSAJE NO EXISTE");
     }
 
-    public void update(Mensaje e) throws Exception {
+    public synchronized void update(Mensaje e) throws Exception {
         os.writeInt(Protocol.MENSAJE_UPDATE);
         os.writeObject(e);
         os.flush();
@@ -354,7 +354,7 @@ public class Proxy {
             throw new Exception("MENSAJE NO EXISTE");
     }
 
-    public void delete(Mensaje e) throws Exception {
+    public synchronized void delete(Mensaje e) throws Exception {
         os.writeInt(Protocol.MENSAJE_DELETE);
         os.writeObject(e);
         os.flush();
@@ -362,7 +362,7 @@ public class Proxy {
             throw new Exception("MENSAJE NO EXISTE");
     }
 
-    public List<Mensaje> search(Mensaje e) {
+    public synchronized List<Mensaje> search(Mensaje e) {
         try {
             os.writeInt(Protocol.MENSAJE_SEARCH);
             os.writeObject(e);
@@ -378,7 +378,7 @@ public class Proxy {
     // ==========================================================
     // 🔹 PACIENTE
     // ==========================================================
-    public void create(Paciente e) throws Exception {
+    public synchronized void create(Paciente e) throws Exception {
         os.writeInt(Protocol.PACIENTE_CREATE);
         os.writeObject(e);
         os.flush();
@@ -386,7 +386,7 @@ public class Proxy {
             throw new Exception("PACIENTE DUPLICADO");
     }
 
-    public Paciente read(Paciente e) throws Exception {
+    public synchronized Paciente read(Paciente e) throws Exception {
         os.writeInt(Protocol.PACIENTE_READ);
         os.writeObject(e);
         os.flush();
@@ -395,7 +395,7 @@ public class Proxy {
         else throw new Exception("PACIENTE NO EXISTE");
     }
 
-    public void update(Paciente e) throws Exception {
+    public synchronized void update(Paciente e) throws Exception {
         os.writeInt(Protocol.PACIENTE_UPDATE);
         os.writeObject(e);
         os.flush();
@@ -403,7 +403,7 @@ public class Proxy {
             throw new Exception("PACIENTE NO EXISTE");
     }
 
-    public void delete(Paciente e) throws Exception {
+    public synchronized void delete(Paciente e) throws Exception {
         os.writeInt(Protocol.PACIENTE_DELETE);
         os.writeObject(e);
         os.flush();
@@ -411,7 +411,7 @@ public class Proxy {
             throw new Exception("PACIENTE NO EXISTE");
     }
 
-    public List<Paciente> search(Paciente e) {
+    public synchronized List<Paciente> search(Paciente e) {
         try {
             os.writeInt(Protocol.PACIENTE_SEARCH);
             os.writeObject(e);
@@ -427,7 +427,7 @@ public class Proxy {
     // ==========================================================
     // 🔹 RECETA
     // ==========================================================
-    public void create(Receta e) throws Exception {
+    public synchronized void create(Receta e) throws Exception {
         os.writeInt(Protocol.RECETA_CREATE);
         os.writeObject(e);
         os.flush();
@@ -435,7 +435,7 @@ public class Proxy {
             throw new Exception("RECETA DUPLICADA");
     }
 
-    public Receta read(Receta e) throws Exception {
+    public synchronized Receta read(Receta e) throws Exception {
         os.writeInt(Protocol.RECETA_READ);
         os.writeObject(e);
         os.flush();
@@ -444,7 +444,7 @@ public class Proxy {
         else throw new Exception("RECETA NO EXISTE");
     }
 
-    public void update(Receta e) throws Exception {
+    public synchronized void update(Receta e) throws Exception {
         os.writeInt(Protocol.RECETA_UPDATE);
         os.writeObject(e);
         os.flush();
@@ -452,7 +452,7 @@ public class Proxy {
             throw new Exception("RECETA NO EXISTE");
     }
 
-    public void delete(Receta e) throws Exception {
+    public synchronized void delete(Receta e) throws Exception {
         os.writeInt(Protocol.RECETA_DELETE);
         os.writeObject(e);
         os.flush();
@@ -460,7 +460,7 @@ public class Proxy {
             throw new Exception("RECETA NO EXISTE");
     }
 
-    public List<Receta> search(Receta e) {
+    public synchronized List<Receta> search(Receta e) {
         try {
             os.writeInt(Protocol.RECETA_SEARCH);
             os.writeObject(e);
@@ -472,7 +472,7 @@ public class Proxy {
             throw new RuntimeException(ex);
         }
     }
-    public List<Receta> searchRecetaByIdPaciente(String idPaciente) {
+    public synchronized List<Receta> searchRecetaByIdPaciente(String idPaciente) {
         try {
             os.writeInt(Protocol.RECETA_SEARCH_BY_PACIENTE); // nuevo código en Protocol
             os.writeUTF(idPaciente);                         // enviamos el ID del paciente
@@ -488,7 +488,7 @@ public class Proxy {
             throw new RuntimeException("Error buscando recetas: " + e.getMessage());
         }
     }
-    public void avanzarEstado(Receta receta) throws Exception {
+    public synchronized void avanzarEstado(Receta receta) throws Exception {
         try {
             os.writeInt(Protocol.RECETA_AVANZAR_ESTADO); // enviamos operación
             os.writeObject(receta);                      // enviamos la receta
@@ -506,7 +506,7 @@ public class Proxy {
     // ==========================================================
     // 🔹 USUARIO
     // ==========================================================
-    public void create(Usuario e) throws Exception {
+    public synchronized void create(Usuario e) throws Exception {
         os.writeInt(Protocol.USUARIO_CREATE);
         os.writeObject(e);
         os.flush();
@@ -514,7 +514,7 @@ public class Proxy {
             throw new Exception("USUARIO DUPLICADO");
     }
 
-    public Usuario read(Usuario e) throws Exception {
+    public synchronized Usuario read(Usuario e) throws Exception {
         os.writeInt(Protocol.USUARIO_READ);
         os.writeObject(e);
         os.flush();
@@ -523,7 +523,7 @@ public class Proxy {
         else throw new Exception("USUARIO NO EXISTE");
     }
 
-    public void update(Usuario e) throws Exception {
+    public synchronized void update(Usuario e) throws Exception {
         os.writeInt(Protocol.USUARIO_UPDATE);
         os.writeObject(e);
         os.flush();
@@ -531,7 +531,7 @@ public class Proxy {
             throw new Exception("USUARIO NO EXISTE");
     }
 
-    public void delete(Usuario e) throws Exception {
+    public synchronized void delete(Usuario e) throws Exception {
         os.writeInt(Protocol.USUARIO_DELETE);
         os.writeObject(e);
         os.flush();
@@ -539,7 +539,7 @@ public class Proxy {
             throw new Exception("USUARIO NO EXISTE");
     }
 
-    public List<Usuario> search(Usuario e) {
+    public synchronized List<Usuario> search(Usuario e) {
         try {
             os.writeInt(Protocol.USUARIO_SEARCH);
             os.writeObject(e);
@@ -551,7 +551,7 @@ public class Proxy {
             throw new RuntimeException(ex);
         }
     }
-    public Usuario findUserById(String userId) throws Exception {
+    public synchronized Usuario findUserById(String userId) throws Exception {
         try {
             os.writeInt(Protocol.USUARIO_FIND_BY_ID); // Código de operación
             os.writeObject(userId);                   // Enviamos el ID como objeto
@@ -567,7 +567,7 @@ public class Proxy {
             throw new Exception("Error al buscar usuario: " + e.getMessage());
         }
     }
-    public Usuario login(Usuario usuario) throws Exception {
+    public synchronized Usuario login(Usuario usuario) throws Exception {
         try {
             os.writeInt(Protocol.USUARIO_LOGIN); // enviamos operación
             os.writeObject(usuario);             // enviamos usuario con ID y contraseña
@@ -586,14 +586,14 @@ public class Proxy {
 
 
 
-    private void disconnect() throws Exception {
+    private synchronized void disconnect() throws Exception {
         os.writeInt(Protocol.DISCONNECT);
         os.flush();
         socket.shutdownOutput();
         socket.close();
     }
 
-    public void stop() {
+    public synchronized void stop() {
         try {
             disconnect();
         } catch (Exception e) {
@@ -601,7 +601,7 @@ public class Proxy {
         }
     }
 
-    public void updateUsuario(Usuario user) throws Exception {
+    public synchronized void updateUsuario(Usuario user) throws Exception {
         try {
             os.writeInt(Protocol.USUARIO_UPDATE); // Código de operación
             os.writeObject(user);                 // Enviamos el objeto Usuario
@@ -616,7 +616,7 @@ public class Proxy {
         }
     }
 
-    public String generarDetallesReceta(Receta receta) {
+    public synchronized String generarDetallesReceta(Receta receta) {
         try {
             os.writeInt(Protocol.RECETA_GENERAR_DETALLES); // enviamos operación
             os.writeObject(receta);                        // enviamos la receta
@@ -633,7 +633,7 @@ public class Proxy {
         }
     }
 
-    public void updateFarmaceutico(Farmaceutico farmaceutico) throws Exception {
+    public synchronized void updateFarmaceutico(Farmaceutico farmaceutico) throws Exception {
         try {
             os.writeInt(Protocol.FARMACEUTICO_UPDATE); // operación
             os.writeObject(farmaceutico);             // enviamos objeto
@@ -648,7 +648,7 @@ public class Proxy {
         }
     }
 
-    public List<Farmaceutico> searchFarmaceuticoByName(String nombre) {
+    public synchronized List<Farmaceutico> searchFarmaceuticoByName(String nombre) {
         try {
             os.writeInt(Protocol.FARMACEUTICO_SEARCH_BY_NAME); // enviamos operación
             os.writeUTF(nombre);                               // enviamos nombre
@@ -665,7 +665,7 @@ public class Proxy {
         }
     }
 
-    public List<Receta> searchRecetaListById(String id) {
+    public synchronized List<Receta> searchRecetaListById(String id) {
         try {
             os.writeInt(Protocol.RECETA_SEARCH_LIST_BY_ID);
             os.writeUTF(id);
@@ -681,7 +681,7 @@ public class Proxy {
             throw new RuntimeException("Error buscando recetas: " + e.getMessage());
         }
     }
-    public void updateMedicamento(Medicamento medicamento) throws Exception {
+    public synchronized void updateMedicamento(Medicamento medicamento) throws Exception {
         try {
             os.writeInt(Protocol.MEDICAMENTO_UPDATE); // enviamos operación
             os.writeObject(medicamento);             // enviamos objeto
@@ -695,7 +695,7 @@ public class Proxy {
             throw new Exception("Error al actualizar el medicamento: " + e.getMessage());
         }
     }
-    public List<Medicamento> searchMedicamentoByCodigo(String codigo) {
+    public synchronized List<Medicamento> searchMedicamentoByCodigo(String codigo) {
         try {
             os.writeInt(Protocol.MEDICAMENTO_SEARCH_BY_CODIGO); // enviamos operación
             os.writeUTF(codigo);                                // enviamos código
@@ -712,7 +712,7 @@ public class Proxy {
         }
     }
 
-    public void updateMedico(Medico medico) throws Exception {
+    public synchronized void updateMedico(Medico medico) throws Exception {
         try {
             os.writeInt(Protocol.MEDICO_UPDATE); // enviamos operación
             os.writeObject(medico);              // enviamos objeto
@@ -727,7 +727,7 @@ public class Proxy {
         }
     }
 
-    public void updatePaciente(Paciente paciente) throws Exception {
+    public synchronized void updatePaciente(Paciente paciente) throws Exception {
         try {
             os.writeInt(Protocol.PACIENTE_UPDATE); // enviamos operación
             os.writeObject(paciente);             // enviamos objeto
@@ -742,7 +742,7 @@ public class Proxy {
         }
     }
 
-    public List<Paciente> searchPacienteByName(String nombre) {
+    public synchronized List<Paciente> searchPacienteByName(String nombre) {
         try {
             os.writeInt(Protocol.PACIENTE_SEARCH); // enviamos operación
             os.writeUTF(nombre);                    // enviamos nombre
@@ -759,7 +759,7 @@ public class Proxy {
         }
     }
 
-    public List<Paciente> searchPacienteById(String id) {
+    public synchronized List<Paciente> searchPacienteById(String id) {
         try {
             os.writeInt(Protocol.PACIENTE_SEARCH_BY_ID); // enviamos operación
             os.writeUTF(id);                             // enviamos ID
@@ -776,7 +776,7 @@ public class Proxy {
         }
     }
 
-    public List<Medicamento> searchMedicamentoByName(String nombre) {
+    public synchronized List<Medicamento> searchMedicamentoByName(String nombre) {
         try {
             os.writeInt(Protocol.MEDICAMENTO_SEARCH_BY_NAME); // operación
             os.writeUTF(nombre);                              // enviamos nombre
@@ -792,7 +792,7 @@ public class Proxy {
             throw new RuntimeException("Error buscando medicamentos: " + e.getMessage());
         }
     }
-    public Receta createReceta(Receta receta) throws Exception {
+    public synchronized Receta createReceta(Receta receta) throws Exception {
         try {
             os.writeInt(Protocol.RECETA_CREATE); // enviamos operación
             os.writeObject(receta);              // enviamos la receta
@@ -808,7 +808,7 @@ public class Proxy {
             throw new Exception("Error al crear receta: " + e.getMessage());
         }
     }
-    public Receta readReceta(Receta receta) throws Exception {
+    public synchronized Receta readReceta(Receta receta) throws Exception {
         try {
             os.writeInt(Protocol.RECETA_READ); // enviamos operación
             os.writeObject(receta);            // enviamos la receta con ID
@@ -825,7 +825,7 @@ public class Proxy {
         }
 
     }
-    public void updateReceta(Receta receta) throws Exception {
+    public synchronized void updateReceta(Receta receta) throws Exception {
         try {
             os.writeInt(Protocol.RECETA_UPDATE); // enviamos operación
             os.writeObject(receta);              // enviamos la receta actualizada
@@ -839,7 +839,7 @@ public class Proxy {
             throw new Exception("Error al actualizar la receta: " + e.getMessage());
         }
     }
-    public void removeMedicamentoFromReceta(int recetaId, int index) throws Exception {
+    public synchronized void removeMedicamentoFromReceta(int recetaId, int index) throws Exception {
         try {
             os.writeInt(Protocol.RECETA_REMOVE_MEDICAMENTO); // operación
             os.writeInt(recetaId);                          // enviamos ID como int
@@ -854,7 +854,7 @@ public class Proxy {
             throw new Exception("Error al eliminar medicamento de la receta: " + e.getMessage());
         }
     }
-    public Receta modificarDetalleMedicamento(Window parent, Receta receta, int row) throws Exception {
+    public synchronized Receta modificarDetalleMedicamento(Window parent, Receta receta, int row) throws Exception {
         // Validar que la receta tenga medicamentos
         if (receta == null) {
             throw new Exception("Receta inválida");
@@ -881,7 +881,7 @@ public class Proxy {
         return receta;
     }
 
-    public List<Paciente> searchPaciente(Paciente filtro) {
+    public synchronized List<Paciente> searchPaciente(Paciente filtro) {
         try {
             os.writeInt(Protocol.PACIENTE_SEARCH);
             os.writeObject(filtro);

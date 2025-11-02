@@ -121,3 +121,45 @@ INSERT INTO Administrador (id, nombre, departamento) VALUES('666','Admin Two','0
 INSERT INTO Medicamento (codigo, nombre, presentacion) VALUES('MED001','Paracetamol','Tabletas 500mg');
 INSERT INTO Medicamento (codigo, nombre, presentacion) VALUES('MED002','Ibuprofeno','Tabletas 400mg');
 INSERT INTO Medicamento (codigo, nombre, presentacion) VALUES('MED003','Amoxicilina','Cápsulas 500mg');
+
+--Farmaceutas
+INSERT INTO Usuario (id, nombre, clave, departamento)
+VALUES
+    ('777', 'Farmaceutico Uno', '777', '003'),
+    ('778', 'Farmaceutico Dos', '778', '003');
+
+-- Farmacéuticos asociados
+INSERT INTO Farmaceutico (id, nombre, departamento)
+VALUES
+    ('777', 'Farmaceutico Uno', '003'),
+    ('778', 'Farmaceutico Dos', '003');
+
+-- Usuarios Medico
+INSERT INTO Usuario (id, nombre, clave, departamento)
+VALUES
+    ('888', 'Medico Uno', '888', '002'),
+    ('889', 'Medico Dos', '889', '002');
+
+-- Médicos asociados
+INSERT INTO Medico (id, nombre, especialidad, departamento)
+VALUES
+    ('888', 'Medico Uno', 'Pediatría', '002'),
+    ('889', 'Medico Dos', 'Cardiología', '002');
+
+
+INSERT INTO Paciente (id, nombre, fechaNacimiento, telefono)
+    VALUES ('P001', 'Juan Pérez', '1990-05-12', '8888-1234');
+
+INSERT INTO Receta (medicoId, pacienteId, fechaConfeccion, fechaRetiro, estado)
+VALUES
+    ('888', 'P001', CURDATE(), NULL, 'CONFECCIONADA');
+
+INSERT INTO MedicamentoDetalle (recetaId, medicamentoCodigo, cantidad, instrucciones)
+VALUES
+    (1, 'MED001', 10, 'Tomar cada 8 horas'),
+    (1, 'MED002', 5, 'Tomar cada 12 horas');
+
+INSERT INTO MedicamentoDetalle (recetaId, medicamentoCodigo, cantidad, indicaciones, dias)
+VALUES
+    (3, 'MED001', 10, 'Tomar cada 8 horas', 5),
+    (3, 'MED002', 5, 'Tomar cada 12 horas', 3);

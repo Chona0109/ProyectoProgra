@@ -5,20 +5,40 @@ import logic.entities.Medico;
 import sistema.logic.Proxy;
 import logic.entities.Paciente;
 import logic.entities.Receta;
+import sistema.presentation.Refresher;
 import sistema.presentation.ThhreadListener;
 import javax.swing.*;
+import java.util.List;
 
 public class prescribirRecetaController implements ThhreadListener {
 
     private prescribirRecetaModel model;
+    private Refresher refresher;
 
     public prescribirRecetaController(prescribirRecetaModel model) {
         this.model = model;
+
+        // Inicializa el refresher
+        refresher = new Refresher(this);
+        refresher.start();
+
+        // Inicializa el modelo
         model.setCurrent(new Receta());
-        model.setList(Proxy.instance().search(new Receta()));
+
+        // Carga los datos iniciales
+        cargarDatos();
     }
 
-
+    private void cargarDatos() {
+        new Thread(() -> {
+            try {
+                List<Receta> recetas = Proxy.instance().search(new Receta());
+                SwingUtilities.invokeLater(() -> model.setList(recetas));
+            } catch (Exception e) {
+                System.err.println("Error cargando recetas: " + e.getMessage());
+            }
+        }).start();
+    }
 
     public void create(Receta receta) throws Exception {
         Receta creada = Proxy.instance().createReceta(receta);
@@ -92,11 +112,8 @@ public class prescribirRecetaController implements ThhreadListener {
 
     @Override
     public void refresh() {
-        try {
-            model.setList(Proxy.instance().search(new Receta()));
-            model.setDetalleList(Proxy.instance().search(new MedicamentoDetalle()));
-        } catch (Exception e) {}
+        cargarDatos();
     }
-
-
 }
+
+

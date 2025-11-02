@@ -15,11 +15,11 @@ public class FarmaceutasController implements ThhreadListener {
     public FarmaceutasController(FarmaceutasForm farmaceutasForm, FarmaceutasModel model) {
         this.model = model;
 
-        // Inicia refresher para actualizar la lista periódicamente
+
         refresher = new Refresher(this);
         refresher.start();
 
-        // Carga inicial en segundo plano
+
         loadFarmaceuticos();
     }
 

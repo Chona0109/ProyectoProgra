@@ -6,6 +6,7 @@ import logic.entities.Medicamento;
 import sistema.presentation.Refresher;
 import sistema.presentation.ThhreadListener;
 
+import javax.swing.*;
 import java.util.List;
 
 public class MedicamentosController implements ThhreadListener {
@@ -27,7 +28,7 @@ private Refresher refresher;
         new Thread(() -> {
             try {
                 List<Medicamento> lista = Proxy.instance().search(new Medicamento());
-                model.setList(lista);
+                SwingUtilities.invokeLater(() -> model.setList(lista)); // 🔹 actualizar en EDT
             } catch (Exception e) {
                 System.err.println("Error cargando medicamentos: " + e.getMessage());
             }
@@ -79,12 +80,14 @@ private Refresher refresher;
     }
     @Override
     public void refresh() {
-        try {
-            List<Medicamento> lista = Proxy.instance().search(new Medicamento());
-            model.setList(lista);
-        } catch (Exception e) {
+        new Thread(() -> {
+            try {
+                List<Medicamento> lista = Proxy.instance().search(new Medicamento());
+                SwingUtilities.invokeLater(() -> model.setList(lista));
+            } catch (Exception e) {
 
-        }
+            }
+        }).start();
     }
 
     public void searchMedicamentos(String codigo) {

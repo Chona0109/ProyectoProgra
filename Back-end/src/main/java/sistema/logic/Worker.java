@@ -317,7 +317,7 @@ public class Worker {
                         break;
                     case Protocol.RECETA_SEARCH_BY_PACIENTE:
                         try {
-                            String idPaciente = is.readUTF(); // recibimos el ID del paciente
+                            String idPaciente = is.readUTF();
                             List<Receta> recetas = service.searchRecetaByIdPaciente(idPaciente);
                             os.writeInt(Protocol.ERROR_NO_ERROR);
                             os.writeObject(recetas);
