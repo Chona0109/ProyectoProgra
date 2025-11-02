@@ -59,7 +59,6 @@ public class MedicosController implements ThreadListener {
     }
 
     public void create(Medico e) throws Exception {
-        e.setDepartamento(model.getCurrent().getDepartamento());
         Proxy.instance().create(e);
         model.setCurrent(new Medico());
         search(new Medico());

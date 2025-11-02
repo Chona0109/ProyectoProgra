@@ -1,5 +1,4 @@
 CREATE DATABASE Recetas;
-
 USE Recetas;
 
 -- Tabla Departamento
@@ -16,7 +15,7 @@ CREATE TABLE Usuario (
                          clave VARCHAR(50) NOT NULL,
                          departamento VARCHAR(10) NOT NULL,
                          PRIMARY KEY (id),
-                         FOREIGN KEY (departamento) REFERENCES Departamento(codigo)
+                         FOREIGN KEY (departamento) REFERENCES Departamento(codigo) ON DELETE CASCADE
 );
 
 -- Tabla Medico
@@ -26,8 +25,8 @@ CREATE TABLE Medico (
                         especialidad VARCHAR(50) NOT NULL,
                         departamento VARCHAR(10) NOT NULL,
                         PRIMARY KEY (id),
-                        FOREIGN KEY (departamento) REFERENCES Departamento(codigo),
-                        FOREIGN KEY (id) REFERENCES Usuario(id)
+                        FOREIGN KEY (departamento) REFERENCES Departamento(codigo) ON DELETE CASCADE,
+                        FOREIGN KEY (id) REFERENCES Usuario(id) ON DELETE CASCADE
 );
 
 -- Tabla Farmaceutico
@@ -36,8 +35,8 @@ CREATE TABLE Farmaceutico (
                               nombre VARCHAR(50) NOT NULL,
                               departamento VARCHAR(10) NOT NULL,
                               PRIMARY KEY (id),
-                              FOREIGN KEY (departamento) REFERENCES Departamento(codigo),
-                              FOREIGN KEY (id) REFERENCES Usuario(id)
+                              FOREIGN KEY (departamento) REFERENCES Departamento(codigo) ON DELETE CASCADE,
+                              FOREIGN KEY (id) REFERENCES Usuario(id) ON DELETE CASCADE
 );
 
 -- Tabla Administrador
@@ -46,8 +45,8 @@ CREATE TABLE Administrador (
                                nombre VARCHAR(50) NOT NULL,
                                departamento VARCHAR(10) NOT NULL,
                                PRIMARY KEY (id),
-                               FOREIGN KEY (departamento) REFERENCES Departamento(codigo),
-                               FOREIGN KEY (id) REFERENCES Usuario(id)
+                               FOREIGN KEY (departamento) REFERENCES Departamento(codigo) ON DELETE CASCADE,
+                               FOREIGN KEY (id) REFERENCES Usuario(id) ON DELETE CASCADE
 );
 
 -- Tabla Paciente
@@ -76,10 +75,11 @@ CREATE TABLE Receta (
                         fechaRetiro DATE,
                         estado VARCHAR(20) NOT NULL,
                         PRIMARY KEY (id),
-                        FOREIGN KEY (medicoId) REFERENCES Medico(id),
-                        FOREIGN KEY (pacienteId) REFERENCES Paciente(id)
+                        FOREIGN KEY (medicoId) REFERENCES Medico(id) ON DELETE CASCADE,
+                        FOREIGN KEY (pacienteId) REFERENCES Paciente(id) ON DELETE CASCADE
 );
 
+-- Tabla MedicamentoDetalle
 CREATE TABLE MedicamentoDetalle (
                                     id INT AUTO_INCREMENT,
                                     recetaId INT NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE MedicamentoDetalle (
                                     dias INT NOT NULL,
                                     PRIMARY KEY (id),
                                     FOREIGN KEY (recetaId) REFERENCES Receta(id) ON DELETE CASCADE,
-                                    FOREIGN KEY (medicamentoCodigo) REFERENCES Medicamento(codigo)
+                                    FOREIGN KEY (medicamentoCodigo) REFERENCES Medicamento(codigo) ON DELETE CASCADE
 );
 
 -- Tabla Mensaje
@@ -101,8 +101,8 @@ CREATE TABLE Mensaje (
                          fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                          leido BOOLEAN DEFAULT FALSE,
                          PRIMARY KEY (id),
-                         FOREIGN KEY (remitenteId) REFERENCES Usuario(id),
-                         FOREIGN KEY (destinatarioId) REFERENCES Usuario(id)
+                         FOREIGN KEY (remitenteId) REFERENCES Usuario(id) ON DELETE CASCADE,
+                         FOREIGN KEY (destinatarioId) REFERENCES Usuario(id) ON DELETE CASCADE
 );
 
 -- Insertar datos iniciales
@@ -122,7 +122,7 @@ INSERT INTO Medicamento (codigo, nombre, presentacion) VALUES('MED001','Paraceta
 INSERT INTO Medicamento (codigo, nombre, presentacion) VALUES('MED002','Ibuprofeno','Tabletas 400mg');
 INSERT INTO Medicamento (codigo, nombre, presentacion) VALUES('MED003','Amoxicilina','Cápsulas 500mg');
 
---Farmaceutas
+-- Farmaceutas
 INSERT INTO Usuario (id, nombre, clave, departamento)
 VALUES
     ('777', 'Farmaceutico Uno', '777', '003'),
@@ -146,20 +146,17 @@ VALUES
     ('888', 'Medico Uno', 'Pediatría', '002'),
     ('889', 'Medico Dos', 'Cardiología', '002');
 
-
+-- Paciente
 INSERT INTO Paciente (id, nombre, fechaNacimiento, telefono)
-    VALUES ('P001', 'Juan Pérez', '1990-05-12', '8888-1234');
+VALUES ('P001', 'Juan Pérez', '1990-05-12', '8888-1234');
 
+-- Receta
 INSERT INTO Receta (medicoId, pacienteId, fechaConfeccion, fechaRetiro, estado)
 VALUES
     ('888', 'P001', CURDATE(), NULL, 'CONFECCIONADA');
 
-INSERT INTO MedicamentoDetalle (recetaId, medicamentoCodigo, cantidad, instrucciones)
-VALUES
-    (1, 'MED001', 10, 'Tomar cada 8 horas'),
-    (1, 'MED002', 5, 'Tomar cada 12 horas');
-
+-- Detalles de medicamentos
 INSERT INTO MedicamentoDetalle (recetaId, medicamentoCodigo, cantidad, indicaciones, dias)
 VALUES
-    (3, 'MED001', 10, 'Tomar cada 8 horas', 5),
-    (3, 'MED002', 5, 'Tomar cada 12 horas', 3);
+    (1, 'MED001', 10, 'Tomar cada 8 horas', 5),
+    (1, 'MED002', 5, 'Tomar cada 12 horas', 3);
