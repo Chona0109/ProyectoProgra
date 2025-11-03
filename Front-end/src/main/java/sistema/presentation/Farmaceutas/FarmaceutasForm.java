@@ -90,9 +90,9 @@ public class FarmaceutasForm implements PropertyChangeListener {
             }
         });
 
-        idFld.addKeyListener(new KeyAdapter() {
+        busquedaFld.addKeyListener(new KeyAdapter() {
             public void keyReleased(KeyEvent evt) {
-                String id = idFld.getText().trim();
+                String id = busquedaFld.getText().trim();
                 controller.buscarPorId(id);
             }
         });

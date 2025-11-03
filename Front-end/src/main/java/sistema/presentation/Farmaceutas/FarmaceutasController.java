@@ -65,12 +65,17 @@ public class FarmaceutasController implements ThreadListener {
     @Override
     public void deliver_message(String message) {
         System.out.println("Mensaje recibido: " + message);
-        try {
 
-            model.setList(Proxy.instance().search(new Farmaceutico()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new Thread(() -> {
+            try {
+                List<Farmaceutico> farmaceuticos = Proxy.instance().search(new Farmaceutico());
+                SwingUtilities.invokeLater(() -> model.setList(farmaceuticos));
+                System.out.println("Lista de farmacéuticos actualizada automáticamente");
+            } catch (Exception e) {
+                System.err.println("Error actualizando farmacéuticos: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     // ==================== MÉTODOS CRUD ====================
