@@ -100,4 +100,7 @@ public class Protocol {
     public static final int ASYNC = 11;
     public static final int DELIVER_MESSAGE = 13;
 
+    public static final int USUARIOS_ACTIVOS = 2001;
+    public static final int USUARIO_ENVIAR_MENSAJE = 2002;
+    public static final int USUARIO_RECIBIR_MENSAJE = 2003;
 }

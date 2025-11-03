@@ -19,6 +19,7 @@ public class Worker {
     Socket as; // Asynchronous Socket
     ObjectOutputStream aos;
     ObjectInputStream ais;
+    private Usuario usuarioConectado;
 
     public Worker(Server srv, Socket s, ObjectOutputStream os, ObjectInputStream is, String sid, Service service) {
         this.srv = srv;
@@ -463,7 +464,10 @@ public class Worker {
                             if (logged != null) {
                                 os.writeInt(Protocol.ERROR_NO_ERROR);
                                 os.writeObject(logged);
-                                setUsuarioId(logged.getId());
+
+                                setUsuarioId(logged.getId());         // asigna ID al Worker
+                                srv.notifyUserOnline(logged.getId()); // notifica a todos que está online
+
                             } else {
                                 os.writeInt(Protocol.ERROR_ERROR);
                             }
@@ -473,8 +477,46 @@ public class Worker {
                         }
                         break;
 
+                    case Protocol.USUARIO_ENVIAR_MENSAJE:
+                        try {
+                            String destinatario = is.readUTF();
+                            String mensaje = is.readUTF();
+
+                            if (usuarioId == null) {
+                                os.writeInt(Protocol.ERROR_ERROR);
+                                break;
+                            }
+
+                            // Obtener Worker del destinatario
+                            Worker destinatarioWorker = srv.getWorkerByUsuarioId(destinatario);
+                            if (destinatarioWorker != null) {
+                                // Enviar mensaje usando deliver_message
+                                destinatarioWorker.deliver_message("De " + usuarioId + ": " + mensaje);
+                            }
+
+                            os.writeInt(Protocol.ERROR_NO_ERROR); // confirma al emisor
+                        } catch (Exception ex) {
+                            os.writeInt(Protocol.ERROR_ERROR);
+                            System.err.println("Error enviando mensaje: " + ex.getMessage());
+                        }
+                        break;
+                    case Protocol.USUARIOS_ACTIVOS:
+                        try {
+                            List<Usuario> activos = service.getUsuariosActivos();
+                            os.writeInt(Protocol.ERROR_NO_ERROR);
+                            os.writeObject(activos);
+                        } catch (Exception e) {
+                            os.writeInt(Protocol.ERROR_ERROR);
+                            System.err.println("Error enviando usuarios activos: " + e.getMessage());
+                        }
+                        break;
+
+
                     // ===================== DESCONECTAR =====================
                     case Protocol.DISCONNECT:
+                        if (usuarioId != null) {
+                            srv.notifyUserOffline(usuarioId); // notifica a todos que se desconectó
+                        }
                         stop();
                         srv.remove(this);
                         break;

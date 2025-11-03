@@ -3,6 +3,7 @@ package sistema.logic;
 import sistema.data.*;
 import logic.entities.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ public class Service {
     private RecetaDao recetaDao;
     private AdministradorDao administradorDao;
 
+    private final List<Usuario> usuariosLogueados = new ArrayList<>();
     public static synchronized Service getInstance() {
         if (theInstance == null) {
             theInstance = new Service();
@@ -55,7 +57,8 @@ public class Service {
         try {
             medicoDao.read(m.getId());
             throw new Exception("Médico ya existe");
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         Departamento dep = departamentoDao.read("002");
         m.setDepartamento(dep);
@@ -268,7 +271,8 @@ public class Service {
         try {
             farmaceuticoDao.read(f.getId());
             throw new Exception("Farmacéutico ya existe");
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         Departamento dep = departamentoDao.read("003");
         f.setDepartamento(dep);
@@ -305,7 +309,8 @@ public class Service {
         try {
             pacienteDao.read(p.getId());
             throw new Exception("Paciente ya existe");
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         pacienteDao.create(p);
     }
 
@@ -338,7 +343,8 @@ public class Service {
         try {
             usuarioDao.read(u.getId());
             throw new Exception("Usuario ya existe");
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         usuarioDao.create(u);
     }
 
@@ -350,13 +356,29 @@ public class Service {
         return usuarioDao.read(u.getId());
     }
 
-    public Usuario login(Usuario usuario) throws Exception {
+    public synchronized Usuario login(Usuario usuario) throws Exception {
         Usuario logged = usuarioDao.read(usuario.getId());
         if (!logged.getClave().equals(usuario.getClave())) {
             throw new Exception("Clave o ID no coinciden");
         }
+
+        if (!usuariosLogueados.contains(logged)) {
+            usuariosLogueados.add(logged);
+        }
+
         Sesion.setUsuario(logged);
         return logged;
+    }
+
+
+    // Logout: quitar de la lista de logueados
+    public synchronized void logout(Usuario usuario) {
+        usuariosLogueados.remove(usuario);
+    }
+
+    // Obtener usuarios activos
+    public synchronized List<Usuario> getUsuariosActivos() {
+        return new ArrayList<>(usuariosLogueados); // devolvemos copia
     }
 
     public Usuario findUserById(String id) {
@@ -416,6 +438,7 @@ public class Service {
                 .sorted(Comparator.comparing(Farmaceutico::getNombre))
                 .collect(Collectors.toList());
     }
+
     public List<Paciente> searchPaciente(Paciente filtro) {
 
         return pacienteDao.findAll().stream()
@@ -429,6 +452,7 @@ public class Service {
 
                 .collect(Collectors.toList());
     }
+
     public List<Receta> searchReceta(Receta filtro) {
         return recetaDao.findAll().stream()
                 .filter(r -> {
@@ -440,5 +464,8 @@ public class Service {
                 .sorted(Comparator.comparing(Receta::getId))
                 .collect(Collectors.toList());
     }
+
+
+
 
 }

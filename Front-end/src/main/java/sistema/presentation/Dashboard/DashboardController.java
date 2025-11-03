@@ -71,6 +71,6 @@ public class DashboardController implements ThreadListener {
             }
         }).start();
 
-        System.out.println("Mensaje recibido en Dashboard: " + message);
+
     }
 }

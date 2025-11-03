@@ -908,7 +908,17 @@ public class Proxy {
             System.err.println("Error al desconectar: " + e.getMessage());
         }
     }
+    public synchronized void sendUserMessage(String destinatario, String mensaje) throws Exception {
+        os.writeInt(Protocol.USUARIO_ENVIAR_MENSAJE);
+        os.writeUTF(destinatario);
+        os.writeUTF(mensaje);
+        os.flush();
 
+        int response = is.readInt();
+        if (response != Protocol.ERROR_NO_ERROR) {
+            throw new Exception("No se pudo enviar el mensaje a " + destinatario);
+        }
+    }
     public void stop() {
         try {
             disconnect();
@@ -916,4 +926,21 @@ public class Proxy {
             System.exit(-1);
         }
     }
+
+    public List<Usuario> getUsuariosActivos() {
+        try {
+            os.writeInt(Protocol.USUARIOS_ACTIVOS);
+            os.flush();
+
+            int response = is.readInt();
+            if (response == Protocol.ERROR_NO_ERROR) {
+                return (List<Usuario>) is.readObject();
+            } else {
+                return List.of();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error obteniendo usuarios activos: " + e.getMessage());
+        }
+    }
+
 };

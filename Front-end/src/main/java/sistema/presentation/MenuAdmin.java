@@ -3,6 +3,7 @@ package sistema.presentation;
 import sistema.presentation.Dashboard.DashboardController;
 import sistema.presentation.Dashboard.DashboardForm;
 import sistema.presentation.Dashboard.DashboardModel;
+import sistema.presentation.UsuariosLogeados.UsuariosLogeadosForm;
 import sistema.presentation.medicos.MedicosController;
 import sistema.presentation.medicos.MedicosForm;
 import sistema.presentation.medicos.MedicosModel;
@@ -52,7 +53,7 @@ public class MenuAdmin extends JFrame {
 
     public MenuAdmin() {
         setTitle("Administrador - Sistema Recetas");
-        setSize(900, 600);
+        setSize(1200, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -116,6 +117,19 @@ public class MenuAdmin extends JFrame {
 
 
         add(tabbedPane);
+
+        UsuariosLogeadosForm usuariosLogeadosForm = new UsuariosLogeadosForm();
+
+
+        JSplitPane splitPane = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT,
+                tabbedPane,
+                usuariosLogeadosForm.getPanel()
+        );
+        splitPane.setDividerLocation(900);
+        splitPane.setOneTouchExpandable(true);
+
+        add(splitPane);
     }
 
     public static void main(String[] args) {
