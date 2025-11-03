@@ -23,6 +23,7 @@ public class Proxy {
     private ObjectOutputStream os;
     private Socket socket;
     private String sid; // Session ID
+    private Usuario currentUser;
 
     public Proxy() {
         try {
@@ -879,13 +880,15 @@ public class Proxy {
 
     public synchronized Usuario login(Usuario usuario) throws Exception {
         try {
-            os.writeInt(Protocol.USUARIO_LOGIN); // enviamos operación
-            os.writeObject(usuario);             // enviamos usuario con ID y contraseña
+            os.writeInt(Protocol.USUARIO_LOGIN);
+            os.writeObject(usuario);
             os.flush();
 
             int response = is.readInt();
             if (response == Protocol.ERROR_NO_ERROR) {
-                return (Usuario) is.readObject(); // usuario encontrado y válido
+                Usuario logged = (Usuario) is.readObject();
+                this.currentUser = logged; // ✅ Guardar usuario actual
+                return logged;
             } else {
                 throw new Exception("Usuario o contraseña incorrectos.");
             }
@@ -893,10 +896,14 @@ public class Proxy {
             throw new Exception("Error en login: " + e.getMessage());
         }
     }
+    public Usuario getCurrentUser() {
+        return currentUser;
+    }
 
     // ==========================================================
     // 🔹 DESCONECTAR
     // ==========================================================
+
     public synchronized void disconnect() {
         try {
             os.writeInt(Protocol.DISCONNECT);
@@ -904,6 +911,7 @@ public class Proxy {
             is.close();
             os.close();
             socket.close();
+            currentUser = null; // ✅ Limpiar usuario
             theInstance = null;
         } catch (IOException e) {
             System.err.println("Error al desconectar: " + e.getMessage());
@@ -933,7 +941,7 @@ public class Proxy {
             os.writeInt(Protocol.USUARIOS_ACTIVOS);
             os.flush();
 
-            // ⚠ CRÍTICO: Leer respuesta inmediatamente sin interrupciones
+
             int response = is.readInt();
             if (response == Protocol.ERROR_NO_ERROR) {
                 return (List<Usuario>) is.readObject();

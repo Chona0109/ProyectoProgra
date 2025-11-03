@@ -1,7 +1,6 @@
 package sistema.presentation.UsuariosLogeados;
 
 import logic.entities.Usuario;
-import sistema.presentation.ThreadListener;
 import sistema.presentation.tableModels.UsuariosTableModel;
 
 import javax.swing.*;
@@ -23,39 +22,85 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
     private UsuariosLogeadosModel model;
     private UsuariosTableModel tableModel;
 
+
+//    private JTextArea mensajesArea;
+//    private JScrollPane scrollMensajes;
+
     public UsuariosLogeadosForm() {
         // Inicializar UI
         main = new JPanel(new BorderLayout());
 
-        // Panel de botones
+        // ===== PANEL SUPERIOR: Botones =====
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.LEFT));
         enviarMensajeButton = new JButton("Enviar Mensaje");
-        recibirMensajeButton = new JButton("Recibir Mensaje");
+        recibirMensajeButton = new JButton("Recibir Mensajes");
         panelBotones.add(enviarMensajeButton);
         panelBotones.add(recibirMensajeButton);
         main.add(panelBotones, BorderLayout.NORTH);
 
-        // Tabla de usuarios
+        // ===== PANEL CENTRAL: Split entre tabla y mensajes =====
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+
+        // Tabla de usuarios arriba
         UsuariosTable = new JTable();
         UsuariosTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        JScrollPane scrollPane = new JScrollPane(UsuariosTable);
-        main.add(scrollPane, BorderLayout.CENTER);
+        JScrollPane scrollTabla = new JScrollPane(UsuariosTable);
+        scrollTabla.setPreferredSize(new Dimension(300, 200));
+        splitPane.setTopComponent(scrollTabla);
+
+        // ✅ Área de mensajes abajo
+//        mensajesArea = new JTextArea();
+//        mensajesArea.setEditable(false);
+//        mensajesArea.setLineWrap(true);
+//        mensajesArea.setWrapStyleWord(true);
+//        mensajesArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+//        scrollMensajes = new JScrollPane(mensajesArea);
+//        scrollMensajes.setPreferredSize(new Dimension(300, 150));
+
+//        JPanel panelMensajes = new JPanel(new BorderLayout());
+//        panelMensajes.setBorder(BorderFactory.createTitledBorder("Mensajes Recibidos"));
+////        panelMensajes.add(scrollMensajes, BorderLayout.CENTER);
+//
+//        splitPane.setBottomComponent(panelMensajes);
+      splitPane.setDividerLocation(200);
+
+       main.add(splitPane, BorderLayout.CENTER);
 
         // Listeners
         configurarListeners();
     }
 
     private void configurarListeners() {
+        // ✅ ENVIAR MENSAJE: Seleccionar usuario y escribir mensaje
         enviarMensajeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = UsuariosTable.getSelectedRow();
                 if (row >= 0 && model.getList() != null && row < model.getList().size()) {
                     Usuario usuarioSeleccionado = model.getList().get(row);
-                    String mensaje = JOptionPane.showInputDialog(main,
-                            "Ingrese mensaje para " + usuarioSeleccionado.getId() + ":");
-                    if (mensaje != null && !mensaje.trim().isEmpty()) {
-                        controller.enviarMensaje(usuarioSeleccionado.getId(), mensaje.trim());
+
+                    // Diálogo para escribir el mensaje
+                    JTextArea textArea = new JTextArea(5, 30);
+                    textArea.setLineWrap(true);
+                    textArea.setWrapStyleWord(true);
+                    JScrollPane scrollPane = new JScrollPane(textArea);
+
+                    int result = JOptionPane.showConfirmDialog(
+                            main,
+                            scrollPane,
+                            "Enviar mensaje a " + usuarioSeleccionado.getNombre(),
+                            JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.PLAIN_MESSAGE
+                    );
+
+                    if (result == JOptionPane.OK_OPTION) {
+                        String mensaje = textArea.getText().trim();
+                        if (!mensaje.isEmpty()) {
+                            controller.enviarMensaje(usuarioSeleccionado.getId(), mensaje);
+
+                            // ✅ Agregar el mensaje enviado al área de mensajes
+                            agregarMensaje("TÚ: " + usuarioSeleccionado.getNombre() + ": " + mensaje);
+                        }
                     }
                 } else {
                     JOptionPane.showMessageDialog(main,
@@ -65,34 +110,21 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
             }
         });
 
+
         recibirMensajeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int row = UsuariosTable.getSelectedRow();
-                if (row >= 0 && model.getList() != null && row < model.getList().size()) {
-                    Usuario usuarioSeleccionado = model.getList().get(row);
-                    controller.recibirMensajes();
-                    JOptionPane.showMessageDialog(main,
-                            "Se ha iniciado la recepción de mensajes de " + usuarioSeleccionado.getId(),
-                            "Información", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(main,
-                            "Seleccione un usuario para recibir mensaje",
-                            "Aviso", JOptionPane.WARNING_MESSAGE);
-                }
+//                mensajesArea.setText("");
+                agregarMensaje("=== Mensajes limpiados ===");
             }
         });
+
 
         UsuariosTable.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 if (e.getClickCount() == 2 && UsuariosTable.getSelectedRow() != -1) {
-                    int row = UsuariosTable.getSelectedRow();
-                    Usuario usuarioSeleccionado = model.getList().get(row);
-                    controller.recibirMensajes();
-                    JOptionPane.showMessageDialog(main,
-                            "Se ha iniciado la recepción de mensajes de " + usuarioSeleccionado.getId(),
-                            "Información", JOptionPane.INFORMATION_MESSAGE);
+                    enviarMensajeButton.doClick();
                 }
             }
         });
@@ -128,47 +160,59 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
                 break;
 
             case UsuariosLogeadosModel.CURRENT:
-                // Opcional: si quieres mostrar detalles del usuario actual
+
                 break;
         }
         main.revalidate();
     }
 
+
     public void mostrarMensaje(String message) {
         SwingUtilities.invokeLater(() -> {
-            JTextArea textArea = new JTextArea(message);
-            textArea.setEditable(false);
-            textArea.setLineWrap(true);
-            textArea.setWrapStyleWord(true);
-            textArea.setCaretPosition(0);
+            agregarMensaje(" " + message);
 
-            JScrollPane scrollPane = new JScrollPane(textArea);
-            scrollPane.setPreferredSize(new Dimension(400, 200));
 
-            JOptionPane.showMessageDialog(main, scrollPane, "Mensaje recibido", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    null,
+                    "📩 Nuevo mensaje:\n" + message,
+                    "Notificación",
+                    JOptionPane.PLAIN_MESSAGE
+            );
         });
     }
+
+
+    private void agregarMensaje(String mensaje) {
+
+
+        String mensajeFormateado =  mensaje + "\n";
+//        mensajesArea.append(mensajeFormateado);
+
+        // Auto-scroll al final
+//        mensajesArea.setCaretPosition(mensajesArea.getDocument().getLength());
+    }
+
     private void createUIComponents() {
-        // Panel principal
+
         main = new JPanel(new BorderLayout());
 
-        // Tabla de usuarios
+
         UsuariosTable = new JTable();
         UsuariosTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        // Scroll pane para que se vea correctamente
+
         JScrollPane scrollPane = new JScrollPane(UsuariosTable);
         main.add(scrollPane, BorderLayout.CENTER);
 
-        // Botones abajo
+
         enviarMensajeButton = new JButton("Enviar Mensaje");
-        recibirMensajeButton = new JButton("Recibir Mensaje");
+        recibirMensajeButton = new JButton("Recibir Mensajes");
         JPanel botonesPanel = new JPanel();
         botonesPanel.add(enviarMensajeButton);
         botonesPanel.add(recibirMensajeButton);
         main.add(botonesPanel, BorderLayout.SOUTH);
 
-        // Asignar un TableModel inicial vacío para que la tabla se muestre
+
         tableModel = new UsuariosTableModel(
                 new int[]{UsuariosTableModel.ID, UsuariosTableModel.NOMBRE},
                 Collections.emptyList()

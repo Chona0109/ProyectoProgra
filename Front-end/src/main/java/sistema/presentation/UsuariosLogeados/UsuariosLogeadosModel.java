@@ -15,6 +15,7 @@ public class UsuariosLogeadosModel {
     private Usuario current;
     private PropertyChangeSupport propertySupport;
 
+
     public UsuariosLogeadosModel() {
         this.list = new ArrayList<>();
         this.current = new Usuario();

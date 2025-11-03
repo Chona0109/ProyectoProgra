@@ -3,6 +3,9 @@ package sistema.presentation;
 import sistema.presentation.Dashboard.DashboardController;
 import sistema.presentation.Dashboard.DashboardForm;
 import sistema.presentation.Dashboard.DashboardModel;
+import sistema.presentation.UsuariosLogeados.UsuariosLogeadosController;
+import sistema.presentation.UsuariosLogeados.UsuariosLogeadosForm;
+import sistema.presentation.UsuariosLogeados.UsuariosLogeadosModel;
 import sistema.presentation.prescribirReceta.prescribirReceta;
 import sistema.presentation.prescribirReceta.prescribirRecetaModel;
 import sistema.presentation.prescribirReceta.prescribirRecetaController;
@@ -28,34 +31,55 @@ public class MenuMedico extends JFrame {
     private DashboardController dashboardController;
     private DashboardForm dashboardForm;
 
+    private UsuariosLogeadosForm usuariosLogeadosForm;
+    private UsuariosLogeadosModel usuariosLogeadosModel;
+    private UsuariosLogeadosController usuariosLogeadosController;
+
     public MenuMedico() {
         setTitle("Médico - Sistema Recetas");
-        setSize(900, 600);
+        setSize(1200, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        // Crear pestañas
         JTabbedPane tabbedPane = new JTabbedPane();
 
-
+        // --- Prescribir Receta ---
         prescribirRecetaModel = new prescribirRecetaModel();
         prescribirRecetaController = new prescribirRecetaController(prescribirRecetaModel);
         prescribirRecetaForm = new prescribirReceta(this, prescribirRecetaModel, prescribirRecetaController);
         tabbedPane.addTab("Prescribir Receta", prescribirRecetaForm.getPanel());
 
-
-
-
+        // --- Histórico ---
         historicoRecetasModel = new historicoRecetasModel();
         historicoRecetasController = new historicoRecetasController(historicoRecetasModel);
         historicoRecetasForm = new historicoRecetas(this, historicoRecetasModel, historicoRecetasController);
         tabbedPane.addTab("Histórico", historicoRecetasForm.getPanel());
 
-        DashboardModel dashboardModel = new DashboardModel();
-        DashboardController dashboardController = new DashboardController(dashboardModel);
-        DashboardForm dashboardForm = new DashboardForm(dashboardModel, dashboardController);
+        // --- Dashboard ---
+        dashboardModel = new DashboardModel();
+        dashboardController = new DashboardController(dashboardModel);
+        dashboardForm = new DashboardForm(dashboardModel, dashboardController);
         tabbedPane.addTab("Dashboard", dashboardForm);
 
-        add(tabbedPane);
+        // --- Usuarios Logeados ---
+        usuariosLogeadosModel = new UsuariosLogeadosModel();
+        usuariosLogeadosForm = new UsuariosLogeadosForm();
+        usuariosLogeadosController = new UsuariosLogeadosController(usuariosLogeadosModel, usuariosLogeadosForm);
+
+        usuariosLogeadosForm.setModel(usuariosLogeadosModel);
+        usuariosLogeadosForm.setController(usuariosLogeadosController);
+
+        // --- SplitPane ---
+        JSplitPane splitPane = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT,
+                tabbedPane,
+                usuariosLogeadosForm.getPanel()
+        );
+        splitPane.setDividerLocation(900);
+        splitPane.setOneTouchExpandable(true);
+
+        add(splitPane);
     }
 
     public static void main(String[] args) {

@@ -482,29 +482,50 @@ public class Worker {
                             String destinatario = is.readUTF();
                             String mensaje = is.readUTF();
 
-                            if (usuarioId == null) {
+                            if (usuarioId == null || usuarioId.isEmpty()) {
+                                System.err.println(" Intento de enviar mensaje sin usuario logueado");
                                 os.writeInt(Protocol.ERROR_ERROR);
+                                os.flush();
                                 break;
                             }
 
-                            // Obtener Worker del destinatario
+                            System.out.println("→ Enviando mensaje de " + usuarioId + " a " + destinatario);
+
+
                             Worker destinatarioWorker = srv.getWorkerByUsuarioId(destinatario);
+
                             if (destinatarioWorker != null) {
-                                // Enviar mensaje usando deliver_message
-                                destinatarioWorker.deliver_message("De " + usuarioId + ": " + mensaje);
+
+                                String mensajeFormateado = "De " + usuarioId + ": " + mensaje;
+
+                                new Thread(() -> {
+                                    destinatarioWorker.deliver_message(mensajeFormateado);
+                                }).start();
+
+                                System.out.println("✓ Mensaje entregado a " + destinatario);
+                                os.writeInt(Protocol.ERROR_NO_ERROR);
+                            } else {
+                                System.err.println("⚠️ Usuario destinatario no encontrado: " + destinatario);
+                                os.writeInt(Protocol.ERROR_ERROR);
                             }
 
-                            os.writeInt(Protocol.ERROR_NO_ERROR); // confirma al emisor
+                            os.flush();
+
                         } catch (Exception ex) {
-                            os.writeInt(Protocol.ERROR_ERROR);
-                            System.err.println("Error enviando mensaje: " + ex.getMessage());
+                            System.err.println(" Error enviando mensaje: " + ex.getMessage());
+                            ex.printStackTrace();
+                            try {
+                                os.writeInt(Protocol.ERROR_ERROR);
+                                os.flush();
+                            } catch (IOException ioe) {
+                                System.err.println("Error enviando código de error: " + ioe.getMessage());
+                            }
                         }
                         break;
-                    // En Worker.java - Dentro del método listen(), reemplaza el caso USUARIOS_ACTIVOS:
 
                     case Protocol.USUARIOS_ACTIVOS:
                         try {
-                            // Obtener usuarios activos del SERVICE, no del servidor
+
                             List<Usuario> activos = service.getUsuariosActivos();
 
                             System.out.println("→ USUARIOS_ACTIVOS solicitado por worker");
@@ -558,15 +579,21 @@ public class Worker {
     }
 
     public synchronized void deliver_message(String message) {
-        if (as != null) {
-            try {
+        if (as == null) {
+            System.out.println(" Socket asíncrono no inicializado para worker " + usuarioId);
+            return;
+        }
+
+        try {
+            synchronized (aos) { // ✅ Sincronizar escritura
                 aos.writeInt(Protocol.DELIVER_MESSAGE);
                 aos.writeObject(message);
                 aos.flush();
-            } catch (Exception e) {
-
-                System.err.println("Error enviando mensaje: " + e.getMessage());
             }
+            System.out.println("Mensaje entregado al cliente: " + message.substring(0, Math.min(50, message.length())));
+        } catch (Exception e) {
+            System.err.println(" Error enviando mensaje a " + usuarioId + ": " + e.getMessage());
+
         }
     }
 }

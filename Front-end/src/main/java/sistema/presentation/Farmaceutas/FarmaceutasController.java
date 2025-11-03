@@ -43,7 +43,7 @@ public class FarmaceutasController implements ThreadListener {
         System.out.println("Mensaje recibido: " + message);
         try {
 
-            search(new Farmaceutico()); // refresca la lista al recibir mensaje
+            model.setList(Proxy.instance().search(new Farmaceutico()));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -69,6 +69,7 @@ public class DashboardForm extends JPanel implements PropertyChangeListener {
             String medicamento = (String) comboMedicamentos.getSelectedItem();
             Month mesInicio = (Month) comboMesInicio.getSelectedItem();
             Month mesFin = (Month) comboMesFin.getSelectedItem();
+            controller.cargarDatos();
             controller.aplicarFiltros(medicamento, mesInicio, mesFin);
         });
     }
