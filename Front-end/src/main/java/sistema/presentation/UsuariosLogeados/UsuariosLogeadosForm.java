@@ -4,12 +4,15 @@ import logic.entities.Usuario;
 import sistema.presentation.tableModels.UsuariosTableModel;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListener {
 
@@ -22,15 +25,11 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
     private UsuariosLogeadosModel model;
     private UsuariosTableModel tableModel;
 
-
-//    private JTextArea mensajesArea;
-//    private JScrollPane scrollMensajes;
-
     public UsuariosLogeadosForm() {
         // Inicializar UI
         main = new JPanel(new BorderLayout());
 
-        // ===== PANEL SUPERIOR: Botones =====
+        // Panel de botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.LEFT));
         enviarMensajeButton = new JButton("Enviar Mensaje");
         recibirMensajeButton = new JButton("Recibir Mensajes");
@@ -38,40 +37,19 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
         panelBotones.add(recibirMensajeButton);
         main.add(panelBotones, BorderLayout.NORTH);
 
-        // ===== PANEL CENTRAL: Split entre tabla y mensajes =====
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-
-        // Tabla de usuarios arriba
+        // Tabla de usuarios
         UsuariosTable = new JTable();
         UsuariosTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        JScrollPane scrollTabla = new JScrollPane(UsuariosTable);
-        scrollTabla.setPreferredSize(new Dimension(300, 200));
-        splitPane.setTopComponent(scrollTabla);
-
-        // ✅ Área de mensajes abajo
-//        mensajesArea = new JTextArea();
-//        mensajesArea.setEditable(false);
-//        mensajesArea.setLineWrap(true);
-//        mensajesArea.setWrapStyleWord(true);
-//        mensajesArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
-//        scrollMensajes = new JScrollPane(mensajesArea);
-//        scrollMensajes.setPreferredSize(new Dimension(300, 150));
-
-//        JPanel panelMensajes = new JPanel(new BorderLayout());
-//        panelMensajes.setBorder(BorderFactory.createTitledBorder("Mensajes Recibidos"));
-////        panelMensajes.add(scrollMensajes, BorderLayout.CENTER);
-//
-//        splitPane.setBottomComponent(panelMensajes);
-      splitPane.setDividerLocation(200);
-
-       main.add(splitPane, BorderLayout.CENTER);
+        UsuariosTable.setRowHeight(25);
+        JScrollPane scrollPane = new JScrollPane(UsuariosTable);
+        main.add(scrollPane, BorderLayout.CENTER);
 
         // Listeners
         configurarListeners();
     }
 
     private void configurarListeners() {
-        // ✅ ENVIAR MENSAJE: Seleccionar usuario y escribir mensaje
+        // ✅ ENVIAR MENSAJE
         enviarMensajeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -97,9 +75,10 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
                         String mensaje = textArea.getText().trim();
                         if (!mensaje.isEmpty()) {
                             controller.enviarMensaje(usuarioSeleccionado.getId(), mensaje);
-
-                            // ✅ Agregar el mensaje enviado al área de mensajes
-                            agregarMensaje("TÚ: " + usuarioSeleccionado.getNombre() + ": " + mensaje);
+                            JOptionPane.showMessageDialog(main,
+                                    "✓ Mensaje enviado a " + usuarioSeleccionado.getNombre(),
+                                    "Enviado",
+                                    JOptionPane.INFORMATION_MESSAGE);
                         }
                     }
                 } else {
@@ -110,16 +89,42 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
             }
         });
 
-
+        // ✅ RECIBIR MENSAJES - NUEVO COMPORTAMIENTO
         recibirMensajeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                mensajesArea.setText("");
-                agregarMensaje("=== Mensajes limpiados ===");
+                int row = UsuariosTable.getSelectedRow();
+
+                if (row < 0 || model.getList() == null || row >= model.getList().size()) {
+                    JOptionPane.showMessageDialog(main,
+                            "Seleccione un usuario para ver sus mensajes",
+                            "Aviso", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                Usuario usuarioSeleccionado = model.getList().get(row);
+                String usuarioId = usuarioSeleccionado.getId();
+
+                // ✅ Obtener mensajes pendientes de ese usuario
+                List<String> mensajes = controller.obtenerMensajesDe(usuarioId);
+
+                if (mensajes.isEmpty()) {
+                    JOptionPane.showMessageDialog(main,
+                            "No hay mensajes nuevos de " + usuarioSeleccionado.getNombre(),
+                            "Sin mensajes",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+
+                // ✅ Mostrar mensajes en ventana emergente
+                mostrarVentanaEmergenteMensajes(usuarioSeleccionado, mensajes);
+
+                // ✅ Actualizar indicadores
+                actualizarIndicadores();
             }
         });
 
-
+        // Doble clic para enviar mensaje
         UsuariosTable.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -128,6 +133,58 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
                 }
             }
         });
+    }
+
+    // ✅ NUEVO: Ventana emergente para mostrar mensajes
+    private void mostrarVentanaEmergenteMensajes(Usuario emisor, List<String> mensajes) {
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(main),
+                "Mensajes de " + emisor.getNombre(),
+                true);
+        dialog.setLayout(new BorderLayout(10, 10));
+
+        // Panel superior con info del emisor
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        headerPanel.setBackground(new Color(70, 130, 180));
+        JLabel headerLabel = new JLabel("📨 " + mensajes.size() + " mensaje(s) de " + emisor.getNombre());
+        headerLabel.setForeground(Color.WHITE);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        headerPanel.add(headerLabel);
+        dialog.add(headerPanel, BorderLayout.NORTH);
+
+        // Área de texto con los mensajes
+        JTextArea mensajesArea = new JTextArea();
+        mensajesArea.setEditable(false);
+        mensajesArea.setLineWrap(true);
+        mensajesArea.setWrapStyleWord(true);
+        mensajesArea.setFont(new Font("Arial", Font.PLAIN, 13));
+        mensajesArea.setMargin(new Insets(10, 10, 10, 10));
+
+        // ✅ Formatear mensajes con timestamps
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < mensajes.size(); i++) {
+            sb.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+            sb.append("Mensaje ").append(i + 1).append(" de ").append(mensajes.size()).append("\n");
+            sb.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
+            sb.append(mensajes.get(i));
+            sb.append("\n\n");
+        }
+        mensajesArea.setText(sb.toString());
+        mensajesArea.setCaretPosition(0);
+
+        JScrollPane scrollPane = new JScrollPane(mensajesArea);
+        scrollPane.setPreferredSize(new Dimension(500, 300));
+        dialog.add(scrollPane, BorderLayout.CENTER);
+
+        // Botón cerrar
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton cerrarButton = new JButton("Cerrar");
+        cerrarButton.addActionListener(e -> dialog.dispose());
+        buttonPanel.add(cerrarButton);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        dialog.pack();
+        dialog.setLocationRelativeTo(main);
+        dialog.setVisible(true);
     }
 
     public JPanel getPanel() {
@@ -157,53 +214,78 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
                         new int[]{UsuariosTableModel.ID, UsuariosTableModel.NOMBRE},
                         model.getList()
                 ));
+
+                // ✅ Configurar renderer para mostrar indicadores
+                configurarRendererIndicadores();
                 break;
 
             case UsuariosLogeadosModel.CURRENT:
-
                 break;
         }
         main.revalidate();
     }
 
+    // ✅ NUEVO: Configurar renderer para mostrar indicadores de mensajes
+    private void configurarRendererIndicadores() {
+        UsuariosTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                                                           boolean isSelected, boolean hasFocus, int row, int column) {
 
-    public void mostrarMensaje(String message) {
-        SwingUtilities.invokeLater(() -> {
-            agregarMensaje(" " + message);
+                Component c = super.getTableCellRendererComponent(table, value,
+                        isSelected, hasFocus, row, column);
 
+                // Obtener usuario de esta fila
+                if (model.getList() != null && row < model.getList().size()) {
+                    Usuario usuario = model.getList().get(row);
+                    int mensajesPendientes = controller.contarMensajesDe(usuario.getId());
 
-            JOptionPane.showMessageDialog(
-                    null,
-                    "📩 Nuevo mensaje:\n" + message,
-                    "Notificación",
-                    JOptionPane.PLAIN_MESSAGE
-            );
+                    if (mensajesPendientes > 0) {
+                        // ✅ Resaltar usuarios con mensajes pendientes
+                        c.setBackground(new Color(255, 250, 205)); // Amarillo claro
+                        c.setFont(c.getFont().deriveFont(Font.BOLD));
+
+                        // Agregar indicador en la columna del nombre
+                        if (column == 1 && value != null) {
+                            String texto = value.toString() + " (" + mensajesPendientes + " 📬)";
+                            ((JLabel) c).setText(texto);
+                        }
+                    } else {
+                        if (!isSelected) {
+                            c.setBackground(Color.WHITE);
+                        }
+                        c.setFont(c.getFont().deriveFont(Font.PLAIN));
+                    }
+                }
+
+                return c;
+            }
         });
     }
 
+    // ✅ MÉTODO PÚBLICO: Actualizar indicadores visuales
+    public void actualizarIndicadores() {
+        if (UsuariosTable != null) {
+            SwingUtilities.invokeLater(() -> {
+                UsuariosTable.repaint();
+            });
+        }
+    }
 
-    private void agregarMensaje(String mensaje) {
-
-
-        String mensajeFormateado =  mensaje + "\n";
-//        mensajesArea.append(mensajeFormateado);
-
-        // Auto-scroll al final
-//        mensajesArea.setCaretPosition(mensajesArea.getDocument().getLength());
+    // ✅ MÉTODO PÚBLICO: Mostrar mensaje en consola (compatibilidad)
+    public void mostrarMensaje(String message) {
+        // Este método ya no se usa con el nuevo sistema de popup
+        // Pero lo mantenemos para evitar errores si se llama desde otro lugar
+        System.out.println("📨 " + message);
     }
 
     private void createUIComponents() {
-
         main = new JPanel(new BorderLayout());
-
-
         UsuariosTable = new JTable();
         UsuariosTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-
         JScrollPane scrollPane = new JScrollPane(UsuariosTable);
         main.add(scrollPane, BorderLayout.CENTER);
-
 
         enviarMensajeButton = new JButton("Enviar Mensaje");
         recibirMensajeButton = new JButton("Recibir Mensajes");
@@ -211,7 +293,6 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
         botonesPanel.add(enviarMensajeButton);
         botonesPanel.add(recibirMensajeButton);
         main.add(botonesPanel, BorderLayout.SOUTH);
-
 
         tableModel = new UsuariosTableModel(
                 new int[]{UsuariosTableModel.ID, UsuariosTableModel.NOMBRE},
