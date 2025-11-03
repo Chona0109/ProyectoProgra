@@ -24,6 +24,19 @@ public class RecetaDao {
     }
 
     public void create(Receta r) throws Exception {
+        // ✅ VALIDACIÓN CRÍTICA
+        if (r.getMedico() == null || r.getMedico().getId() == null || r.getMedico().getId().isEmpty()) {
+            throw new Exception("ERROR: La receta debe tener un médico asignado");
+        }
+
+        if (r.getPaciente() == null || r.getPaciente().getId() == null || r.getPaciente().getId().isEmpty()) {
+            throw new Exception("ERROR: La receta debe tener un paciente asignado");
+        }
+
+        if (r.getMedicamentos() == null || r.getMedicamentos().isEmpty()) {
+            throw new Exception("ERROR: La receta debe tener al menos un medicamento");
+        }
+
         String sql = "INSERT INTO Receta (medicoId, pacienteId, fechaConfeccion, fechaRetiro, estado) VALUES(?,?,?,?,?)";
         PreparedStatement stm = db.prepareStatement(sql);
 
@@ -47,7 +60,12 @@ public class RecetaDao {
             throw new Exception("Error: no se pudo obtener el ID generado");
         }
 
+        // Insertar medicamentos
         for (MedicamentoDetalle detalle : r.getMedicamentos()) {
+            if (detalle.getMedicamento() == null || detalle.getMedicamento().getCodigo() == null) {
+                throw new Exception("ERROR: Medicamento inválido en la receta");
+            }
+
             String sqlDetalle = "INSERT INTO MedicamentoDetalle (recetaId, medicamentoCodigo, cantidad, indicaciones, dias) VALUES(?,?,?,?,?)";
             PreparedStatement stmDetalle = db.prepareStatement(sqlDetalle);
             stmDetalle.setInt(1, r.getId());
@@ -57,7 +75,6 @@ public class RecetaDao {
             stmDetalle.setInt(5, detalle.getDias());
             db.executeUpdate(stmDetalle);
         }
-
     }
 
 

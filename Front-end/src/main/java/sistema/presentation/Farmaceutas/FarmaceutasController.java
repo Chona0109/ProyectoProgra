@@ -1,10 +1,12 @@
 package sistema.presentation.Farmaceutas;
 
+import logic.entities.Receta;
 import sistema.logic.Proxy;
 import logic.entities.Farmaceutico;
 import sistema.logic.SocketListener;
 import sistema.presentation.ThreadListener;
 
+import javax.swing.*;
 import java.util.List;
 
 public class FarmaceutasController implements ThreadListener {
@@ -36,6 +38,28 @@ public class FarmaceutasController implements ThreadListener {
             e.printStackTrace();
         }
     }
+
+    public void buscarPorId(String idFarmaceutico) {
+        new Thread(() -> {
+            try {
+                List<Farmaceutico> resultados;
+                if (idFarmaceutico == null || idFarmaceutico.trim().isEmpty()) {
+                    resultados = Proxy.instance().search(new Farmaceutico());
+                } else {
+                    resultados = Proxy.instance().searchFarmaceuticoById(idFarmaceutico.trim());
+                }
+
+                SwingUtilities.invokeLater(() -> {
+                    model.setList(resultados);
+                    model.setCurrent(new Farmaceutico());
+                });
+
+            } catch (Exception e) {
+                System.err.println("Error buscando farmacéuticos: " + e.getMessage());
+            }
+        }).start();
+    }
+
 
     // ==================== SOCKET LISTENER ====================
     @Override

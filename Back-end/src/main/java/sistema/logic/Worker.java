@@ -143,6 +143,18 @@ public class Worker {
                             System.err.println("Error en FARMACEUTICO_SEARCH: " + ex.getMessage());
                         }
                         break;
+                    case Protocol.FARMACEUTICO_SEARCH_BY_ID:
+                        try {
+                            String idFarmaceutico = is.readUTF();
+                            List<Farmaceutico> farmaceuticos = service.searchFarmaceuticoById(idFarmaceutico);
+                            os.writeInt(Protocol.ERROR_NO_ERROR);
+                            os.writeObject(farmaceuticos);
+                        } catch (Exception ex) {
+                            os.writeInt(Protocol.ERROR_ERROR);
+                            System.err.println("Error en FARMACEUTICO_SEARCH_BY_ID: " + ex.getMessage());
+                        }
+                        break;
+
 
                     // ===================== MEDICAMENTO =====================
                     case Protocol.MEDICAMENTO_CREATE:

@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
@@ -85,6 +87,13 @@ public class FarmaceutasForm implements PropertyChangeListener {
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(main, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
                 }
+            }
+        });
+
+        idFld.addKeyListener(new KeyAdapter() {
+            public void keyReleased(KeyEvent evt) {
+                String id = idFld.getText().trim();
+                controller.buscarPorId(id);
             }
         });
 

@@ -670,6 +670,24 @@ public class Proxy {
         }
     }
 
+    public synchronized List<Farmaceutico> searchFarmaceuticoById(String idFarmaceutico) {
+        try {
+            os.writeInt(Protocol.FARMACEUTICO_SEARCH_BY_ID);
+            os.writeUTF(idFarmaceutico);
+            os.flush();
+
+            int response = is.readInt();
+            if (response == Protocol.ERROR_NO_ERROR) {
+                return (List<Farmaceutico>) is.readObject();
+            } else {
+                return List.of();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException("Error buscando farmacéuticos: " + e.getMessage());
+        }
+    }
+
+
     public synchronized void avanzarEstado(Receta receta) throws Exception {
         try {
             os.writeInt(Protocol.RECETA_AVANZAR_ESTADO);

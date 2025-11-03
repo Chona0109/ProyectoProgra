@@ -27,6 +27,7 @@ public class Protocol {
     public static final int FARMACEUTICO_DELETE = 504;
     public static final int FARMACEUTICO_SEARCH = 505;
     public static final int FARMACEUTICO_SEARCH_BY_NAME = 506;
+    public static final int FARMACEUTICO_SEARCH_BY_ID =  507;
 
     // ===================== MEDICAMENTO =====================
     public static final int MEDICAMENTO_CREATE = 601;

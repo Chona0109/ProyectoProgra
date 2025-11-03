@@ -123,21 +123,52 @@ public class Service {
 
 
     public Receta createReceta(Receta r) throws Exception {
-        if (r.getMedico() == null) {
+        if (r.getMedico() == null || r.getMedico().getId() == null) {
             Usuario usuarioLogueado = Sesion.getUsuario();
+
             if (usuarioLogueado == null) {
-                throw new Exception("No hay usuario logueado");
+                throw new Exception("ERROR: No hay usuario logueado");
             }
-            if (usuarioLogueado.getDepartamento() != null &&
-                    usuarioLogueado.getDepartamento().getCodigo().equals("002")) {
-                Medico m = medicoDao.read(usuarioLogueado.getId());
-                r.setMedico(m);
-            } else {
-                throw new Exception("Usuario no autorizado o médico no asignado");
+
+            if (usuarioLogueado.getDepartamento() == null) {
+                throw new Exception("ERROR: El usuario no tiene departamento asignado");
+            }
+
+            if (!"002".equals(usuarioLogueado.getDepartamento().getCodigo())) {
+                throw new Exception("ERROR: Solo los médicos pueden crear recetas (Departamento 002)");
+            }
+
+            // Obtener el médico completo desde la base de datos
+            try {
+                Medico medico = medicoDao.read(usuarioLogueado.getId());
+                r.setMedico(medico);
+            } catch (Exception e) {
+                throw new Exception("ERROR: No se pudo cargar el médico con ID: " + usuarioLogueado.getId());
+            }
+        }
+
+        if (r.getPaciente() == null || r.getPaciente().getId() == null) {
+            throw new Exception("ERROR: Debe seleccionar un paciente para la receta");
+        }
+
+        if (r.getMedicamentos() == null || r.getMedicamentos().isEmpty()) {
+            throw new Exception("ERROR: Debe agregar al menos un medicamento a la receta");
+        }
+
+        for (MedicamentoDetalle detalle : r.getMedicamentos()) {
+            if (detalle.getMedicamento() == null || detalle.getMedicamento().getCodigo() == null) {
+                throw new Exception("ERROR: Medicamento inválido en la receta");
+            }
+            if (detalle.getCantidad() <= 0) {
+                throw new Exception("ERROR: La cantidad debe ser mayor a 0");
+            }
+            if (detalle.getDias() <= 0) {
+                throw new Exception("ERROR: Los días deben ser mayor a 0");
             }
         }
 
         recetaDao.create(r);
+
         return r;
     }
 
@@ -302,6 +333,11 @@ public class Service {
     public void updateFarmaceutico(Farmaceutico farmaceutico) throws Exception {
         farmaceuticoDao.update(farmaceutico);
     }
+
+    public List<Farmaceutico> searchFarmaceuticoById(String idFarmaceutico) {
+        return farmaceuticoDao.searchById(idFarmaceutico);
+    }
+
 
     // =============== PACIENTES ===============
     public void create(Paciente p) throws Exception {

@@ -73,6 +73,25 @@ public class FarmaceuticoDao {
         usuarioDao.delete(f);
     }
 
+    public List<Farmaceutico> searchById(String idFarmaceutico) {
+        List<Farmaceutico> farmaceuticos = new ArrayList<Farmaceutico>();
+        try {
+            String sql = "SELECT * FROM Farmaceutico WHERE id LIKE ?";
+            PreparedStatement stm = db.prepareStatement(sql);
+            stm.setString(1, "%" + idFarmaceutico + "%");
+            ResultSet rs = db.executeQuery(stm);
+
+            while (rs.next()) {
+                Farmaceutico f = from(rs);
+                farmaceuticos.add(f);
+            }
+        } catch (Exception ex) {
+            System.err.println("Error en searchById Farmaceutico: " + ex.getMessage());
+        }
+        return farmaceuticos;
+    }
+
+
     public List<Farmaceutico> findAll(){
         List<Farmaceutico> farmaceuticos = new ArrayList<Farmaceutico>();
         try {
