@@ -3,8 +3,7 @@ package sistema.logic;
 import sistema.data.*;
 import logic.entities.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -362,24 +361,51 @@ public class Service {
             throw new Exception("Clave o ID no coinciden");
         }
 
-        if (!usuariosLogueados.contains(logged)) {
-            usuariosLogueados.add(logged);
-        }
+        // Evitar duplicados: remover si ya existe antes de agregar
+        usuariosLogueados.removeIf(u -> u.getId().equals(logged.getId()));
+
+        // Ahora sí agregar
+        usuariosLogueados.add(logged);
 
         Sesion.setUsuario(logged);
+
+        System.out.println("✓ Usuario logueado: " + logged.getId());
+        System.out.println("  Total usuarios activos: " + usuariosLogueados.size());
+
         return logged;
     }
 
-
     // Logout: quitar de la lista de logueados
     public synchronized void logout(Usuario usuario) {
-        usuariosLogueados.remove(usuario);
+        if (usuario != null) {
+            usuariosLogueados.removeIf(u -> u.getId().equals(usuario.getId()));
+            System.out.println("✓ Usuario deslogueado: " + usuario.getId());
+            System.out.println("  Total usuarios activos: " + usuariosLogueados.size());
+        }
     }
 
-    // Obtener usuarios activos
+    // Obtener usuarios activos - DEVUELVE COPIA LIMPIA
     public synchronized List<Usuario> getUsuariosActivos() {
-        return new ArrayList<>(usuariosLogueados); // devolvemos copia
+        // Crear una nueva lista sin duplicados
+        List<Usuario> sinDuplicados = new ArrayList<>();
+        Set<String> idsVistos = new HashSet<>();
+
+        for (Usuario u : usuariosLogueados) {
+            if (u != null && u.getId() != null && !idsVistos.contains(u.getId())) {
+                sinDuplicados.add(u);
+                idsVistos.add(u.getId());
+            }
+        }
+
+        System.out.println("→ getUsuariosActivos() - Total: " + sinDuplicados.size());
+        for (Usuario u : sinDuplicados) {
+            System.out.println("  - " + u.getId() + " (" + u.getNombre() + ")");
+        }
+
+        return new ArrayList<>(sinDuplicados);
     }
+
+
 
     public Usuario findUserById(String id) {
         try {

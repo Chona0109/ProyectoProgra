@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import logic.Protocol;
+import logic.entities.Usuario;
 
 public class Server {
     ServerSocket ss;
@@ -73,7 +74,24 @@ public class Server {
         }
     }
 
+    // En Server.java - Reemplaza el método remove:
+
     public void remove(Worker w) {
+        // Notificar que el usuario se desconectó ANTES de removerlo
+        if (w.getUsuarioId() != null && !w.getUsuarioId().isEmpty()) {
+            notifyUserOffline(w.getUsuarioId());
+
+            // Remover del service también
+            try {
+                Usuario u = new Usuario();
+                u.setId(w.getUsuarioId());
+                service.logout(u);
+                System.out.println("✓ Usuario removido del Service: " + w.getUsuarioId());
+            } catch (Exception e) {
+                System.err.println("Error al remover usuario del service: " + e.getMessage());
+            }
+        }
+
         workers.remove(w);
         System.out.println("<<< Cliente desconectado. Quedan: " + workers.size() + " clientes");
     }

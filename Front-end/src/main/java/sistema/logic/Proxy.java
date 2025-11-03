@@ -862,7 +862,7 @@ public class Proxy {
     public synchronized Usuario findUserById(String id) throws Exception {
         try {
             os.writeInt(Protocol.USUARIO_FIND_BY_ID);
-            os.writeObject(id); // ← CAMBIA writeUTF por writeObject
+            os.writeObject(id);
             os.flush();
 
             int response = is.readInt();

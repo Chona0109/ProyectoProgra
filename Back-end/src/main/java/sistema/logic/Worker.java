@@ -500,25 +500,52 @@ public class Worker {
                             System.err.println("Error enviando mensaje: " + ex.getMessage());
                         }
                         break;
+                    // En Worker.java - Dentro del método listen(), reemplaza el caso USUARIOS_ACTIVOS:
+
                     case Protocol.USUARIOS_ACTIVOS:
                         try {
+                            // Obtener usuarios activos del SERVICE, no del servidor
                             List<Usuario> activos = service.getUsuariosActivos();
+
+                            System.out.println("→ USUARIOS_ACTIVOS solicitado por worker");
+                            System.out.println("  Total usuarios activos: " + activos.size());
+
                             os.writeInt(Protocol.ERROR_NO_ERROR);
                             os.writeObject(activos);
+                            os.flush();
+
                         } catch (Exception e) {
                             os.writeInt(Protocol.ERROR_ERROR);
                             System.err.println("Error enviando usuarios activos: " + e.getMessage());
+                            e.printStackTrace();
                         }
                         break;
 
 
                     // ===================== DESCONECTAR =====================
                     case Protocol.DISCONNECT:
-                        if (usuarioId != null) {
-                            srv.notifyUserOffline(usuarioId); // notifica a todos que se desconectó
+                        try {
+                            System.out.println("→ DISCONNECT recibido de worker");
+
+                            // Remover usuario del service
+                            if (usuarioId != null && !usuarioId.isEmpty()) {
+                                Usuario u = new Usuario();
+                                u.setId(usuarioId);
+                                service.logout(u);
+
+                                srv.notifyUserOffline(usuarioId);
+
+                                System.out.println("✓ Usuario deslogueado: " + usuarioId);
+                            }
+
+                            stop();
+                            srv.remove(this);
+
+                        } catch (Exception e) {
+                            System.err.println("Error en DISCONNECT: " + e.getMessage());
+                            stop();
+                            srv.remove(this);
                         }
-                        stop();
-                        srv.remove(this);
                         break;
                 }
 
