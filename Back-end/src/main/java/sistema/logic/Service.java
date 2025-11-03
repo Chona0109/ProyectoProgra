@@ -357,16 +357,16 @@ public class Service {
 
     public synchronized Usuario login(Usuario usuario) throws Exception {
         Usuario logged = usuarioDao.read(usuario.getId());
+
         if (!logged.getClave().equals(usuario.getClave())) {
             throw new Exception("Clave o ID no coinciden");
         }
 
-        // Evitar duplicados: remover si ya existe antes de agregar
+        // ✅ CORRECCIÓN: Evitar duplicados antes de agregar
         usuariosLogueados.removeIf(u -> u.getId().equals(logged.getId()));
 
         // Ahora sí agregar
         usuariosLogueados.add(logged);
-
         Sesion.setUsuario(logged);
 
         System.out.println("✓ Usuario logueado: " + logged.getId());
@@ -386,7 +386,6 @@ public class Service {
 
     // Obtener usuarios activos - DEVUELVE COPIA LIMPIA
     public synchronized List<Usuario> getUsuariosActivos() {
-        // Crear una nueva lista sin duplicados
         List<Usuario> sinDuplicados = new ArrayList<>();
         Set<String> idsVistos = new HashSet<>();
 
@@ -395,11 +394,6 @@ public class Service {
                 sinDuplicados.add(u);
                 idsVistos.add(u.getId());
             }
-        }
-
-        System.out.println("→ getUsuariosActivos() - Total: " + sinDuplicados.size());
-        for (Usuario u : sinDuplicados) {
-            System.out.println("  - " + u.getId() + " (" + u.getNombre() + ")");
         }
 
         return new ArrayList<>(sinDuplicados);

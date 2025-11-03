@@ -6,11 +6,12 @@ import sistema.presentation.Dashboard.DashboardModel;
 import sistema.presentation.historicoRecetas.historicoRecetas;
 import sistema.presentation.historicoRecetas.historicoRecetasController;
 import sistema.presentation.historicoRecetas.historicoRecetasModel;
-
 import sistema.presentation.Despacho.DespachoForm;
 import sistema.presentation.Despacho.DespachoController;
 import sistema.presentation.Despacho.DespachoModel;
-
+import sistema.presentation.UsuariosLogeados.UsuariosLogeadosController;
+import sistema.presentation.UsuariosLogeados.UsuariosLogeadosForm;
+import sistema.presentation.UsuariosLogeados.UsuariosLogeadosModel;
 
 import javax.swing.*;
 
@@ -24,40 +25,60 @@ public class MenuFarmaceutico extends JFrame {
     private historicoRecetasController historicoRecetasController;
     private historicoRecetas historicoRecetasForm;
 
-
     private DashboardModel dashboardModel;
     private DashboardController dashboardController;
     private DashboardForm dashboardForm;
 
+    // Agregamos campos para UsuariosLogeados
+    private UsuariosLogeadosForm usuariosLogeadosForm;
+    private UsuariosLogeadosModel usuariosLogeadosModel;
+    private UsuariosLogeadosController usuariosLogeadosController;
+
     public MenuFarmaceutico() {
         setTitle("Farmacéutico - Sistema Recetas");
-        setSize(900, 600);
+        setSize(1200, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        // --- Tabs principales ---
         JTabbedPane tabbedPane = new JTabbedPane();
 
-
+        // Despacho
         despachoModel = new DespachoModel();
         despachoController = new DespachoController(despachoModel);
         despachoForm = new DespachoForm(this, despachoModel, despachoController);
         tabbedPane.addTab("Despacho", despachoForm.getPanel());
 
-
+        // Histórico
         historicoRecetasModel = new historicoRecetasModel();
         historicoRecetasController = new historicoRecetasController(historicoRecetasModel);
         historicoRecetasForm = new historicoRecetas(this, historicoRecetasModel, historicoRecetasController);
         tabbedPane.addTab("Histórico", historicoRecetasForm.getPanel());
 
-
-
-        DashboardModel dashboardModel = new DashboardModel();
-        DashboardController dashboardController = new DashboardController(dashboardModel);
-        DashboardForm dashboardForm = new DashboardForm(dashboardModel, dashboardController);
+        // Dashboard
+        dashboardModel = new DashboardModel();
+        dashboardController = new DashboardController(dashboardModel);
+        dashboardForm = new DashboardForm(dashboardModel, dashboardController);
         tabbedPane.addTab("Dashboard", dashboardForm);
 
+        // --- Usuarios Logeados ---
+        usuariosLogeadosModel = new UsuariosLogeadosModel();
+        usuariosLogeadosForm = new UsuariosLogeadosForm();
+        usuariosLogeadosController = new UsuariosLogeadosController(usuariosLogeadosModel, usuariosLogeadosForm);
 
-        add(tabbedPane);
+        usuariosLogeadosForm.setModel(usuariosLogeadosModel);
+        usuariosLogeadosForm.setController(usuariosLogeadosController);
+
+        // --- SplitPane ---
+        JSplitPane splitPane = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT,
+                tabbedPane,
+                usuariosLogeadosForm.getPanel()
+        );
+        splitPane.setDividerLocation(900);
+        splitPane.setOneTouchExpandable(true);
+
+        add(splitPane);
     }
 
     public static void main(String[] args) {

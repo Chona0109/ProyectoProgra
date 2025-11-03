@@ -73,10 +73,9 @@ public class UsuariosLogeadosController implements ThreadListener {
     public void deliver_message(String message) {
         System.out.println("→ Notificación recibida: " + message);
 
-        // Recargar lista de usuarios activos
         cargarUsuariosActivos();
 
-        // Si es un mensaje de usuario, mostrarlo
+
         if (view != null && !message.startsWith("USER_ONLINE") && !message.startsWith("USER_OFFLINE")) {
             SwingUtilities.invokeLater(() -> {
                 view.mostrarMensaje(message);

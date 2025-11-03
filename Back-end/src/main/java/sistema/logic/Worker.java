@@ -564,6 +564,7 @@ public class Worker {
                 aos.writeObject(message);
                 aos.flush();
             } catch (Exception e) {
+
                 System.err.println("Error enviando mensaje: " + e.getMessage());
             }
         }

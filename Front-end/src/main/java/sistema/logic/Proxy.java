@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Proxy {
@@ -927,19 +928,23 @@ public class Proxy {
         }
     }
 
-    public List<Usuario> getUsuariosActivos() {
+    public synchronized List<Usuario> getUsuariosActivos() {
         try {
             os.writeInt(Protocol.USUARIOS_ACTIVOS);
             os.flush();
 
+            // ⚠ CRÍTICO: Leer respuesta inmediatamente sin interrupciones
             int response = is.readInt();
             if (response == Protocol.ERROR_NO_ERROR) {
                 return (List<Usuario>) is.readObject();
             } else {
-                return List.of();
+                System.err.println("⚠ Error del servidor al obtener usuarios activos");
+                return new ArrayList<>();
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error obteniendo usuarios activos: " + e.getMessage());
+            System.err.println(" Error obteniendo usuarios activos: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 
