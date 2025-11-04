@@ -24,7 +24,7 @@ public class DashboardController implements ThreadListener {
 
         // Inicia SocketListener para recibir actualizaciones
         try {
-            socketListener = new SocketListener(this, Proxy.instance().getSid());
+            socketListener = SocketListener.getInstance(this, Proxy.instance().getSid());
             socketListener.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,7 +61,7 @@ public class DashboardController implements ThreadListener {
 
     @Override
     public void deliver_message(String message) {
-        // Cuando llega un mensaje desde el servidor, recarga las recetas
+
         new Thread(() -> {
             try {
                 List<Receta> recetas = Proxy.instance().search(new Receta());

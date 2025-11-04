@@ -56,7 +56,7 @@ public class Server {
                         workers.add(worker);
                         System.out.println("Quedan: " + workers.size());
                         worker.start();
-                        os.writeObject(sid); // send Session Id back
+                        os.writeObject(sid);
                         break;
 
                     case Protocol.ASYNC:
@@ -74,14 +74,14 @@ public class Server {
         }
     }
 
-    // En Server.java - Reemplaza el método remove:
+
 
     public void remove(Worker w) {
-        // Notificar que el usuario se desconectó ANTES de removerlo
+
         if (w.getUsuarioId() != null && !w.getUsuarioId().isEmpty()) {
             notifyUserOffline(w.getUsuarioId());
 
-            // Remover del service también
+
             try {
                 Usuario u = new Usuario();
                 u.setId(w.getUsuarioId());
@@ -121,14 +121,12 @@ public class Server {
         }
     }
 
-    /**
-     * Notifica a todos los clientes que un usuario se conectó
-     */
+
     public void notifyUserOnline(String userId) {
         String message = "USER_ONLINE:" + userId;
 
         for (Worker w : workers) {
-            // Solo notificamos a workers que tengan usuario asignado y que no sean el mismo
+
             if (w != null && w.getUsuarioId() != null && !userId.equals(w.getUsuarioId())) {
                 w.deliver_message(message);
             }
@@ -137,9 +135,7 @@ public class Server {
         System.out.println("→ Notificado: Usuario " + userId + " online");
     }
 
-    /**
-     * Notifica a todos los clientes que un usuario se desconectó
-     */
+
     public void notifyUserOffline(String userId) {
         if (userId == null || userId.isEmpty()) return;
 
@@ -166,7 +162,7 @@ public class Server {
     }
 
     public Worker getWorkerByUsuarioId(String destinatario) {
-        synchronized (workers) { // sincronizamos porque es lista compartida
+        synchronized (workers) {
             for (Worker w : workers) {
                 if (w != null && destinatario.equals(w.getUsuarioId())) {
                     return w;

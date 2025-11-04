@@ -19,7 +19,7 @@ public class historicoRecetasController implements ThreadListener {
         model.init();
 
         try {
-            socketListener = new SocketListener(this, Proxy.instance().getSid());
+            socketListener = SocketListener.getInstance(this, Proxy.instance().getSid());
             socketListener.start();
         } catch (Exception e) {
             e.printStackTrace();

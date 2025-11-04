@@ -2,6 +2,7 @@ package sistema.presentation.Despacho;
 
 import sistema.logic.Proxy;
 import logic.entities.Receta;
+import sistema.logic.SocketListener;
 import sistema.presentation.ThreadListener;
 
 import javax.swing.*;
@@ -10,12 +11,17 @@ import java.util.List;
 public class DespachoController implements ThreadListener {
 
     private DespachoModel model;
-
+    private SocketListener socketListener;
     public DespachoController(DespachoModel model) {
         this.model = model;
-        this.model.init(); // inicializa current y lista
+        this.model.init();
+        try {
+         socketListener = SocketListener.getInstance(this, Proxy.instance().getSid());
+        socketListener.start();
+        }catch(Exception e){
 
-        cargarRecetas(); // carga inicial de recetas
+        }
+        cargarRecetas();
     }
 
     private void cargarRecetas() {
@@ -71,8 +77,11 @@ public class DespachoController implements ThreadListener {
 
     @Override
     public void deliver_message(String message) {
-        // Cuando llega un mensaje, recarga la lista de recetas
+
         cargarRecetas();
         System.out.println("Mensaje recibido: " + message);
+    }
+    public void stop() {
+        if (socketListener != null) socketListener.stop();
     }
 }

@@ -22,7 +22,7 @@ public class PacienteController implements ThreadListener {
 
         // Inicia SocketListener para recibir actualizaciones
         try {
-            socketListener = new SocketListener(this, Proxy.instance().getSid());
+            socketListener = SocketListener.getInstance(this, Proxy.instance().getSid());
             socketListener.start();
         } catch (Exception e) {
             System.err.println("Error iniciando SocketListener: " + e.getMessage());

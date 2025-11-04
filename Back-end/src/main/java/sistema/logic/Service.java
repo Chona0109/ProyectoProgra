@@ -138,7 +138,7 @@ public class Service {
                 throw new Exception("ERROR: Solo los médicos pueden crear recetas (Departamento 002)");
             }
 
-            // Obtener el médico completo desde la base de datos
+
             try {
                 Medico medico = medicoDao.read(usuarioLogueado.getId());
                 r.setMedico(medico);
@@ -268,9 +268,9 @@ public class Service {
         }
     }
 
-    // Modificar detalle de medicamento en una receta (en memoria, antes de guardar)
+
     public Receta modificarDetalleMedicamento(Window parent, Receta receta, int row) throws Exception {
-        // Validar que la receta tenga medicamentos
+
         if (receta == null) {
             throw new Exception("Receta inválida");
         }
@@ -411,7 +411,7 @@ public class Service {
         return logged;
     }
 
-    // Logout: quitar de la lista de logueados
+
     public synchronized void logout(Usuario usuario) {
         if (usuario != null) {
             usuariosLogueados.removeIf(u -> u.getId().equals(usuario.getId()));
@@ -420,7 +420,7 @@ public class Service {
         }
     }
 
-    // Obtener usuarios activos - DEVUELVE COPIA LIMPIA
+
     public synchronized List<Usuario> getUsuariosActivos() {
         List<Usuario> sinDuplicados = new ArrayList<>();
         Set<String> idsVistos = new HashSet<>();
@@ -445,7 +445,7 @@ public class Service {
         }
     }
 
-    // =============== DEPARTAMENTOS ===============
+
     public List<Departamento> findAllDepartamentos() {
         return departamentoDao.findAll();
     }

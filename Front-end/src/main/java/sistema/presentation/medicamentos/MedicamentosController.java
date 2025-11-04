@@ -27,7 +27,7 @@ public class MedicamentosController implements ThreadListener {
 
         // Iniciamos socket listener para actualizaciones en tiempo real
         try {
-            socketListener = new SocketListener(this, Proxy.instance().getSid());
+            socketListener = SocketListener.getInstance(this, Proxy.instance().getSid());
             socketListener.start();
         } catch (Exception e) {
             e.printStackTrace();

@@ -227,16 +227,21 @@ public class Worker {
                         }
                         break;
 
-                    // ===================== MEDICO =====================
                     case Protocol.MEDICO_CREATE:
                         try {
                             service.create((Medico) is.readObject());
                             os.writeInt(Protocol.ERROR_NO_ERROR);
-                            srv.deliver_message(this, "Médico creado");
+
+                            // ✅ IMPORTANTE: Enviar mensaje a TODOS los clientes
+                            srv.deliver_message(this, "MEDICO_CREADO");
+                            System.out.println("📢 Notificación enviada: Médico creado");
+
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
+                            System.err.println("❌ Error en MEDICO_CREATE: " + ex.getMessage());
                         }
                         break;
+
                     case Protocol.MEDICO_READ:
                         try {
                             Medico me = service.read((Medico) is.readObject());
@@ -244,26 +249,40 @@ public class Worker {
                             os.writeObject(me);
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
+                            System.err.println("❌ Error en MEDICO_READ: " + ex.getMessage());
                         }
                         break;
+
                     case Protocol.MEDICO_UPDATE:
                         try {
                             service.updateMedico((Medico) is.readObject());
                             os.writeInt(Protocol.ERROR_NO_ERROR);
-                            srv.deliver_message(this, "Médico actualizado");
+
+
+                            srv.deliver_message(this, "MEDICO_ACTUALIZADO");
+                            System.out.println("📢 Notificación enviada: Médico actualizado");
+
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
+                            System.err.println(" Error en MEDICO_UPDATE: " + ex.getMessage());
                         }
                         break;
+
                     case Protocol.MEDICO_DELETE:
                         try {
                             service.delete((Medico) is.readObject());
                             os.writeInt(Protocol.ERROR_NO_ERROR);
-                            srv.deliver_message(this, "Médico eliminado");
+
+
+                            srv.deliver_message(this, "MEDICO_ELIMINADO");
+                            System.out.println(" Notificación enviada: Médico eliminado");
+
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
+                            System.err.println(" Error en MEDICO_DELETE: " + ex.getMessage());
                         }
                         break;
+
                     case Protocol.MEDICO_SEARCH:
                         try {
                             List<Medico> lme = service.search((Medico) is.readObject());
@@ -271,6 +290,7 @@ public class Worker {
                             os.writeObject(lme);
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
+                            System.err.println(" Error en MEDICO_SEARCH: " + ex.getMessage());
                         }
                         break;
 
