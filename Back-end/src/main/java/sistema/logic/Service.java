@@ -398,10 +398,10 @@ public class Service {
             throw new Exception("Clave o ID no coinciden");
         }
 
-        // ✅ CORRECCIÓN: Evitar duplicados antes de agregar
+
         usuariosLogueados.removeIf(u -> u.getId().equals(logged.getId()));
 
-        // Ahora sí agregar
+
         usuariosLogueados.add(logged);
         Sesion.setUsuario(logged);
 
@@ -460,7 +460,7 @@ public class Service {
     }
 
     public List<Medico> search(Medico filtro) {
-        // Asegúrate de no tener nulls en los campos de filtro
+
         String nombreFiltro = filtro.getNombre() != null ? filtro.getNombre().toLowerCase() : "";
         String idFiltro = filtro.getId() != null ? filtro.getId().toLowerCase() : "";
 
@@ -515,7 +515,7 @@ public class Service {
                     if (filtro.getId() != null) {
                         return r.getId().equals(filtro.getId());
                     }
-                    return true; // si el filtro ID es null, incluye todos
+                    return true;
                 })
                 .sorted(Comparator.comparing(Receta::getId))
                 .collect(Collectors.toList());

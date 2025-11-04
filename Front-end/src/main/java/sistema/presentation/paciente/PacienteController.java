@@ -17,10 +17,10 @@ public class PacienteController implements ThreadListener {
         this.model = model;
         model.init();
 
-        // Carga inicial de pacientes
+
         loadPacientes();
 
-        // Inicia SocketListener para recibir actualizaciones
+
         try {
             socketListener = SocketListener.getInstance(this, Proxy.instance().getSid());
             socketListener.start();
@@ -96,7 +96,7 @@ public class PacienteController implements ThreadListener {
 
     @Override
     public void deliver_message(String message) {
-        // Actualiza la lista cuando llega un mensaje desde SocketListener
+
         new Thread(() -> {
             try {
                 List<Paciente> lista = Proxy.instance().search(new Paciente());

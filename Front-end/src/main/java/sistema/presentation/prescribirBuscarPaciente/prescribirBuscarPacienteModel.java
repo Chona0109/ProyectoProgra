@@ -40,7 +40,7 @@ public class prescribirBuscarPacienteModel extends AbstractModel {
         firePropertyChange(FILTER);
     }
 
-    // ==================== GETTERS / SETTERS ====================
+
     public Paciente getFilter() { return filter; }
     public void setFilter(Paciente filter) {
         this.filter = filter != null ? filter : new Paciente();

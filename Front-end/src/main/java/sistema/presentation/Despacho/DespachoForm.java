@@ -147,8 +147,6 @@ public class DespachoForm extends JDialog implements PropertyChangeListener {
         boolean valid = true;
         Receta current = model.getCurrent();
 
-        // Para recetas nuevas, el ID será null (se genera al guardar)
-        // Para recetas existentes, el ID será un Integer
         if (current == null) {
             valid = false;
             recetaLabel.setBackground(Color.PINK);

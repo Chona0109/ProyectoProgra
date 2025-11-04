@@ -34,8 +34,8 @@ public class DashboardForm extends JPanel implements PropertyChangeListener {
         this.controller = controller;
         this.model.addPropertyChangeListener(this);
 
-        initComponents();        // Solo UI
-        cargarFiltros();       // Solo cargar filtros estáticos, sin red ni listas
+        initComponents();
+        cargarFiltros();
     }
 
     private void initComponents() {

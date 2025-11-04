@@ -22,10 +22,10 @@ public class MedicamentosController implements ThreadListener {
         view.setController(this);
         view.setModel(model);
 
-        // Inicializamos lista de medicamentos
+
         loadMedicamentos();
 
-        // Iniciamos socket listener para actualizaciones en tiempo real
+
         try {
             socketListener = SocketListener.getInstance(this, Proxy.instance().getSid());
             socketListener.start();
@@ -34,18 +34,18 @@ public class MedicamentosController implements ThreadListener {
         }
     }
 
-    // ==================== SOCKET LISTENER ====================
+
     @Override
     public void deliver_message(String message) {
         System.out.println("Mensaje recibido: " + message);
         try {
-            search(new Medicamento()); // refresca lista automáticamente
+            search(new Medicamento());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // ==================== MÉTODOS CRUD ====================
+
     public void search(Medicamento filter) throws Exception {
         model.setFilter(filter);
         List<Medicamento> rows = Proxy.instance().search(filter);
@@ -96,7 +96,7 @@ public class MedicamentosController implements ThreadListener {
         model.setMode(MedicamentosModel.MODE_CREATE);
     }
 
-    // ==================== MÉTODOS AUXILIARES ====================
+
     private void loadMedicamentos() {
         new Thread(() -> {
             try {
@@ -112,7 +112,7 @@ public class MedicamentosController implements ThreadListener {
         model.setList(Proxy.instance().searchMedicamentoByCodigo(codigo));
     }
 
-    // ==================== STOP SOCKET ====================
+
     public void stop() {
         if (socketListener != null) socketListener.stop();
     }

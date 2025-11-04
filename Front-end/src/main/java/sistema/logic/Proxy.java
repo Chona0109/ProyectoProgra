@@ -22,7 +22,7 @@ public class Proxy {
     private ObjectInputStream is;
     private ObjectOutputStream os;
     private Socket socket;
-    private String sid; // Session ID
+    private String sid;
     private Usuario currentUser;
 
     public Proxy() {
@@ -31,11 +31,11 @@ public class Proxy {
             os = new ObjectOutputStream(socket.getOutputStream());
             is = new ObjectInputStream(socket.getInputStream());
 
-            // Indicar que es una conexión normal (SYNC)
+
             os.writeInt(Protocol.SYNC);
             os.flush();
 
-            // Recibir el Session ID del servidor
+
             sid = (String) is.readObject();
             System.out.println("Conectado al servidor con SID: " + sid);
 
@@ -50,7 +50,7 @@ public class Proxy {
     }
 
     // ==========================================================
-    // 🔹 ADMINISTRADOR
+    // ADMINISTRADOR
     // ==========================================================
     public synchronized void create(Administrador e) throws Exception {
         os.writeInt(Protocol.ADMINISTRADOR_CREATE);
@@ -99,7 +99,7 @@ public class Proxy {
     }
 
     // ==========================================================
-    // 🔹 DEPARTAMENTO
+    //  DEPARTAMENTO
     // ==========================================================
     public synchronized void create(Departamento e) throws Exception {
         os.writeInt(Protocol.DEPARTAMENTO_CREATE);
@@ -148,7 +148,7 @@ public class Proxy {
     }
 
     // ==========================================================
-    // 🔹 FARMACEUTICO
+    //  FARMACEUTICO
     // ==========================================================
     public synchronized void create(Farmaceutico e) throws Exception {
         os.writeInt(Protocol.FARMACEUTICO_CREATE);
@@ -229,7 +229,7 @@ public class Proxy {
     }
 
     // ==========================================================
-    // 🔹 MEDICAMENTO
+    //  MEDICAMENTO
     // ==========================================================
     public synchronized void create(Medicamento e) throws Exception {
         os.writeInt(Protocol.MEDICAMENTO_CREATE);
@@ -327,7 +327,7 @@ public class Proxy {
     }
 
     // ==========================================================
-    // 🔹 MEDICAMENTO DETALLE
+    //  MEDICAMENTO DETALLE
     // ==========================================================
     public synchronized void create(MedicamentoDetalle e) throws Exception {
         os.writeInt(Protocol.MEDICAMENTO_DETALLE_CREATE);
@@ -376,7 +376,7 @@ public class Proxy {
     }
 
     // ==========================================================
-    // 🔹 MÉDICO
+    //  MÉDICO
     // ==========================================================
     public synchronized void create(Medico e) throws Exception {
         os.writeInt(Protocol.MEDICO_CREATE);
@@ -442,7 +442,7 @@ public class Proxy {
     }
 
     // ==========================================================
-    // 🔹 MENSAJE
+    //  MENSAJE
     // ==========================================================
     public synchronized void create(Mensaje e) throws Exception {
         os.writeInt(Protocol.MENSAJE_CREATE);
@@ -491,7 +491,7 @@ public class Proxy {
     }
 
     // ==========================================================
-    // 🔹 PACIENTE
+    //  PACIENTE
     // ==========================================================
     public synchronized void create(Paciente e) throws Exception {
         os.writeInt(Protocol.PACIENTE_CREATE);
@@ -605,7 +605,7 @@ public class Proxy {
     }
 
     // ==========================================================
-    // 🔹 RECETA
+    //  RECETA
     // ==========================================================
     public synchronized void create(Receta e) throws Exception {
         os.writeInt(Protocol.RECETA_CREATE);
@@ -829,7 +829,7 @@ public class Proxy {
     }
 
     // ==========================================================
-    // 🔹 USUARIO
+    // USUARIO
     // ==========================================================
     public synchronized void create(Usuario e) throws Exception {
         os.writeInt(Protocol.USUARIO_CREATE);
@@ -919,7 +919,7 @@ public class Proxy {
     }
 
     // ==========================================================
-    // 🔹 DESCONECTAR
+    //  DESCONECTAR
     // ==========================================================
 
     public synchronized void disconnect() {
@@ -929,7 +929,7 @@ public class Proxy {
             is.close();
             os.close();
             socket.close();
-            currentUser = null; // ✅ Limpiar usuario
+            currentUser = null;
             theInstance = null;
         } catch (IOException e) {
             System.err.println("Error al desconectar: " + e.getMessage());

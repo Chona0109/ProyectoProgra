@@ -17,7 +17,7 @@ public class prescribirBuscarPacienteController implements ThreadListener {
     }
 
     private void loadPacientes() {
-        // Carga inicial de todos los pacientes
+
         List<Paciente> lista = Proxy.instance().search(new Paciente());
         model.setList(lista);
         model.setMode(prescribirBuscarPacienteModel.MODE_CREATE);
@@ -61,6 +61,6 @@ public class prescribirBuscarPacienteController implements ThreadListener {
 
     @Override
     public void deliver_message(String message) {
-        loadPacientes(); // Refresca toda la lista al recibir mensaje
+        loadPacientes();
     }
 }

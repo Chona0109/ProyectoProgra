@@ -29,7 +29,7 @@ public class MenuFarmaceutico extends JFrame {
     private DashboardController dashboardController;
     private DashboardForm dashboardForm;
 
-    // Agregamos campos para UsuariosLogeados
+
     private UsuariosLogeadosForm usuariosLogeadosForm;
     private UsuariosLogeadosModel usuariosLogeadosModel;
     private UsuariosLogeadosController usuariosLogeadosController;
@@ -40,28 +40,28 @@ public class MenuFarmaceutico extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // --- Tabs principales ---
+
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // Despacho
+
         despachoModel = new DespachoModel();
         despachoController = new DespachoController(despachoModel);
         despachoForm = new DespachoForm(this, despachoModel, despachoController);
         tabbedPane.addTab("Despacho", despachoForm.getPanel());
 
-        // Histórico
+
         historicoRecetasModel = new historicoRecetasModel();
         historicoRecetasController = new historicoRecetasController(historicoRecetasModel);
         historicoRecetasForm = new historicoRecetas(this, historicoRecetasModel, historicoRecetasController);
         tabbedPane.addTab("Histórico", historicoRecetasForm.getPanel());
 
-        // Dashboard
+
         dashboardModel = new DashboardModel();
         dashboardController = new DashboardController(dashboardModel);
         dashboardForm = new DashboardForm(dashboardModel, dashboardController);
         tabbedPane.addTab("Dashboard", dashboardForm);
 
-        // --- Usuarios Logeados ---
+
         usuariosLogeadosModel = new UsuariosLogeadosModel();
         usuariosLogeadosForm = new UsuariosLogeadosForm();
         usuariosLogeadosController = new UsuariosLogeadosController(usuariosLogeadosModel, usuariosLogeadosForm);
@@ -69,7 +69,7 @@ public class MenuFarmaceutico extends JFrame {
         usuariosLogeadosForm.setModel(usuariosLogeadosModel);
         usuariosLogeadosForm.setController(usuariosLogeadosController);
 
-        // --- SplitPane ---
+
         JSplitPane splitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
                 tabbedPane,

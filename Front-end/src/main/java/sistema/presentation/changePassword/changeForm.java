@@ -1,6 +1,7 @@
 package sistema.presentation.changePassword;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class changeForm extends JDialog {
     private JPasswordField passwordField1;
@@ -42,21 +43,25 @@ public class changeForm extends JDialog {
 
 
         button1.addActionListener(e -> {
-            try {
-                String userId = IDField.getText().trim();
-                String oldPass = new String(passwordField1.getPassword());
-                String newPass = new String(passwordField2.getPassword());
-                String confirmPass = new String(passwordField3.getPassword());
+            if (validateForm()) {
+                try {
 
-                controller.changePassword(userId, oldPass, newPass, confirmPass);
+                    String userId = IDField.getText().trim();
+                    String oldPass = new String(passwordField1.getPassword());
+                    String newPass = new String(passwordField2.getPassword());
+                    String confirmPass = new String(passwordField3.getPassword());
 
-                JOptionPane.showMessageDialog(this, "Contraseña cambiada con éxito.");
-                dispose();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,
-                        ex.getMessage(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                    controller.changePassword(userId, oldPass, newPass, confirmPass);
+
+                    JOptionPane.showMessageDialog(this, "Contraseña cambiada con éxito.");
+                    dispose();
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this,
+                            ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -66,6 +71,28 @@ public class changeForm extends JDialog {
 
     public JPanel getPanel() {
         return principal;
+    }
+    private boolean validateForm() {
+        boolean valid = true;
+
+        if (IDField.getText().trim().isEmpty()) {
+            valid = false; IDField.setBackground(Color.PINK);
+        } else IDField.setBackground(Color.WHITE);
+
+        if (passwordField1.getText().trim().isEmpty()) {
+            valid = false; passwordField1.setBackground(Color.PINK);
+        } else passwordField1.setBackground(Color.WHITE);
+
+        if (passwordField2.getText().trim().isEmpty()) {
+            valid = false; passwordField2.setBackground(Color.PINK);
+        } else passwordField2.setBackground(Color.WHITE);
+
+        if (passwordField3.getText().trim().isEmpty()) {
+            valid = false; passwordField3.setBackground(Color.PINK);
+        } else passwordField3.setBackground(Color.WHITE);
+
+
+        return valid;
     }
 
     public static void main(String[] args) {

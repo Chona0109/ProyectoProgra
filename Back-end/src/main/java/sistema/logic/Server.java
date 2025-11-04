@@ -86,7 +86,7 @@ public class Server {
                 Usuario u = new Usuario();
                 u.setId(w.getUsuarioId());
                 service.logout(u);
-                System.out.println("✓ Usuario removido del Service: " + w.getUsuarioId());
+                System.out.println(" Usuario removido del Service: " + w.getUsuarioId());
             } catch (Exception e) {
                 System.err.println("Error al remover usuario del service: " + e.getMessage());
             }

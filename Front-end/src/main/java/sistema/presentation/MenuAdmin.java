@@ -52,7 +52,7 @@ public class MenuAdmin extends JFrame {
     private DashboardController dashboardController;
     private DashboardForm dashboardForm;
 
-    // Agregamos campos para UsuariosLogeados
+
     private UsuariosLogeadosForm usuariosLogeadosForm;
     private UsuariosLogeadosModel usuariosLogeadosModel;
     private UsuariosLogeadosController usuariosLogeadosController;
@@ -65,7 +65,7 @@ public class MenuAdmin extends JFrame {
 
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // Médicos
+
         medicosForm = new MedicosForm();
         medicosModel = new MedicosModel();
         medicosController = new MedicosController(medicosForm, medicosModel);
@@ -73,7 +73,7 @@ public class MenuAdmin extends JFrame {
         medicosForm.setModel(medicosModel);
         tabbedPane.addTab("Médicos", medicosForm.getPanel());
 
-        // Medicamentos
+
         medicamentosForm = new MedicamentosForm();
         medicamentosModel = new MedicamentosModel();
         medicamentosController = new MedicamentosController(medicamentosForm, medicamentosModel);
@@ -81,7 +81,7 @@ public class MenuAdmin extends JFrame {
         medicamentosForm.setModel(medicamentosModel);
         tabbedPane.addTab("Medicamentos", medicamentosForm.getPanel());
 
-        // Farmaceutas
+
         farmaceutasForm = new FarmaceutasForm();
         farmaceutasModel = new FarmaceutasModel();
         farmaceutasController = new FarmaceutasController(farmaceutasForm, farmaceutasModel);
@@ -89,7 +89,7 @@ public class MenuAdmin extends JFrame {
         farmaceutasForm.setModel(farmaceutasModel);
         tabbedPane.addTab("Farmaceutas", farmaceutasForm.getPanel());
 
-        // Pacientes
+
         pacientesForm = new PacientesForm();
         pacientesModel = new PacienteModel();
         pacientesController = new PacienteController(pacientesForm, pacientesModel);
@@ -97,28 +97,28 @@ public class MenuAdmin extends JFrame {
         pacientesForm.setModel(pacientesModel);
         tabbedPane.addTab("Pacientes", pacientesForm.getPanel());
 
-        // Histórico
+
         historicoRecetasModel = new historicoRecetasModel();
         historicoRecetasController = new historicoRecetasController(historicoRecetasModel);
         historicoRecetas = new historicoRecetas(this, historicoRecetasModel, historicoRecetasController);
         tabbedPane.addTab("Histórico", historicoRecetas.getPanel());
 
-        // Dashboard
+
         dashboardModel = new DashboardModel();
         dashboardController = new DashboardController(dashboardModel);
         dashboardForm = new DashboardForm(dashboardModel, dashboardController);
         tabbedPane.addTab("Dashboard", dashboardForm);
 
-        // ==================== INICIALIZAR USUARIOS LOGEADOS ====================
+
         usuariosLogeadosModel = new UsuariosLogeadosModel();
         usuariosLogeadosForm = new UsuariosLogeadosForm();
         usuariosLogeadosController = new UsuariosLogeadosController(usuariosLogeadosModel, usuariosLogeadosForm);
 
-        // Configurar modelo y controlador en la vista
+
         usuariosLogeadosForm.setModel(usuariosLogeadosModel);
         usuariosLogeadosForm.setController(usuariosLogeadosController);
 
-        // Split pane con usuarios logeados
+
         JSplitPane splitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
                 tabbedPane,

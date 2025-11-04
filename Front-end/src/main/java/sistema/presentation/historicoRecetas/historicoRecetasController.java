@@ -25,18 +25,18 @@ public class historicoRecetasController implements ThreadListener {
             e.printStackTrace();
         }
 
-        // Carga inicial
+
         actualizar();
     }
 
-    // ==================== SOCKET LISTENER ====================
+
     @Override
     public void deliver_message(String message) {
         System.out.println("Mensaje recibido: " + message);
         actualizar();
     }
 
-    // ==================== MÉTODOS ====================
+
     public void actualizar() {
         new Thread(() -> {
             try {

@@ -28,7 +28,7 @@ public class LogInController implements ThreadListener {
 
     @Override
     public void deliver_message(String message) {
-        // En login normalmente no necesitas refrescar nada
+
         System.out.println("Mensaje recibido en login: " + message);
     }
 }

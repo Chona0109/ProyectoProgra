@@ -26,16 +26,16 @@ public class UsuariosLogeadosController implements ThreadListener {
 
         cargarUsuariosActivos();
 
-        // ✅ Registrar en el SocketListener compartido
+
         iniciarSocketListener();
     }
 
     private void iniciarSocketListener() {
         try {
             socketListener = SocketListener.getInstance(this, Proxy.instance().getSid());
-            System.out.println("✓ UsuariosLogeadosController registrado en SocketListener");
+            System.out.println(" UsuariosLogeadosController registrado en SocketListener");
         } catch (Exception e) {
-            System.err.println("❌ Error registrando SocketListener: " + e.getMessage());
+            System.err.println(" Error registrando SocketListener: " + e.getMessage());
         }
     }
 
@@ -53,7 +53,7 @@ public class UsuariosLogeadosController implements ThreadListener {
                     model.setList(usuarios);
                 });
             } catch (Exception e) {
-                System.err.println("❌ Error cargando usuarios activos: " + e.getMessage());
+                System.err.println(" Error cargando usuarios activos: " + e.getMessage());
                 SwingUtilities.invokeLater(() -> {
                     model.setList(new ArrayList<>());
                 });
@@ -66,9 +66,9 @@ public class UsuariosLogeadosController implements ThreadListener {
     public void enviarMensaje(String destinatario, String mensaje) {
         try {
             Proxy.instance().sendUserMessage(destinatario, mensaje);
-            System.out.println("✓ Mensaje enviado a: " + destinatario);
+            System.out.println(" Mensaje enviado a: " + destinatario);
         } catch (Exception e) {
-            System.err.println("❌ Error enviando mensaje: " + e.getMessage());
+            System.err.println(" Error enviando mensaje: " + e.getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ public class UsuariosLogeadosController implements ThreadListener {
 
     @Override
     public void deliver_message(String message) {
-        System.out.println("🔔 [USUARIOS CONTROLLER] Mensaje recibido: " + message);
+        System.out.println(" [USUARIOS CONTROLLER] Mensaje recibido: " + message);
 
         if (message.startsWith("USER_ONLINE:") || message.startsWith("USER_OFFLINE:")) {
             String[] partes = message.split(":");
@@ -110,7 +110,7 @@ public class UsuariosLogeadosController implements ThreadListener {
                 String userId = partes[1];
                 String accion = message.startsWith("USER_ONLINE:") ? "conectó" : "desconectó";
 
-                System.out.println("👤 Usuario " + userId + " se " + accion);
+                System.out.println(" Usuario " + userId + " se " + accion);
 
                 if (message.startsWith("USER_OFFLINE:")) {
                     mensajesPendientes.remove(userId);
@@ -136,14 +136,14 @@ public class UsuariosLogeadosController implements ThreadListener {
                     mensajesPendientes.computeIfAbsent(emisor, k -> new ArrayList<>())
                             .add(contenido);
 
-                    System.out.println("📬 Mensaje de " + emisor + " guardado en cola");
+                    System.out.println(" Mensaje de " + emisor + " guardado en cola");
 
                     SwingUtilities.invokeLater(() -> {
                         view.actualizarIndicadores();
                     });
                 }
             } catch (Exception e) {
-                System.err.println("❌ Error procesando mensaje: " + e.getMessage());
+                System.err.println(" Error procesando mensaje: " + e.getMessage());
             }
         }
     }
@@ -151,7 +151,7 @@ public class UsuariosLogeadosController implements ThreadListener {
     public void stop() {
         if (socketListener != null) {
             SocketListener.removeListener(this);
-            System.out.println("✓ UsuariosLogeadosController desregistrado del SocketListener");
+            System.out.println(" UsuariosLogeadosController desregistrado del SocketListener");
         }
     }
 }

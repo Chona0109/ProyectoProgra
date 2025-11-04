@@ -15,8 +15,8 @@ public class Worker {
     ObjectInputStream is;
     Service service;
 
-    String sid; // Session Id
-    Socket as; // Asynchronous Socket
+    String sid;
+    Socket as;
     ObjectOutputStream aos;
     ObjectInputStream ais;
     private Usuario usuarioConectado;
@@ -232,13 +232,13 @@ public class Worker {
                             service.create((Medico) is.readObject());
                             os.writeInt(Protocol.ERROR_NO_ERROR);
 
-                            // ✅ IMPORTANTE: Enviar mensaje a TODOS los clientes
+
                             srv.deliver_message(this, "MEDICO_CREADO");
-                            System.out.println("📢 Notificación enviada: Médico creado");
+                            System.out.println(" Notificación enviada: Médico creado");
 
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
-                            System.err.println("❌ Error en MEDICO_CREATE: " + ex.getMessage());
+                            System.err.println(" Error en MEDICO_CREATE: " + ex.getMessage());
                         }
                         break;
 
@@ -249,7 +249,7 @@ public class Worker {
                             os.writeObject(me);
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
-                            System.err.println("❌ Error en MEDICO_READ: " + ex.getMessage());
+                            System.err.println(" Error en MEDICO_READ: " + ex.getMessage());
                         }
                         break;
 
@@ -260,7 +260,7 @@ public class Worker {
 
 
                             srv.deliver_message(this, "MEDICO_ACTUALIZADO");
-                            System.out.println("📢 Notificación enviada: Médico actualizado");
+                            System.out.println(" Notificación enviada: Médico actualizado");
 
                         } catch (Exception ex) {
                             os.writeInt(Protocol.ERROR_ERROR);
@@ -294,7 +294,7 @@ public class Worker {
                         }
                         break;
 
-                    // ===================== PACIENTE =====================
+
                     case Protocol.PACIENTE_CREATE:
                         try {
                             service.create((Paciente) is.readObject());
@@ -497,8 +497,8 @@ public class Worker {
                                 os.writeInt(Protocol.ERROR_NO_ERROR);
                                 os.writeObject(logged);
 
-                                setUsuarioId(logged.getId());         // asigna ID al Worker
-                                srv.notifyUserOnline(logged.getId()); // notifica a todos que está online
+                                setUsuarioId(logged.getId());
+                                srv.notifyUserOnline(logged.getId());
 
                             } else {
                                 os.writeInt(Protocol.ERROR_ERROR);
@@ -521,7 +521,7 @@ public class Worker {
                                 break;
                             }
 
-                            System.out.println("→ Enviando mensaje de " + usuarioId + " a " + destinatario);
+                            System.out.println(" Enviando mensaje de " + usuarioId + " a " + destinatario);
 
 
                             Worker destinatarioWorker = srv.getWorkerByUsuarioId(destinatario);
@@ -534,10 +534,10 @@ public class Worker {
                                     destinatarioWorker.deliver_message(mensajeFormateado);
                                 }).start();
 
-                                System.out.println("✓ Mensaje entregado a " + destinatario);
+                                System.out.println(" Mensaje entregado a " + destinatario);
                                 os.writeInt(Protocol.ERROR_NO_ERROR);
                             } else {
-                                System.err.println("⚠️ Usuario destinatario no encontrado: " + destinatario);
+                                System.err.println(" Usuario destinatario no encontrado: " + destinatario);
                                 os.writeInt(Protocol.ERROR_ERROR);
                             }
 
@@ -560,7 +560,7 @@ public class Worker {
 
                             List<Usuario> activos = service.getUsuariosActivos();
 
-                            System.out.println("→ USUARIOS_ACTIVOS solicitado por worker");
+                            System.out.println(" USUARIOS_ACTIVOS solicitado por worker");
                             System.out.println("  Total usuarios activos: " + activos.size());
 
                             os.writeInt(Protocol.ERROR_NO_ERROR);
@@ -578,9 +578,9 @@ public class Worker {
                     // ===================== DESCONECTAR =====================
                     case Protocol.DISCONNECT:
                         try {
-                            System.out.println("→ DISCONNECT recibido de worker");
+                            System.out.println(" DISCONNECT recibido de worker");
 
-                            // Remover usuario del service
+
                             if (usuarioId != null && !usuarioId.isEmpty()) {
                                 Usuario u = new Usuario();
                                 u.setId(usuarioId);
@@ -588,7 +588,7 @@ public class Worker {
 
                                 srv.notifyUserOffline(usuarioId);
 
-                                System.out.println("✓ Usuario deslogueado: " + usuarioId);
+                                System.out.println(" Usuario deslogueado: " + usuarioId);
                             }
 
                             stop();
@@ -617,7 +617,7 @@ public class Worker {
         }
 
         try {
-            synchronized (aos) { // ✅ Sincronizar escritura
+            synchronized (aos) {
                 aos.writeInt(Protocol.DELIVER_MESSAGE);
                 aos.writeObject(message);
                 aos.flush();

@@ -26,10 +26,10 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
     private UsuariosTableModel tableModel;
 
     public UsuariosLogeadosForm() {
-        // Inicializar UI
+
         main = new JPanel(new BorderLayout());
 
-        // Panel de botones
+
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.LEFT));
         enviarMensajeButton = new JButton("Enviar Mensaje");
         recibirMensajeButton = new JButton("Recibir Mensajes");
@@ -37,19 +37,19 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
         panelBotones.add(recibirMensajeButton);
         main.add(panelBotones, BorderLayout.NORTH);
 
-        // Tabla de usuarios
+
         UsuariosTable = new JTable();
         UsuariosTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         UsuariosTable.setRowHeight(25);
         JScrollPane scrollPane = new JScrollPane(UsuariosTable);
         main.add(scrollPane, BorderLayout.CENTER);
 
-        // Listeners
+
         configurarListeners();
     }
 
     private void configurarListeners() {
-        // ✅ ENVIAR MENSAJE
+
         enviarMensajeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -57,7 +57,7 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
                 if (row >= 0 && model.getList() != null && row < model.getList().size()) {
                     Usuario usuarioSeleccionado = model.getList().get(row);
 
-                    // Diálogo para escribir el mensaje
+
                     JTextArea textArea = new JTextArea(5, 30);
                     textArea.setLineWrap(true);
                     textArea.setWrapStyleWord(true);
@@ -89,7 +89,7 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
             }
         });
 
-        // ✅ RECIBIR MENSAJES - NUEVO COMPORTAMIENTO
+
         recibirMensajeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -105,7 +105,7 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
                 Usuario usuarioSeleccionado = model.getList().get(row);
                 String usuarioId = usuarioSeleccionado.getId();
 
-                // ✅ Obtener mensajes pendientes de ese usuario
+
                 List<String> mensajes = controller.obtenerMensajesDe(usuarioId);
 
                 if (mensajes.isEmpty()) {
@@ -116,15 +116,15 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
                     return;
                 }
 
-                // ✅ Mostrar mensajes en ventana emergente
+
                 mostrarVentanaEmergenteMensajes(usuarioSeleccionado, mensajes);
 
-                // ✅ Actualizar indicadores
+
                 actualizarIndicadores();
             }
         });
 
-        // Doble clic para enviar mensaje
+
         UsuariosTable.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -135,23 +135,23 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
         });
     }
 
-    // ✅ NUEVO: Ventana emergente para mostrar mensajes
+
     private void mostrarVentanaEmergenteMensajes(Usuario emisor, List<String> mensajes) {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(main),
                 "Mensajes de " + emisor.getNombre(),
                 true);
         dialog.setLayout(new BorderLayout(10, 10));
 
-        // Panel superior con info del emisor
+
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         headerPanel.setBackground(new Color(70, 130, 180));
-        JLabel headerLabel = new JLabel("📨 " + mensajes.size() + " mensaje(s) de " + emisor.getNombre());
+        JLabel headerLabel = new JLabel(" " + mensajes.size() + " mensaje(s) de " + emisor.getNombre());
         headerLabel.setForeground(Color.WHITE);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 14));
         headerPanel.add(headerLabel);
         dialog.add(headerPanel, BorderLayout.NORTH);
 
-        // Área de texto con los mensajes
+
         JTextArea mensajesArea = new JTextArea();
         mensajesArea.setEditable(false);
         mensajesArea.setLineWrap(true);
@@ -159,12 +159,12 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
         mensajesArea.setFont(new Font("Arial", Font.PLAIN, 13));
         mensajesArea.setMargin(new Insets(10, 10, 10, 10));
 
-        // ✅ Formatear mensajes con timestamps
+
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < mensajes.size(); i++) {
-            sb.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+
             sb.append("Mensaje ").append(i + 1).append(" de ").append(mensajes.size()).append("\n");
-            sb.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
+
             sb.append(mensajes.get(i));
             sb.append("\n\n");
         }
@@ -175,7 +175,7 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
         scrollPane.setPreferredSize(new Dimension(500, 300));
         dialog.add(scrollPane, BorderLayout.CENTER);
 
-        // Botón cerrar
+
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton cerrarButton = new JButton("Cerrar");
         cerrarButton.addActionListener(e -> dialog.dispose());
@@ -215,7 +215,7 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
                         model.getList()
                 ));
 
-                // ✅ Configurar renderer para mostrar indicadores
+
                 configurarRendererIndicadores();
                 break;
 
@@ -225,7 +225,7 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
         main.revalidate();
     }
 
-    // ✅ NUEVO: Configurar renderer para mostrar indicadores de mensajes
+
     private void configurarRendererIndicadores() {
         UsuariosTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
@@ -235,19 +235,19 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
                 Component c = super.getTableCellRendererComponent(table, value,
                         isSelected, hasFocus, row, column);
 
-                // Obtener usuario de esta fila
+
                 if (model.getList() != null && row < model.getList().size()) {
                     Usuario usuario = model.getList().get(row);
                     int mensajesPendientes = controller.contarMensajesDe(usuario.getId());
 
                     if (mensajesPendientes > 0) {
-                        // ✅ Resaltar usuarios con mensajes pendientes
-                        c.setBackground(new Color(255, 250, 205)); // Amarillo claro
+
+                        c.setBackground(new Color(255, 250, 205));
                         c.setFont(c.getFont().deriveFont(Font.BOLD));
 
-                        // Agregar indicador en la columna del nombre
+
                         if (column == 1 && value != null) {
-                            String texto = value.toString() + " (" + mensajesPendientes + " 📬)";
+                            String texto = value.toString() + " (" + mensajesPendientes + " )";
                             ((JLabel) c).setText(texto);
                         }
                     } else {
@@ -263,7 +263,6 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
         });
     }
 
-    // ✅ MÉTODO PÚBLICO: Actualizar indicadores visuales
     public void actualizarIndicadores() {
         if (UsuariosTable != null) {
             SwingUtilities.invokeLater(() -> {
@@ -272,11 +271,10 @@ public class UsuariosLogeadosForm extends JPanel implements PropertyChangeListen
         }
     }
 
-    // ✅ MÉTODO PÚBLICO: Mostrar mensaje en consola (compatibilidad)
+
     public void mostrarMensaje(String message) {
-        // Este método ya no se usa con el nuevo sistema de popup
-        // Pero lo mantenemos para evitar errores si se llama desde otro lugar
-        System.out.println("📨 " + message);
+
+        System.out.println( message);
     }
 
     private void createUIComponents() {

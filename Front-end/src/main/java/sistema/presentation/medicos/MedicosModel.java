@@ -46,7 +46,7 @@ public class MedicosModel extends AbstractModel {
         mode = MODE_CREATE;
     }
 
-    // ==================== GETTERS / SETTERS ====================
+
     public Medico getFilter() { return filter; }
     public void setFilter(Medico filter) {
         this.filter = filter != null ? filter : new Medico();

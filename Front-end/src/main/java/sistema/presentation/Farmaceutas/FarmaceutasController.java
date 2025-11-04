@@ -31,7 +31,6 @@ public class FarmaceutasController implements ThreadListener {
             e.printStackTrace();
         }
 
-        // Inicializamos la lista
         try {
             model.setList(Proxy.instance().search(new Farmaceutico()));
         } catch (Exception e) {
@@ -61,7 +60,6 @@ public class FarmaceutasController implements ThreadListener {
     }
 
 
-    // ==================== SOCKET LISTENER ====================
     @Override
     public void deliver_message(String message) {
         System.out.println("Mensaje recibido: " + message);
@@ -78,7 +76,7 @@ public class FarmaceutasController implements ThreadListener {
         }).start();
     }
 
-    // ==================== MÉTODOS CRUD ====================
+
     public void search(Farmaceutico filter) throws Exception {
         model.setFilter(filter);
         List<Farmaceutico> rows = Proxy.instance().search(model.getFilter());
@@ -129,7 +127,7 @@ public class FarmaceutasController implements ThreadListener {
         }
     }
 
-    // ==================== STOP SOCKET ====================
+
     public void stop() {
         if (socketListener != null) socketListener.stop();
     }

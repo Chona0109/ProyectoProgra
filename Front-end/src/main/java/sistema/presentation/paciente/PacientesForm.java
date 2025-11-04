@@ -173,7 +173,7 @@ public class PacientesForm implements PropertyChangeListener {
 
         try {
             if (!fechaFld.getText().trim().isEmpty()) {
-                p.setFechaNacimiento(LocalDate.parse(fechaFld.getText().trim())); // formato ISO (yyyy-MM-dd)
+                p.setFechaNacimiento(LocalDate.parse(fechaFld.getText().trim()));
             }
         } catch (DateTimeParseException ex) {
             JOptionPane.showMessageDialog(main, "Formato de fecha inválido. Usa yyyy-MM-dd", "Error", JOptionPane.ERROR_MESSAGE);
@@ -198,7 +198,7 @@ public class PacientesForm implements PropertyChangeListener {
 
         if (!fechaFld.getText().trim().isEmpty()) {
             try {
-                LocalDate.parse(fechaFld.getText().trim()); // validar formato ISO
+                LocalDate.parse(fechaFld.getText().trim());
                 fechaFld.setBackground(Color.WHITE);
             } catch (DateTimeParseException ex) {
                 valid = false;

@@ -23,51 +23,51 @@ public class MedicosController implements ThreadListener {
         view.setController(this);
         view.setModel(model);
 
-        // ✅ Registrar este controlador en el SocketListener compartido
+
         try {
             socketListener = SocketListener.getInstance(this, Proxy.instance().getSid());
-            System.out.println("✓ MedicosController registrado en SocketListener");
+            System.out.println(" MedicosController registrado en SocketListener");
         } catch (Exception e) {
-            System.err.println("❌ Error registrando SocketListener: " + e.getMessage());
+            System.err.println(" Error registrando SocketListener: " + e.getMessage());
             e.printStackTrace();
         }
 
-        // Carga inicial de médicos y departamentos
+
         try {
             model.setList(Proxy.instance().search(new Medico()));
             model.setDepartamentos(Proxy.instance().search(new Departamento()));
-            System.out.println("✓ Datos iniciales cargados en MedicosController");
+            System.out.println(" Datos iniciales cargados en MedicosController");
         } catch (Exception e) {
-            System.err.println("❌ Error cargando datos iniciales: " + e.getMessage());
+            System.err.println("Error cargando datos iniciales: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    // ==================== SOCKET LISTENER ====================
+
     @Override
     public void deliver_message(String message) {
-        System.out.println("🔔 [MEDICOS CONTROLLER] Mensaje recibido: " + message);
 
-        // ✅ Recargar datos en un hilo separado para no bloquear UI
+
+
         SwingUtilities.invokeLater(() -> {
             try {
-                System.out.println("🔄 [MEDICOS CONTROLLER] Actualizando lista de médicos...");
+                System.out.println(" [MEDICOS CONTROLLER] Actualizando lista de médicos...");
 
-                // Obtener lista actualizada del servidor
+
                 List<Medico> medicosActualizados = Proxy.instance().search(new Medico());
 
-                // Actualizar el modelo (esto dispara PropertyChange que actualiza la tabla)
+
                 model.setList(medicosActualizados);
-                System.out.println("✅ [MEDICOS CONTROLLER] Lista actualizada. Total: " + medicosActualizados.size());
+                System.out.println(" [MEDICOS CONTROLLER] Lista actualizada. Total: " + medicosActualizados.size());
 
             } catch (Exception e) {
-                System.err.println("❌ [MEDICOS CONTROLLER] Error actualizando médicos: " + e.getMessage());
+                System.err.println(" [MEDICOS CONTROLLER] Error actualizando médicos: " + e.getMessage());
                 e.printStackTrace();
             }
         });
     }
 
-    // ==================== MÉTODOS CRUD ====================
+
     public void search(Medico filter) throws Exception {
         model.setFilter(filter);
         List<Medico> rows = Proxy.instance().search(model.getFilter());
@@ -118,7 +118,7 @@ public class MedicosController implements ThreadListener {
         model.setMode(MedicosModel.MODE_CREATE);
     }
 
-    // ==================== DEPARTAMENTOS ====================
+
     public void setDepartamento(int row) {
         if (row >= 0 && row < model.getDepartamentos().size()) {
             Departamento dep = model.getDepartamentos().get(row);
@@ -132,11 +132,11 @@ public class MedicosController implements ThreadListener {
         model.setDepartamentos(Proxy.instance().search(d));
     }
 
-    // ==================== STOP SOCKET ====================
+
     public void stop() {
         if (socketListener != null) {
             socketListener.stop();
-            System.out.println("✓ SocketListener detenido para MedicosController");
+            System.out.println(" SocketListener detenido para MedicosController");
         }
     }
 }

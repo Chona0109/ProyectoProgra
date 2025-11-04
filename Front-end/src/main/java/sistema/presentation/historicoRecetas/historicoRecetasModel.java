@@ -40,7 +40,7 @@ public class historicoRecetasModel extends AbstractModel {
         firePropertyChange(FILTER);
     }
 
-    // ==================== GETTERS / SETTERS ====================
+
     public Receta getFilter() { return filter; }
     public void setFilter(Receta filter) {
         this.filter = filter != null ? filter : new Receta();

@@ -19,10 +19,10 @@ public class DashboardController implements ThreadListener {
         this.model = model;
         model.init();
 
-        // Carga inicial de recetas
+
         cargarDatos();
 
-        // Inicia SocketListener para recibir actualizaciones
+
         try {
             socketListener = SocketListener.getInstance(this, Proxy.instance().getSid());
             socketListener.start();

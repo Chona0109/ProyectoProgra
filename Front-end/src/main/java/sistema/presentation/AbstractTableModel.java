@@ -10,7 +10,7 @@ public abstract class AbstractTableModel<E> extends javax.swing.table.AbstractTa
 
     public AbstractTableModel(int[] cols, List<E> rows){
         this.cols = cols;
-        this.rows = rows != null ? rows : new ArrayList<>(); // <-- nunca null
+        this.rows = rows != null ? rows : new ArrayList<>();
         initColNames();
     }
 

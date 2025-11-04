@@ -41,28 +41,28 @@ public class MenuMedico extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Crear pestañas
+
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // --- Prescribir Receta ---
+
         prescribirRecetaModel = new prescribirRecetaModel();
         prescribirRecetaController = new prescribirRecetaController(prescribirRecetaModel);
         prescribirRecetaForm = new prescribirReceta(this, prescribirRecetaModel, prescribirRecetaController);
         tabbedPane.addTab("Prescribir Receta", prescribirRecetaForm.getPanel());
 
-        // --- Histórico ---
+
         historicoRecetasModel = new historicoRecetasModel();
         historicoRecetasController = new historicoRecetasController(historicoRecetasModel);
         historicoRecetasForm = new historicoRecetas(this, historicoRecetasModel, historicoRecetasController);
         tabbedPane.addTab("Histórico", historicoRecetasForm.getPanel());
 
-        // --- Dashboard ---
+
         dashboardModel = new DashboardModel();
         dashboardController = new DashboardController(dashboardModel);
         dashboardForm = new DashboardForm(dashboardModel, dashboardController);
         tabbedPane.addTab("Dashboard", dashboardForm);
 
-        // --- Usuarios Logeados ---
+
         usuariosLogeadosModel = new UsuariosLogeadosModel();
         usuariosLogeadosForm = new UsuariosLogeadosForm();
         usuariosLogeadosController = new UsuariosLogeadosController(usuariosLogeadosModel, usuariosLogeadosForm);
@@ -70,7 +70,7 @@ public class MenuMedico extends JFrame {
         usuariosLogeadosForm.setModel(usuariosLogeadosModel);
         usuariosLogeadosForm.setController(usuariosLogeadosController);
 
-        // --- SplitPane ---
+
         JSplitPane splitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
                 tabbedPane,
